@@ -91,6 +91,7 @@ in
         shiftwidth = 2; # Size of an indent
         tabstop = 2; # Number of spaces tabs count for
         softtabstop = 2; # Number of spaces a <Tab> inserts in insert mode
+        scrolloff = 2; # always have 2 lines margin
 
         # Spelling
         spell = false;
@@ -207,7 +208,7 @@ in
         (lua {
           key = "<Leader>e";
           desc = "Toggle MiniFiles";
-          code = "_G.Maatwerk.ui.toggle_explorer()";
+          code = "MiniFiles.open()";
           modes = [
             "n"
             "v"
@@ -398,8 +399,8 @@ in
             src = pkgs.fetchFromCodeberg {
               owner = "martijnboers";
               repo = "gitportal.nvim";
-              rev = "e056a377326292874f70900af93104fc2fe7d39e";
-              hash = "sha256-myfrptp5efKjcbLKnDn/aTab3JlULzPCLDuiOpA5yHY=";
+              rev = "154c4b9633aebb9a0c588f0870a1a6107f870b78";
+              hash = "sha256-rmHKGNea1JNjkEwfkHShAgUWnuiqFbFZ4DjkiqYcYWA=";
             };
           };
           settings.always_use_commit_hash_in_url = true;
@@ -565,27 +566,6 @@ in
             function(args)
               local buf_id = args.data.buf_id
 
-              local map_split = function(buf_id, lhs, direction)
-                local rhs = function()
-                  local cur_target = MiniFiles.get_explorer_state().target_window
-                  local new_target = vim.api.nvim_win_call(cur_target, function()
-                    vim.cmd(direction .. ' split')
-                    return vim.api.nvim_get_current_win()
-                  end)
-
-                  MiniFiles.set_target_window(new_target)
-                  MiniFiles.go_in()
-                  MiniFiles.close()
-                end
-
-                local desc = 'Split ' .. direction
-                vim.keymap.set('n', lhs, rhs, { buffer = buf_id, desc = desc, nowait=true })
-              end
-
-              map_split(buf_id, '<C-s>', 'belowright horizontal')
-              map_split(buf_id, '<C-v>', 'belowright vertical')
-              map_split(buf_id, '<C-t>', 'tab')
-
               -- Set focused directory as current working directory
               local set_cwd = function()
                 local path = (MiniFiles.get_fs_entry() or {}).path
@@ -613,7 +593,7 @@ in
               end
 
               vim.keymap.set('n', '~', set_cwd,   { buffer = buf_id, desc = 'Set cwd' })
-              vim.keymap.set('n', 'x', ui_open,   { buffer = buf_id, desc = 'OS open' })
+              vim.keymap.set('n', 'X', ui_open,   { buffer = buf_id, desc = 'OS open' })
               vim.keymap.set('n', 'Y', yank_path, { buffer = buf_id, desc = 'Yank path' })
             end
           '';
@@ -673,25 +653,6 @@ in
               end)
             end
           )
-        end
-
-        _G.Maatwerk.ui.toggle_explorer = function()
-          local explorer_state = MiniFiles.get_explorer_state()
-          local is_open = explorer_state ~= nil and explorer_state.target_window ~= nil
-            and vim.api.nvim_win_is_valid(explorer_state.target_window)
-
-          if is_open then
-            MiniFiles.close()
-            return
-          end
-
-          local buf_name = vim.api.nvim_buf_get_name(0)
-          local is_valid_file = buf_name ~= "" and vim.bo.buftype == "" and vim.fn.filereadable(buf_name) == 1
-          if is_valid_file then
-            MiniFiles.open(buf_name, false)
-          else
-            MiniFiles.open(vim.fn.getcwd(), false)
-          end
         end
 
         _G.Maatwerk.ui.update_search_count = function()

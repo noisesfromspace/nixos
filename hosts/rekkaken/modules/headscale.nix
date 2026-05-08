@@ -167,6 +167,7 @@ in
                   ];
                   dst = [
                     "hadouken:5551,5552,5553,5555,3902" # reverse proxy ports
+                    "hadouken:${toString config.services.immich.port}" 
                     "hadouken:5432" # postgresql for stalwart
                   ];
                 }

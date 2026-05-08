@@ -114,7 +114,8 @@ in
             file_server
           '';
         };
-        "*.storage.boers.email" = {
+        "random.storage.boers.email" = {
+          serverAliases = [ "mastodon.storage.boers.email" ];
           extraConfig = ''
             header X-Robots-Tag "noindex"
 
@@ -129,6 +130,15 @@ in
             }
             reverse_proxy hadouken.machine.thuis:5555 {
                 header_up X-Forwarded-Host p.plebian.nl
+                header_up X-Forwarded-Proto https
+                header_up X-Real-IP {remote_host}
+            }
+          '';
+        };
+        "photos.boers.email" = {
+          extraConfig = ''
+            reverse_proxy https://immich.thuis {
+                header_up X-Forwarded-Host photos.boers.email
                 header_up X-Forwarded-Proto https
                 header_up X-Real-IP {remote_host}
             }

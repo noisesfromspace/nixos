@@ -33,7 +33,6 @@ in
       black
       biome
       ruff
-      vale
       jq
     ];
 
@@ -83,7 +82,6 @@ in
             javascript = [ "eslint" ];
             go = [ "golangcilint" ];
             terraform = [ "tflint" ];
-            text = [ "vale" ];
           };
         }; # code style linting
 

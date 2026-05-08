@@ -5,9 +5,8 @@
 pkgs.stdenv.mkDerivation {
   pname = "boers-resume";
   version = "1";
-  src = pkgs.fetchFromRadicle {
-    seed = "seed.boers.email";
-    repo = "zb1FuXow3wJemDDPFWGFa49rNA4z";
+  src = fetchGit {
+    url = "https://seed.boers.email/zb1FuXow3wJemDDPFWGFa49rNA4z.git";
     rev = "250ae2e044718a126f407c98cb4a498637704d7d";
     submodules = true;
   };

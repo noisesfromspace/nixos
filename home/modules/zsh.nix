@@ -94,7 +94,7 @@ in
           gl = "git pull";
           gll = "rad sync -v --fetch && git pull";
           gs = "git status";
-          glg = "git log --show-signatures --stat";
+          glg = "git log --stat";
           gp = "git push";
           gpf = "git push --force-with-lease";
           grb = "git rebase";
@@ -141,11 +141,7 @@ in
                 }
 
                 notes() {
-                  if [[ -f ~/.config/notes.vim ]]; then
-                    nvim -c "silent source ~/.config/notes.vim" ~/Notes
-                  else
-                    nvim -c "mksession! ~/.config/notes.vim" ~/Notes
-                  fi
+                  nvim ~/Notes
                 }
 
                 fixkey() {

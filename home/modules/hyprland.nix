@@ -70,6 +70,9 @@ in
     home.file = {
       "${config.xdg.configHome}/hyprdynamicmonitors/config.toml".text = # toml
         ''
+          [notifications]
+          disabled = true
+
           # Dell workstation with lid closed (external only)
           [profiles.dell_closed]
           config_file = "${
@@ -478,7 +481,7 @@ in
         in
         {
           general = {
-            after_sleep_cmd =  "hyprctl dispatch dpms on";
+            after_sleep_cmd = "hyprctl dispatch dpms on";
             ignore_dbus_inhibit = true; # Ignore apps like browsers playing video
             lock_cmd = lockCmd;
           };
@@ -504,7 +507,6 @@ in
           ];
         };
     };
-
 
     programs.rofi = {
       enable = true;
