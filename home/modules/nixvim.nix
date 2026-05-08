@@ -115,6 +115,21 @@ in
         pumwidth = 30; # Minimum width of completion menu
       };
 
+      userCommands = {
+        Scratch = {
+          command = helpers.mkRaw ''
+            function()
+              vim.cmd("enew")
+              vim.bo.buftype = "nofile"
+              vim.bo.bufhidden = "hide"
+              vim.bo.swapfile = false
+              vim.api.nvim_buf_set_name(0, "[scratch]")
+            end
+          '';
+          desc = "Create a new scratch buffer";
+        };
+      };
+
       keymaps = with keymaps; [
         # Picker / Fuzzy Finding
         (lua {
@@ -141,8 +156,8 @@ in
           code = "MiniPick.builtin.files()";
         })
         (lua {
-          key = "<Leader>b";
-          desc = "Find in buffers";
+          key = "<BS>";
+          desc = "Overview of buffers";
           code = # lua
             ''
               local wipeout_cur = function()
@@ -151,11 +166,6 @@ in
               local buffer_mappings = { wipeout = { char = '<C-d>', func = wipeout_cur } }
               MiniPick.builtin.buffers(local_opts, { mappings = buffer_mappings })
             '';
-        })
-        (lua {
-          key = "<Leader>/";
-          desc = "Find in buffer lines";
-          code = "MiniExtra.pickers.buf_lines({scope = 'current'})";
         })
         (lua {
           key = "<Leader>h";
@@ -208,7 +218,7 @@ in
         (lua {
           key = "<Leader>e";
           desc = "Toggle MiniFiles";
-          code = "MiniFiles.open()";
+          code = "MiniFiles.open(MiniFiles.get_latest_path())";
           modes = [
             "n"
             "v"
@@ -529,6 +539,20 @@ in
           callback = helpers.mkRaw "_G.Maatwerk.git.update_status";
         }
         {
+          event = [
+            "TermOpen"
+            "BufEnter"
+          ];
+          callback = helpers.mkRaw ''
+            function()
+              if vim.bo.buftype == "terminal" then
+                vim.opt_local.number = true
+                vim.opt_local.relativenumber = true
+              end
+            end
+          '';
+        }
+        {
           event = [ "FileType" ];
           pattern = [
             "markdown"
@@ -558,45 +582,6 @@ in
         {
           event = "CmdlineLeave";
           callback = helpers.mkRaw "_G.Maatwerk.ui.clear_search_count";
-        }
-        {
-          event = "User";
-          pattern = [ "MiniFilesBufferCreate" ];
-          callback = helpers.mkRaw ''
-            function(args)
-              local buf_id = args.data.buf_id
-
-              -- Set focused directory as current working directory
-              local set_cwd = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                local dir = vim.fs.dirname(path)
-                vim.fn.chdir(dir)
-                vim.notify('Changed cwd to ' .. dir)
-              end
-
-              -- Yank in register full path of entry under cursor
-              local yank_path = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                vim.fn.setreg(vim.v.register, path)
-                vim.fn.setreg('+', path)
-                vim.notify('Yanked path to clipboard: ' .. path)
-              end
-
-              -- Open path with system default handler (useful for non-text files)
-              local ui_open = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                vim.ui.open(path)
-                vim.notify('Opened: ' .. path)
-              end
-
-              vim.keymap.set('n', '~', set_cwd,   { buffer = buf_id, desc = 'Set cwd' })
-              vim.keymap.set('n', 'X', ui_open,   { buffer = buf_id, desc = 'OS open' })
-              vim.keymap.set('n', 'Y', yank_path, { buffer = buf_id, desc = 'Yank path' })
-            end
-          '';
         }
         {
           event = [ "VimLeavePre" ];

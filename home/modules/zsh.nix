@@ -1,5 +1,6 @@
 {
   pkgs,
+  inputs,
   config,
   lib,
   ...
@@ -14,6 +15,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    age.secrets = {
+      llm.file = "${inputs.secrets}/llm.age";
+    };
+
     programs.zsh = {
       enable = true;
       shellAliases =
@@ -100,11 +105,12 @@ in
           grb = "git rebase";
           groh = "git reset --hard HEAD && git clean -fd";
           fixup = "ga . && gc --amend --no-edit";
+          "c?" = "aichat -m gemini:gemini-3-flash-preview -e";
 
           # ssh nicknames
           pow = sshAlias "hadouken";
           wolk = sshAlias "shoryuken";
-          pi = sshAlias "tenshin";
+          ntpi = sshAlias "tenshin";
           zima = sshAlias "tatsumaki";
           desktop = sshAlias "nurma";
           nofail = sshAlias "rekkaken";
@@ -199,6 +205,18 @@ in
         size = 10000;
         # Since we aren't using a file, we can't share via file.
         share = false;
+      };
+    };
+    programs.aichat = {
+      enable = true;
+      settings = {
+        model = "gemini:gemini-3-pro-preview";
+        clients = [
+          {
+            # https://ai.google.dev/gemini-api/docs/models
+            type = "gemini";
+          }
+        ];
       };
     };
 

@@ -16,7 +16,6 @@
     ./modules/aerc.nix
     ./modules/khal.nix
     ./modules/zsh.nix
-    ./modules/llm.nix
     ./modules/git.nix
 
     # Packaged home manager modules

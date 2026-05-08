@@ -45,6 +45,7 @@ in
         imagemagick # convert images
         nurl # nix fetchUrl
         nix-init # build packages
+        pi-coding-agent # coding assistant
 
         # work
         citrix_workspace
@@ -94,7 +95,7 @@ in
           # NFS doesn't support inotify events
           commandOptions.repeat = "60";
           roots = [
-            "${config.xdg.configHome}/aichat/sessions"
+            "/home/martijn/.pi"
             "/mnt/session/"
           ];
         };

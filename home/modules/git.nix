@@ -18,6 +18,7 @@
       ".ccls-cache"
       "result"
       ".nvim.session"
+      ".pi"
     ];
     settings = {
       pull.rebase = "true";
@@ -65,6 +66,7 @@
         connect = [ "z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB@seed.boers.email:8776" ];
       };
       publicExplorer = "https://git.boers.email/nodes/seed.boers.email/$rid$path";
+      preferredSeeds = [ "z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB@seed.boers.email:8776" ];
     };
   };
 }
