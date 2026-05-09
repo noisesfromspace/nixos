@@ -150,6 +150,11 @@ in
                   nvim ~/Notes
                 }
 
+                if [ -n "$NVIM" ]; then
+                  # Redirect nvim to parent if $NVIM
+                  alias nvim='nvim --server "$NVIM" --remote'
+                fi
+                 
                 fixkey() {
                   # Find all USB devices with Vendor ID 1050 (Yubico)
                   for id in $(grep -l "1050" /sys/bus/usb/devices/*/idVendor); do

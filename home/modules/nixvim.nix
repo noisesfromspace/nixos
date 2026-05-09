@@ -69,12 +69,10 @@ in
   config = mkIf cfg.enable {
     programs.nixvim = {
       enable = true;
-      vimAlias = true;
 
       globals = {
         mapleader = " ";
       };
-
       opts = {
         number = true; # Show line numbers
         relativenumber = true; # Show relative line numbers
@@ -218,7 +216,16 @@ in
         (lua {
           key = "<Leader>e";
           desc = "Toggle MiniFiles";
-          code = "MiniFiles.open(MiniFiles.get_latest_path())";
+          code = "MiniFiles.open()";
+          modes = [
+            "n"
+            "v"
+          ];
+        })
+        (lua {
+          key = "<Leader>E";
+          desc = "Toggle MiniFiles";
+          code = "MiniFiles.open(vim.api.nvim_buf_get_name(0))";
           modes = [
             "n"
             "v"
