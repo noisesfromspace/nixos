@@ -575,6 +575,45 @@ in
           '';
         }
         {
+          event = "User";
+          pattern = [ "MiniFilesBufferCreate" ];
+          callback = helpers.mkRaw ''
+            function(args)
+              local buf_id = args.data.buf_id
+
+              -- Set focused directory as current working directory
+              local set_cwd = function()
+                local path = (MiniFiles.get_fs_entry() or {}).path
+                if path == nil then return vim.notify('Cursor is not on valid entry') end
+                local dir = vim.fs.dirname(path)
+                vim.fn.chdir(dir)
+                vim.notify('Changed cwd to ' .. dir)
+              end
+
+              -- Yank in register full path of entry under cursor
+              local yank_path = function()
+                local path = (MiniFiles.get_fs_entry() or {}).path
+                if path == nil then return vim.notify('Cursor is not on valid entry') end
+                vim.fn.setreg(vim.v.register, path)
+                vim.fn.setreg('+', path)
+                vim.notify('Yanked path to clipboard: ' .. path)
+              end
+
+              -- Open path with system default handler (useful for non-text files)
+              local ui_open = function()
+                local path = (MiniFiles.get_fs_entry() or {}).path
+                if path == nil then return vim.notify('Cursor is not on valid entry') end
+                vim.ui.open(path)
+                vim.notify('Opened: ' .. path)
+              end
+
+              vim.keymap.set('n', '~', set_cwd,   { buffer = buf_id, desc = 'Set cwd' })
+              vim.keymap.set('n', 'X', ui_open,   { buffer = buf_id, desc = 'OS open' })
+              vim.keymap.set('n', 'Y', yank_path, { buffer = buf_id, desc = 'Yank path' })
+            end
+          '';
+        }
+        {
           event = "TextYankPost";
           callback = helpers.mkRaw ''
             function()
