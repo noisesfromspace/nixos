@@ -58,7 +58,6 @@
 
     zmx = {
       url = "github:neurosnap/zmx/";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     agenix = {

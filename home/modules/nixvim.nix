@@ -190,7 +190,7 @@ in
           code = "MiniExtra.pickers.registers()";
         })
 
-        # Quality of life
+        # Terminal rebinds
         {
           mode = "t";
           key = "<esc>";
@@ -289,14 +289,6 @@ in
           modes = [ "n" ];
         })
 
-        # Terminal
-        (cmd {
-          key = "<C-w>t";
-          desc = "Terminal split";
-          command = "split | terminal";
-          modes = [ "n" ];
-        })
-
         # Tab management
         (cmd {
           key = "<C-t>n";
@@ -387,7 +379,9 @@ in
       };
 
       plugins = {
+        # Edit quickfix like buffer
         quicker.enable = true;
+
         neogit = {
           enable = true;
           settings = {
