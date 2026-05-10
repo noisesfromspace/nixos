@@ -158,11 +158,52 @@ in
           desc = "Overview of buffers";
           code = # lua
             ''
-              local wipeout_cur = function()
-                vim.api.nvim_buf_delete(MiniPick.get_picker_matches().current.bufnr, {})
+              local function preserve_cursor_index_and_operate(operation)
+                -- Get current cursor index
+                local index = MiniPick.get_picker_matches().current_ind
+                operation()
+                -- Re-obtain items and attempt to restore the cursor position
+                MiniPick.set_picker_items(_G.Maatwerk.buffers.get_items())
+                local new_items = MiniPick.get_picker_matches().all
+                if index and new_items and index <= #new_items then
+                  -- Restore the cursor position if within bounds
+                  MiniPick.set_picker_match_inds({index}, 'current')
+                else
+                  -- Fallback if index is out of range
+                  MiniPick.set_picker_match_inds({1}, 'current')
+                end
               end
-              local buffer_mappings = { wipeout = { char = '<C-d>', func = wipeout_cur } }
-              MiniPick.builtin.buffers(local_opts, { mappings = buffer_mappings })
+
+              local wipeout_cur = function()
+                preserve_cursor_index_and_operate(function()
+                  local item = MiniPick.get_picker_matches().current
+                  if item then
+                    -- Force for terminal buffers
+                    vim.api.nvim_buf_delete(item.bufnr, {force = true})
+                  end
+                end)
+              end
+
+              local toggle_fav = function()
+                preserve_cursor_index_and_operate(function()
+                  _G.Maatwerk.buffers.toggle_favorite()
+                end)
+              end
+              local buffer_mappings = { 
+                wipeout = { char = '<C-d>', func = wipeout_cur },
+                favorite = { char = '<C-f>', func = toggle_fav },
+                scroll_down = '<nop>',
+                scroll_half_down = { char = '<C-e>', func = function() end },
+              }
+              MiniPick.start({
+                source = {
+                  items = _G.Maatwerk.buffers.get_items(),
+                  name = 'Buffers',
+                  show = _G.Maatwerk.buffers.show,
+                  choose = MiniPick.default_choose,
+                },
+                mappings = buffer_mappings,
+              })
             '';
         })
         (lua {
@@ -639,15 +680,61 @@ in
         _G.Maatwerk = _G.Maatwerk or {}
         _G.Maatwerk.git = _G.Maatwerk.git or {}
         _G.Maatwerk.ui = _G.Maatwerk.ui or {}
+        _G.Maatwerk.buffers = _G.Maatwerk.buffers or {}
+        _G.Maatwerk.buffers.favorites = _G.Maatwerk.buffers.favorites or {}
 
         vim.cmd.packadd('nvim.undotree')
+        require('vim._core.ui2').enable()
 
-        local neogit = require('neogit')
         vim.keymap.set(
           'n',
           'gL',
-          neogit.action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })
+          require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })
         )
+
+        _G.Maatwerk.buffers.get_items = function(local_opts)
+          local_opts = vim.tbl_deep_extend('force', { include_current = true, include_unlisted = false }, local_opts or {})
+          local buffers_output = vim.api.nvim_exec('buffers' .. (local_opts.include_unlisted and '!' or ""), true)
+          local cur_buf_id = vim.api.nvim_get_current_buf()
+          local items = {}
+
+          for _, l in ipairs(vim.split(buffers_output, '\n')) do
+            local buf_str, name = l:match('^%s*(%d+)'), l:match('"(.*)"')
+            local buf_id = tonumber(buf_str)
+            if buf_id then
+              local path = vim.api.nvim_buf_get_name(buf_id)
+              local is_fav = _G.Maatwerk.buffers.favorites[path] or false
+              local item = { text = name, bufnr = buf_id, path = path, favorite = is_fav }
+              if buf_id ~= cur_buf_id or local_opts.include_current then
+                table.insert(items, item)
+              end
+            end
+          end
+
+          table.sort(items, function(a, b)
+            if a.favorite ~= b.favorite then return a.favorite end
+            return a.bufnr < b.bufnr
+          end)
+          return items
+        end
+
+        _G.Maatwerk.buffers.toggle_favorite = function()
+          local item = MiniPick.get_picker_matches().current
+          if not item then return end
+          local path = item.path
+          _G.Maatwerk.buffers.favorites[path] = not _G.Maatwerk.buffers.favorites[path]
+          MiniPick.set_picker_items(_G.Maatwerk.buffers.get_items())
+        end
+
+        _G.Maatwerk.buffers.show = function(buf_id, items, query)
+          local decorated_items = {}
+          for i, item in ipairs(items) do
+            local prefix = item.favorite and "* " or "  "
+            -- Create a proxy table so default_show sees the prefixed text but we keep original metadata
+            decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
+          end
+          return MiniPick.default_show(buf_id, decorated_items, query, { show_icons = true })
+        end
 
         _G.Maatwerk.git.get_git_root = function(bufnr)
           if bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end

@@ -14,7 +14,7 @@
     };
 
     # https://github.com/DeterminateSystems/nix-src/releases
-    determinate.url = "github:DeterminateSystems/nix-src/v3.16.0";
+    determinate.url = "github:DeterminateSystems/nix-src/v3.20.0";
 
     home-manager = {
       url = "github:nix-community/home-manager";
