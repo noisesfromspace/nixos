@@ -367,9 +367,8 @@ in
           )
         );
 
-        # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
+        # See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
         dwindle = {
-          pseudotile = true;
           preserve_split = true;
           default_split_ratio = 1.3;
         };

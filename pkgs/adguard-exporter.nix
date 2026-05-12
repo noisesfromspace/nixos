@@ -6,7 +6,7 @@
 with pkgs;
 
 
-buildGoModule rec {
+buildGoModule {
   pname = "adguard-exporter";
   version = "master";
 

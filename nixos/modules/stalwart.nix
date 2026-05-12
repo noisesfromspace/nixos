@@ -208,6 +208,7 @@ in
             dkim.verify = true; # Verify DKIM signatures
             arc.verify = true; # Verify ARC chains
             dmarc.verify = true; # Verify DMARC policy
+            script = "shipping_filter";
 
             # DNSBL/RBL spam blacklist checking
             dnsbl = {
@@ -278,13 +279,6 @@ in
         resolver = {
           type = "system";
           public-suffix = [ "file://${pkgs.publicsuffix-list}/share/publicsuffix/public_suffix_list.dat" ];
-        };
-
-        # Tracing configuration
-        tracer.journal = {
-          type = "journal";
-          level = "info";
-          enable = true;
         };
 
         # Use pkgs because not built with overrideAttrs

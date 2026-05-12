@@ -56,7 +56,6 @@ in
             cmd=(nh os switch --ask "''${target_args[@]}")
 
             # Add remote builder option if requested
-
             if [[ "$use_remote_builder" == "true" ]]; then
               cmd+=(--build-host "martijn@hadouken.machine.thuis")
             fi
