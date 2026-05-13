@@ -48,8 +48,8 @@ in
         pi-coding-agent # coding assistant
 
         # developement
-        nodejs_22
         python314
+        nodejs_22
 
         # work
         citrix_workspace
@@ -77,6 +77,32 @@ in
         signal-desktop
         fractal # matrix-client
       ];
+
+    # Install pi npm extensions outside of devenv
+    # Force npm globals into home (override npm used by pi)
+    home.file.".local/bin/npm" = {
+      text = ''
+        #!/usr/bin/env bash
+        export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+        exec ${pkgs.nodejs_22}/bin/npm "$@"
+      '';
+      executable = true;
+    };
+
+    # Make npm deterministic
+    home.file.".npmrc".text = ''
+      prefix=${config.home.homeDirectory}/.npm-global
+    '';
+
+    home.sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.npm-global/bin"
+    ];
+
+    home.activation.piSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p "$HOME/.npm-global"
+      mkdir -p "$HOME/.local/share/pi/extensions"
+    '';
 
     # DBus secret service
     services.pass-secret-service.enable = true;
