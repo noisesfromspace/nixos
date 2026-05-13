@@ -175,20 +175,9 @@
       # final = after overlay mods, like rec keyword
       overlays = final: prev: {
         # strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
-        #   # Set the flags to prevent stripping
         #   dontStrip = true;
         #   dontPatchELF = true;
         #   cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [ "-DCMAKE_BUILD_TYPE=Debug" ];
-        # });
-        # ghostty = prev.ghostty.overrideAttrs (oldAttrs: {
-        #   patches = (oldAttrs.patches or [ ]) ++ [
-        #     ./ghostty.patch
-        #   ];
-        # });
-        # age = prev.age.withPlugins (ps: [ ps.age-plugin-tpm ]).overrideAttrs (old: {
-        #   meta = (old.meta or { }) // {
-        #     mainProgram = "age";
-        #   };
         # });
       };
 

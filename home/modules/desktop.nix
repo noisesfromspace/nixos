@@ -45,8 +45,6 @@ in
         imagemagick # convert images
         nurl # nix fetchUrl
         nix-init # build packages
-        pi-coding-agent # coding assistant
-
         # developement
         python314
         nodejs_22
@@ -78,31 +76,30 @@ in
         fractal # matrix-client
       ];
 
-    # Install pi npm extensions outside of devenv
-    # Force npm globals into home (override npm used by pi)
-    home.file.".local/bin/npm" = {
+    home.sessionVariables = {
+      PI_NPM_PREFIX = "$HOME/.pi/npm";
+      NPM_CONFIG_PREFIX = "$HOME/.pi/npm";
+    };
+
+    home.sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.pi/npm/bin"
+    ];
+
+    home.activation.piNpmDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p "$HOME/.pi/npm/bin"
+    '';
+
+    home.file.".local/bin/pi" = {
       text = ''
         #!/usr/bin/env bash
-        export NPM_CONFIG_PREFIX="$HOME/.npm-global"
-        exec ${pkgs.nodejs_22}/bin/npm "$@"
+        export NPM_CONFIG_PREFIX="$HOME/.pi/npm"
+        export PATH="$HOME/.pi/npm/bin:$PATH"
+        exec /run/current-system/sw/bin/pi "$@"
       '';
       executable = true;
     };
 
-    # Make npm deterministic
-    home.file.".npmrc".text = ''
-      prefix=${config.home.homeDirectory}/.npm-global
-    '';
-
-    home.sessionPath = [
-      "$HOME/.local/bin"
-      "$HOME/.npm-global/bin"
-    ];
-
-    home.activation.piSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p "$HOME/.npm-global"
-      mkdir -p "$HOME/.local/share/pi/extensions"
-    '';
 
     # DBus secret service
     services.pass-secret-service.enable = true;

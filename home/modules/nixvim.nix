@@ -561,13 +561,22 @@ in
                     local total_lines = vim.fn.line('$')
                     local percentage = total_lines > 0 and math.floor((vim.fn.line('.') / total_lines) * 100) or 0
 
+                    local navic = ""
+                    local ok, navic_mod = pcall(require, "nvim-navic")
+                    if ok and navic_mod.is_available() then
+                      navic = navic_mod.get_location()
+                    end
+
                     local location_str = full_filename
+                    if navic ~= "" then
+                      location_str = location_str .. " › " .. navic
+                    end
 
                     local groups = {
                         { hl = mode_hl,                  strings = { mode } },
-                        { hl = 'MiniStatuslineDevinfo',  strings = { percentage .. '%%' } },
                         { hl = 'MiniStatuslineLocation', strings = { location_str } },
                         '%=', '%<',
+                        { hl = 'MiniStatuslineDevinfo',  strings = { percentage .. '%%' } },
                         { hl = 'MiniStatuslineDevinfo',  strings = { s_rec } },
                     }
                     
