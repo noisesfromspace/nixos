@@ -277,6 +277,7 @@
     NODE_EXTRA_CA_CERTS = config.security.pki.caBundle; # node
     SSL_CERT_FILE = config.security.pki.caBundle; # rust+go etc
     TMOUT = (5 * 60 * 60); # zsh timeout
+    CHROME_PATH = "/home/martijn/.nix-profile/bin/chromium";
   };
 
   # Time settings

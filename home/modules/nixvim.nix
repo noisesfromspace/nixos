@@ -526,7 +526,7 @@ in
               content = {
                 active = helpers.mkRaw ''
                   function()
-                    local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 200 })
+                    local mode, mode_hl = MiniStatusline.section_mode({})
                     local full_filename = vim.fn.pathshorten(vim.fn.expand('%:~:.'))
                     if full_filename == "" then full_filename = "[No Name]" end
 
