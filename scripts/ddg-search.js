@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import fetch from "node-fetch";
 
 async function ddgSearch(query, limit = 5) {
   const res = await fetch(
@@ -13,15 +12,21 @@ async function ddgSearch(query, limit = 5) {
     /<a rel="nofollow" class="result__a" href="(.*?)">(.*?)<\/a>/g
   )]
     .slice(0, limit)
-    .map(m => ({
-      url: decodeURIComponent(m[1]),
-      title: m[2].replace(/<[^>]+>/g, ""),
-    }));
+    .map(m => {
+      const raw = m[1];
+      const match = raw.match(/uddg=([^&]+)/);
+      const url = match ? decodeURIComponent(match[1]) : raw;
+
+      return {
+        url,
+        title: m[2].replace(/<[^>]+>/g, ""),
+      };
+    });
 }
 
 async function fetchClean(url) {
   try {
-    const res = await fetch(`https://r.jina.ai/${url}`);
+    const res = await fetch(`https://r.jina.ai/${encodeURIComponent(url)}`);
     return (await res.text()).slice(0, 4000);
   } catch {
     return null;
