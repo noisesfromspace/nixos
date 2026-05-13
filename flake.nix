@@ -14,7 +14,7 @@
     };
 
     # https://github.com/DeterminateSystems/nix-src/releases
-    determinate.url = "github:DeterminateSystems/nix-src/v3.20.0";
+    determinate.url = "github:DeterminateSystems/nix-src/v3.16.0";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -56,9 +56,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    zmx = {
-      url = "github:neurosnap/zmx/";
-    };
+    zmx.url = "github:neurosnap/zmx/";
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
     agenix = {
       url = "github:ryantm/agenix";

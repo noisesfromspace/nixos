@@ -29,6 +29,10 @@ in
       tailscale-server.file = lib.mkDefault "${inputs.secrets}/tailscale-server.age";
     };
 
+    environment.systemPackages = with pkgs; [
+      inputs.determinate.packages.${pkgs.stdenv.hostPlatform.system}.default
+    ];
+
     services.tailscale.authKeyFile = config.age.secrets.tailscale-server.path;
 
     # System harderning

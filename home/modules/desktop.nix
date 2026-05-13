@@ -47,6 +47,10 @@ in
         nix-init # build packages
         pi-coding-agent # coding assistant
 
+        # developement
+        nodejs_22
+        python314
+
         # work
         citrix_workspace
 

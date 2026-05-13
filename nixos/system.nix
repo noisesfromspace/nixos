@@ -93,7 +93,6 @@
     pciutils # lspci
     usbutils # lsusb
     nfs-utils
-    (inputs.zmx.packages.${pkgs.stdenv.hostPlatform.system}.default) # screen
 
     # forensics
     binutils # strings+ld
