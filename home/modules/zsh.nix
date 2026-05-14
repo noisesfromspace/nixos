@@ -15,9 +15,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    age.secrets = {
-      llm.file = "${inputs.secrets}/llm.age";
-    };
 
     # home.file."${config.xdg.configHome}/macchina.ans" = {
     #   source = pkgs.fetchurl {
@@ -158,6 +155,7 @@ in
           ntpi = sshAlias "tenshin";
           zima = sshAlias "tatsumaki";
           desktop = sshAlias "nurma";
+          worker = "sudo -u worker -i";
           nofail = sshAlias "rekkaken";
           router = sshAlias "dosukoi";
           ap = sshAlias "suzaku";
@@ -223,7 +221,9 @@ in
           last =
             lib.mkOrder 1500 # bash
               ''
-                export $(cat ${config.age.secrets.llm.path} | xargs)
+                if [[ -r /run/agenix/llm ]]; then
+                  export $(cat /run/agenix/llm | xargs)
+                fi
 
                 autoload -z edit-command-line
                 zle -N edit-command-line
@@ -307,7 +307,7 @@ in
       };
       nh = {
         enable = true; # nixos-rebuild wrapper
-        flake = "${config.home.homeDirectory}/Nix";
+        flake = "/opt/nix";
       };
       fzf = {
         enable = true; # A command-line fuzzy finder

@@ -92,6 +92,8 @@
     };
   };
 
+  hosts.worker.enable = true;
+
   hosts.openssh = {
     enable = false;
     allowUsers = [
@@ -109,7 +111,7 @@
     enable = true;
     rules = [
       "-w /home/martijn/.ssh -p rwa -k ssh_file_access"
-      "-w /home/martijn/Nix -p wa -k nix_config_changes"
+      "-w /opt/nix -p wa -k nix_config_changes"
       "-w /dev/video0 -p war"
     ];
   };

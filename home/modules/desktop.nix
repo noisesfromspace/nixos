@@ -87,6 +87,9 @@ in
 
     home.sessionVariables = {
       NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
+      PI_CODING_AGENT_DIR = "/opt/pi-agent";
+      PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
+      PI_AUTH_JSON = "/run/agenix/pi-auth";
     };
 
     home.sessionPath = [
@@ -125,12 +128,12 @@ in
             "/mnt/notes/"
           ];
         };
-        "aichats" = {
+        "pi-agent" = {
           # NFS doesn't support inotify events
           commandOptions.repeat = "60";
           roots = [
-            "/home/martijn/.pi"
-            "/mnt/session/"
+            "/opt/pi-agent"
+            "/mnt/session/pi-agent/"
           ];
         };
       };
