@@ -40,8 +40,8 @@ in
 
                 iifname { "tailscale0" } tcp dport { 80, 443, 4443 } accept comment "Websites hosted on router";
                 iifname { "tailscale0" } tcp dport { 9009, 9010, 9011, 9012, 9013 } accept comment "Croc relay";
-                iifname { "tailscale0" } udp dport 53 accept comment "DNS";
-                iifname { "tailscale0" } tcp dport 53 accept comment "DNS";
+                iifname { "tailscale0", "lan", "wifi", "opt1" } udp dport 53 accept comment "DNS";
+                iifname { "tailscale0", "lan", "wifi", "opt1" } tcp dport 53 accept comment "DNS";
 
                 # Allow IPv6 Neighbor Discovery and Ping 
                 iifname { "lan", "wifi", "tailscale0", "opt1" } icmpv6 type { nd-neighbor-solicit, nd-neighbor-advert, nd-router-solicit, echo-request } accept;

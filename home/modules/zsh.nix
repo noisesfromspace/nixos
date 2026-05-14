@@ -45,8 +45,6 @@ in
         theme = "maatwerk";
       };
       themes.maatwerk = {
-        key_color = config.lib.stylix.colors.withHashtag.base0D; # blue/cyan-ish
-        separator_color = config.lib.stylix.colors.withHashtag.base03;
         separator = " ";
         spacing = 1;
         box = {
@@ -194,7 +192,8 @@ in
                 }
 
                 notes() {
-                  nvim ~/Notes
+                  cd ~/Notes
+                  nvim 
                 }
 
                 if [ -n "$NVIM" ]; then

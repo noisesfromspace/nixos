@@ -189,7 +189,7 @@ in
                   _G.Maatwerk.buffers.toggle_favorite()
                 end)
               end
-              local buffer_mappings = { 
+              local buffer_mappings = {
                 wipeout = { char = '<C-d>', func = wipeout_cur },
                 favorite = { char = '<C-f>', func = toggle_fav },
                 scroll_down = '<nop>',
@@ -315,8 +315,26 @@ in
           desc = "Open neogit status";
           command = "Neogit kind=split";
         })
+        (lua {
+          key = "gL";
+          desc = "All branches log";
+          code = "require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })()";
+          modes = [ "n" ];
+        })
 
         # Clipboard
+        (lua {
+          key = "gy";
+          desc = "Yank file:full-range";
+          code = "_G.Maatwerk.yank_file_line_range(false)";
+          modes = [ "n" ];
+        })
+        (lua {
+          key = "gy";
+          desc = "Yank file:selected-range";
+          code = "_G.Maatwerk.yank_file_line_range(true)";
+          modes = [ "v" ];
+        })
         (mk {
           key = "<Leader>y";
           desc = "Add to sytem clipboard";
@@ -647,26 +665,7 @@ in
                 vim.notify('Changed cwd to ' .. dir)
               end
 
-              -- Yank in register full path of entry under cursor
-              local yank_path = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                vim.fn.setreg(vim.v.register, path)
-                vim.fn.setreg('+', path)
-                vim.notify('Yanked path to clipboard: ' .. path)
-              end
-
-              -- Open path with system default handler (useful for non-text files)
-              local ui_open = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                vim.ui.open(path)
-                vim.notify('Opened: ' .. path)
-              end
-
-              vim.keymap.set('n', '~', set_cwd,   { buffer = buf_id, desc = 'Set cwd' })
-              vim.keymap.set('n', 'X', ui_open,   { buffer = buf_id, desc = 'OS open' })
-              vim.keymap.set('n', 'Y', yank_path, { buffer = buf_id, desc = 'Yank path' })
+              vim.keymap.set('n', '~', set_cwd, { buffer = buf_id, desc = 'Set cwd' })
             end
           '';
         }
@@ -708,11 +707,47 @@ in
         vim.cmd.packadd('nvim.undotree')
         require('vim._core.ui2').enable()
 
-        vim.keymap.set(
-          'n',
-          'gL',
-          require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })
-        )
+        _G.Maatwerk.yank_file_line_range = function(use_visual)
+          local file = vim.fn.expand('%:p')
+          if file == "" then
+            return vim.notify('Current buffer has no file path', vim.log.levels.WARN)
+          end
+
+          local l1, l2
+          if use_visual then
+            -- Try active visual endpoints first
+            local mode = vim.fn.mode()
+            local in_visual = mode:sub(1, 1) == 'v' or mode:sub(1, 1) == 'V' or mode:sub(1, 1) == '\22'
+            if in_visual then
+              local vline = vim.fn.line('v')
+              local cline = vim.fn.line('.')
+              if vline > 0 and cline > 0 then
+                l1, l2 = vline, cline
+              end
+            end
+
+            -- Fallback to visual marks
+            if l1 == nil or l2 == nil then
+              local m1 = vim.fn.getpos("'<")[2]
+              local m2 = vim.fn.getpos("'>")[2]
+              if m1 > 0 and m2 > 0 then
+                l1, l2 = m1, m2
+              end
+            end
+          end
+
+          -- Normal mode, or if visual positions are unavailable: use file path only
+          if l1 == nil or l2 == nil then
+            vim.fn.setreg('+', file)
+            return vim.notify('Yanked to clipboard: ' .. file)
+          end
+
+          local start_line = math.min(l1, l2)
+          local end_line = math.max(l1, l2)
+          local ref = string.format('%s:%d-%d', file, start_line, end_line)
+          vim.fn.setreg('+', ref)
+          vim.notify('Yanked to clipboard: ' .. ref)
+        end
 
         _G.Maatwerk.buffers.get_items = function(local_opts)
           local_opts = vim.tbl_deep_extend('force', { include_current = true, include_unlisted = false }, local_opts or {})

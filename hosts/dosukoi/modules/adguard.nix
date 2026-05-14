@@ -78,13 +78,21 @@ in
       settings = {
         dns = {
           ratelimit = 0;
-          bind_hosts = [ config.global.tailscale_hosts.dosukoi ];
+          bind_hosts = [
+            config.global.tailscale_hosts.dosukoi
+            "10.10.0.1" # lan
+            "10.20.0.1" # wifi
+            "10.30.0.1" # opt1
+          ];
           upstream_dns = [
             "https://dns10.quad9.net/dns-query"
             "https://dns.freedom.nl/dns-query"
           ];
           allowed_clients = [
-            "100.64.0.0/10"
+            "100.64.0.0/10" # tailscale
+            "10.10.0.0/23" # lan
+            "10.20.0.0/24" # wifi
+            "10.30.0.0/24" # opt1
           ];
           use_http3_upstreams = true;
           upstream_mode = "parallel";
