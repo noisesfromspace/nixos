@@ -8,6 +8,7 @@
 with lib;
 let
   cfg = config.hosts.worker;
+  hmLib = inputs.home-manager.lib;
 in
 {
   options.hosts.worker = {
@@ -48,7 +49,7 @@ in
 
       "d  /opt                         0755 root    root - -"
       "d  /opt/code                    2775 worker  code - -"
-      "d  /opt/pi-agent                2775 root    code - -"
+      "d  /opt/pi-agent-base           2775 root    code - -"
       "z  /opt/nix                     2775 martijn users - -"
       "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/pi-auth"
     ];
@@ -56,16 +57,16 @@ in
     hosts.borg.paths = [
       "/opt/nix"
       "/opt/code"
-      "/opt/pi-agent"
+      "/opt/pi-agent-base"
     ];
 
-    system.activationScripts.pi-agent = {
+    system.activationScripts.piAgentBaseSync = {
       deps = [ "groups" ];
       text = ''
         set -euo pipefail
 
         src=/home/martijn/.pi/agent
-        dst=/opt/pi-agent
+        dst=/opt/pi-agent-base
 
         if [ -d "$src" ]; then
           mkdir -p "$dst"
@@ -101,7 +102,7 @@ in
     };
 
     home-manager.users.worker =
-      { ... }:
+      { lib, pkgs, ... }:
       {
         home.username = "worker";
         home.homeDirectory = "/home/worker";
@@ -121,7 +122,7 @@ in
           sessionVariables = {
             NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
             EDITOR = "nvim";
-            PI_CODING_AGENT_DIR = "/opt/pi-agent";
+            PI_CODING_AGENT_DIR = "$HOME/.pi/agent";
             PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
             PI_AUTH_JSON = "/run/agenix/pi-auth";
           };
@@ -139,10 +140,40 @@ in
           '';
         };
 
+        home.activation.piAgentBaseSync = hmLib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          set -euo pipefail
+
+          mkdir -p "$HOME/.pi/agent"
+
+          if [ -d /opt/pi-agent-base ]; then
+            ${pkgs.rsync}/bin/rsync -a --delete \
+              --exclude 'AGENTS.md' \
+              --exclude 'CLAUDE.md' \
+              --exclude 'sessions' \
+              --exclude 'auth.json' \
+              /opt/pi-agent-base/ "$HOME/.pi/agent"/
+
+            if [ -f /opt/pi-agent-base/AGENTS.md ]; then
+              cat > "$HOME/.pi/agent/AGENTS.md" <<'EOF'
+## Worker-specific note
+
+- This is the isolated `worker` account for pi coding agent sessions.
+- You do not have sudo privileges.
+- If something needs sudo or root access, the user must do it themselves in a different terminal.
+- Keep changes scoped to the worker workspace and avoid system-wide edits.
+
+## Shared instructions
+EOF
+              cat /opt/pi-agent-base/AGENTS.md >> "$HOME/.pi/agent/AGENTS.md"
+            fi
+          fi
+        '';
+
         # Ensure npm bin dir exists (HM creates parent dirs for home.file entries)
         home.file.".local/share/npm/bin/.keep".text = "";
 
         home.file.".pi/agent/sessions/.keep".text = "";
+
         # pi wrapper — identical pattern to martijn
         home.file.".local/bin/pi" = {
           text = ''
