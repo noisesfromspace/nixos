@@ -40,12 +40,17 @@ in
     ];
 
     systemd.tmpfiles.rules = [
+      "d  /home/worker                     0755 worker  users - -"
+      "d  /home/worker/.pi                 0755 worker  users - -"
+      "d  /home/worker/.pi/agent          0755 worker  users - -"
+      "d  /home/worker/.pi/agent/sessions 0755 worker  users - -"
+      "L+ /home/worker/.pi/agent/auth.json  - - - - /run/agenix/pi-auth"
+
       "d  /opt                         0755 root    root - -"
       "d  /opt/code                    2775 worker  code - -"
       "d  /opt/pi-agent                2775 root    code - -"
       "z  /opt/nix                     2775 martijn users - -"
       "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/pi-auth"
-      "L+ /home/worker/.pi/agent/auth.json  - - - - /run/agenix/pi-auth"
     ];
 
     hosts.borg.paths = [
@@ -55,6 +60,7 @@ in
     ];
 
     system.activationScripts.pi-agent = {
+      deps = [ "groups" ];
       text = ''
         set -euo pipefail
 
@@ -128,7 +134,7 @@ in
 
             # Drop into workspace on login
             if [[ $PWD == $HOME ]]; then
-              cd /opt/code
+              cd /opt/
             fi
           '';
         };
@@ -136,6 +142,7 @@ in
         # Ensure npm bin dir exists (HM creates parent dirs for home.file entries)
         home.file.".local/share/npm/bin/.keep".text = "";
 
+        home.file.".pi/agent/sessions/.keep".text = "";
         # pi wrapper — identical pattern to martijn
         home.file.".local/bin/pi" = {
           text = ''

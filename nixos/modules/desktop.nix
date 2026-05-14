@@ -46,6 +46,8 @@ in
       autoConnect = false;
     };
 
+    hosts.worker.enable = true;
+
     # DBus power information provider
     services.upower.enable = true;
 
