@@ -149,7 +149,7 @@
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "default:QiddKxFxKitj0NauDJDKT944qMq3bJvtHKNVlwsWz8k="
+        "default:QOByR7CwMSrE+PnJuYxCCtPqu8zLWTnEg+xexd1lQ4g="
       ];
     };
 
