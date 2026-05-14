@@ -26,8 +26,10 @@ in
       with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
       [
         veracrypt
-        qoder-cli
-        pi
+        pi # ai agent
+        ddgr # cli ddg
+        pandoc # read from docs
+        w3m # read from web
       ];
 
     users.users.martijn.extraGroups = [
