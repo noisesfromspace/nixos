@@ -48,6 +48,12 @@ in
       "L+ /home/worker/.pi/agent/auth.json  - - - - /run/agenix/pi-auth"
     ];
 
+    hosts.borg.paths = [
+      "/opt/nix"
+      "/opt/code"
+      "/opt/pi-agent"
+    ];
+
     system.activationScripts.pi-agent = {
       text = ''
         set -euo pipefail
