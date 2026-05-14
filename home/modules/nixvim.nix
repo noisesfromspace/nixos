@@ -9,30 +9,6 @@ let
   cfg = config.maatwerk.nixvim;
   helpers = config.lib.nixvim;
 
-  neovim-pr = pkgs.neovim-unwrapped.overrideAttrs (old: {
-    src = pkgs.fetchFromGitHub {
-      owner = "neovim";
-      repo = "neovim";
-      rev = "8b76f7739a2b227a37af39ef18f858d12fdf9c5f";
-      hash = "sha256-3UTF0HnBc8rJXMfMpP29miKLFgLXgY2vKSyWOjBfPqA=";
-    };
-    buildInputs = (old.buildInputs or []) ++ [
-      pkgs.ghostty
-    ];
-
-    cmakeFlags = (old.cmakeFlags or []) ++ [
-      "-DENABLE_GHOSTTY=ON"
-    ];
-
-    doCheck = false;
-    doInstallCheck = false;
-
-    postInstall = (old.postInstall or "") + ''
-      mkdir -p $out/share/applications
-      touch $out/share/applications/nvim.desktop
-    '';
-  });
-
   keymaps =
     let
       mk = args: {
@@ -93,7 +69,6 @@ in
   config = mkIf cfg.enable {
     programs.nixvim = {
       enable = true;
-      package = neovim-pr;
 
       globals = {
         mapleader = " ";

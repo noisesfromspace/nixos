@@ -27,9 +27,6 @@ in
       [
         veracrypt
         pi # ai agent
-        ddgr # cli ddg
-        pandoc # read from docs
-        w3m # read from web
       ];
 
     users.users.martijn.extraGroups = [

@@ -30,6 +30,7 @@ in
     home.packages =
       with pkgs;
       with pkgs.kdePackages;
+      with pkgs.python313Packages;
       [
         cheese # webcam
         localsend # airdrop
@@ -45,9 +46,16 @@ in
         imagemagick # convert images
         nurl # nix fetchUrl
         nix-init # build packages
+
         # developement
         python314
         nodejs_22
+        
+        # pi coding deps
+        ddgr # cli ddg
+        pandoc # read from docs
+        w3m # read from web
+        trafilatura # gather text from articles
 
         # work
         citrix_workspace
@@ -77,24 +85,23 @@ in
       ];
 
     home.sessionVariables = {
-      PI_NPM_PREFIX = "$HOME/.pi/npm";
-      NPM_CONFIG_PREFIX = "$HOME/.pi/npm";
+      NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
     };
 
     home.sessionPath = [
       "$HOME/.local/bin"
-      "$HOME/.pi/npm/bin"
+      "$HOME/.local/share/npm/bin"
     ];
 
     home.activation.piNpmDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      mkdir -p "$HOME/.pi/npm/bin"
+      mkdir -p "$HOME/.local/share/npm/bin"
     '';
 
     home.file.".local/bin/pi" = {
       text = ''
         #!/usr/bin/env bash
-        export NPM_CONFIG_PREFIX="$HOME/.pi/npm"
-        export PATH="$HOME/.pi/npm/bin:$PATH"
+        export NPM_CONFIG_PREFIX="$HOME/.local/share/npm"
+        export PATH="$HOME/.local/share/npm/bin:$PATH"
         exec /run/current-system/sw/bin/pi "$@"
       '';
       executable = true;

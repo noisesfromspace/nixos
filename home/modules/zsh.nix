@@ -19,12 +19,12 @@ in
       llm.file = "${inputs.secrets}/llm.age";
     };
 
-    home.file."${config.xdg.configHome}/macchina.ans" = {
-      source = pkgs.fetchurl {
-        url = "http://random.storage.boers.email/TNT-SMSH.ANS";
-        hash = "sha256-FVknKG44enW0fs/78REs2KLm5CEB0QpbNGT8vUCzF8U=";
-      };
-    };
+    # home.file."${config.xdg.configHome}/macchina.ans" = {
+    #   source = pkgs.fetchurl {
+    #     url = "http://random.storage.boers.email/TNT-SMSH.ANS";
+    #     hash = "sha256-FVknKG44enW0fs/78REs2KLm5CEB0QpbNGT8vUCzF8U=";
+    #   };
+    # };
 
     programs.macchina = {
       enable = true;
@@ -63,7 +63,7 @@ in
           symbol_open = "[";
           symbol_close = "]";
         };
-        custom_ascii.path = "~/.config/macchina.ans";
+        # custom_ascii.path = "~/.config/macchina.ans";
       };
     };
 
