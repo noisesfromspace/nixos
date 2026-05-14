@@ -50,7 +50,7 @@ in
         # developement
         python314
         nodejs_22
-        
+
         # pi coding deps
         ddgr # cli ddg
         pandoc # read from docs
@@ -68,9 +68,10 @@ in
         # forensics
         magika-cli # recognize filetype
         sleuthkit # fls, icat
+        tesseract # ocr
         exiftool # read metadata
         binwalk # firmware analysis
-        tesseract # ocr
+        gettit # download full website
         ent # test entropy files
         mat2 # remove metadata
         nmap
@@ -93,7 +94,7 @@ in
       "$HOME/.local/share/npm/bin"
     ];
 
-    home.activation.piNpmDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.piNpmDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p "$HOME/.local/share/npm/bin"
     '';
 
@@ -106,7 +107,6 @@ in
       '';
       executable = true;
     };
-
 
     # DBus secret service
     services.pass-secret-service.enable = true;

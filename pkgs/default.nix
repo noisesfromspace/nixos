@@ -22,6 +22,7 @@ in
   ladder = pkgs.callPackage ./ladder.nix { };
   flowmark = pkgs.callPackage ./flowmark.nix { };
   unaware = pkgs.callPackage ./unaware.nix { };
+  gettit = pkgs.callPackage ./gettit.nix { };
   hyprtasking = pkgs.callPackage ./hyprtasking.nix { };
   hyprspace-custom = pkgs.callPackage ./hyprspace.nix { };
   scooter = pkgs.callPackage ./scooter.nix { };
