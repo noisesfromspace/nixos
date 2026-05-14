@@ -19,6 +19,7 @@
       "result"
       ".nvim.session"
       ".pi"
+      ".devenv*"
     ];
     settings = {
       pull.rebase = "true";

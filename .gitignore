@@ -3,3 +3,13 @@
 result
 .DS_Store
 mineral/
+
+# pi / agent state
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+.pi/
+.pi-state/
+.pi-cache/

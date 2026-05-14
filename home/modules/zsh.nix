@@ -19,6 +19,54 @@ in
       llm.file = "${inputs.secrets}/llm.age";
     };
 
+    home.file."${config.xdg.configHome}/macchina.ans" = {
+      source = pkgs.fetchurl {
+        url = "http://random.storage.boers.email/TNT-SMSH.ANS";
+        hash = "sha256-FVknKG44enW0fs/78REs2KLm5CEB0QpbNGT8vUCzF8U=";
+      };
+    };
+
+    programs.macchina = {
+      enable = true;
+      settings = {
+        show = [
+          "Host"
+          "Kernel"
+          "Distribution"
+          "WindowManager"
+          "Packages"
+          "Terminal"
+          "Shell"
+          "Uptime"
+          "Processor"
+          "Memory"
+          "LocalIP"
+        ];
+        theme = "maatwerk";
+      };
+      themes.maatwerk = {
+        key_color = config.lib.stylix.colors.withHashtag.base0D; # blue/cyan-ish
+        separator_color = config.lib.stylix.colors.withHashtag.base03;
+        separator = " ";
+        spacing = 1;
+        box = {
+          visible = true;
+          border = "rounded";
+          inner_margin = {
+            x = 1;
+            y = 0;
+          };
+        };
+        bar = {
+          visible = true;
+          glyph = "■";
+          symbol_open = "[";
+          symbol_close = "]";
+        };
+        custom_ascii.path = "~/.config/macchina.ans";
+      };
+    };
+
     programs.zsh = {
       enable = true;
       shellAliases =
@@ -196,6 +244,7 @@ in
           general
           last
         ];
+      profileExtra = "macchina";
       dotDir = "${config.xdg.configHome}/zsh";
       zprof.enable = false;
       syntaxHighlighting.enable = true;

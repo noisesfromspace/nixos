@@ -456,7 +456,7 @@ in
             graph_style = "kitty";
             integrations = {
               mini_pick = true;
-              diffview = false;
+              diffview = true;
             };
             mappings = {
               status = {
@@ -467,6 +467,19 @@ in
                 "g?" = "HelpPopup";
               };
             };
+          };
+        };
+
+        diffview = {
+          enable = true;
+          package = pkgs.vimPlugins.diffview-nvim.overrideAttrs {
+            src = pkgs.fetchFromGitHub {
+              owner = "dlyongemallo";
+              repo = "diffview.nvim";
+              rev = "385f26fd6a50e3b0b11cc9623f1f96cde00ef08c";
+              hash = "sha256-14JZDPF/BYbdY3EWAC509AU4amw5FnV7r0u28vvxJAY=";
+            };
+            doCheck = false;
           };
         };
 
@@ -738,7 +751,13 @@ in
             if buf_id then
               local path = vim.api.nvim_buf_get_name(buf_id)
               local is_fav = _G.Maatwerk.buffers.favorites[path] or false
-              local item = { text = name, bufnr = buf_id, path = path, favorite = is_fav }
+              local item = {
+                text = name,
+                bufnr = buf_id,
+                path = path,
+                favorite = is_fav,
+                is_current = buf_id == cur_buf_id
+              }
               if buf_id ~= cur_buf_id or local_opts.include_current then
                 table.insert(items, item)
               end
@@ -764,6 +783,8 @@ in
           local decorated_items = {}
           for i, item in ipairs(items) do
             local prefix = item.favorite and "* " or "  "
+            if item.is_current then prefix = "> " end
+
             -- Create a proxy table so default_show sees the prefixed text but we keep original metadata
             decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
           end
