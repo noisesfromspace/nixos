@@ -52,7 +52,6 @@ in
         nodejs_22
 
         # pi coding deps
-        pi-coding-agent
         ddgr # cli ddg
         pandoc # read from docs
         w3m # read from web
@@ -88,27 +87,23 @@ in
       ];
 
     home.sessionVariables = {
-      NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
       PI_CODING_AGENT_DIR = "/opt/pi-agent-base";
       PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
+      PI_ASK_USER_DISPLAY_MODE = "inline";
       PI_AUTH_JSON = "/run/agenix/pi-auth";
     };
 
     home.sessionPath = [
       "$HOME/.local/bin"
-      "$HOME/.local/share/npm/bin"
+      "/opt/pi-agent-base/npm/bin"
     ];
-
-    home.activation.piNpmDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      mkdir -p "$HOME/.local/share/npm/bin"
-    '';
 
     home.file.".local/bin/pi" = {
       text = ''
         #!/usr/bin/env bash
-        export NPM_CONFIG_PREFIX="$HOME/.local/share/npm"
-        export PATH="$HOME/.local/share/npm/bin:$PATH"
-        exec /run/current-system/sw/bin/pi "$@"
+        export NPM_CONFIG_PREFIX="/opt/pi-agent-base/npm"
+        export npm_config_prefix="/opt/pi-agent-base/npm"
+        exec /opt/pi-agent-base/npm/bin/pi "$@"
       '';
       executable = true;
     };

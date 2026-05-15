@@ -45,7 +45,6 @@ pkgs.writeShellApplication {
 
         ensure_workdir() {
           [[ -n "''${PWD:-}" ]] || fail "PWD is not set"
-
           workdir="$(cd "$PWD" && pwd -P)"
           if [[ "$workdir" == /home/martijn || "$workdir" == /home/martijn/* ]]; then
             fail "refuse to run from /home/martijn; cd to a project dir first"
@@ -127,9 +126,14 @@ pkgs.writeShellApplication {
             --dir /run
             --dir /run/current-system
             --ro-bind /run/current-system /run/current-system
+            --ro-bind-try /opt/pi-agent-base /opt/pi-agent-base
             --dir /run/agenix
             --ro-bind /run/agenix/pi-auth /run/agenix/pi-auth
             --ro-bind-try /run/agenix/llm /run/agenix/llm
+
+            --dir /usr
+            --dir /usr/bin
+            --ro-bind-try /usr/bin/env /usr/bin/env
 
             --dir /etc
             --ro-bind /etc/passwd /etc/passwd
@@ -149,9 +153,8 @@ pkgs.writeShellApplication {
             --setenv SHELL /run/current-system/sw/bin/zsh
             --setenv __NIXOS_SET_ENVIRONMENT_DONE 1
             --setenv TERM xterm-256color
-            --setenv PATH ${
+            --setenv PATH /opt/pi-agent-base/npm/bin:${
               lib.makeBinPath [
-                pkgs.pi-coding-agent
                 pkgs.coreutils
                 pkgs.pandoc # read from docs
                 pkgs.ddgr # cli ddg
@@ -164,6 +167,7 @@ pkgs.writeShellApplication {
 
             --setenv PI_CODING_AGENT_DIR /opt/worker-state/agent
             --setenv PI_CODING_AGENT_SESSION_DIR /opt/worker-state/agent/sessions
+            --setenv PI_ASK_USER_DISPLAY_MODE inline
             --setenv PI_AUTH_JSON /run/agenix/pi-auth
             --setenv NPM_CONFIG_PREFIX /opt/worker-state/npm
             --setenv NPM_CONFIG_CACHE /opt/worker-state/npm/cache
