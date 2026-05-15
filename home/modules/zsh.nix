@@ -154,7 +154,6 @@ in
           ntpi = sshAlias "tenshin";
           zima = sshAlias "tatsumaki";
           desktop = sshAlias "nurma";
-          worker = "sudo -u worker -i";
           nofail = sshAlias "rekkaken";
           router = sshAlias "dosukoi";
           ap = sshAlias "suzaku";
@@ -191,6 +190,10 @@ in
                 notes() {
                   cd ~/Notes
                   nvim 
+                }
+
+                worker() {
+                  env TERM=xterm-256color ${lib.getExe pkgs.worker-sandbox} "$@"
                 }
 
                 if [ -n "$NVIM" ]; then

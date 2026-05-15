@@ -35,4 +35,5 @@ in
   glitch-soc = pkgs.callPackage "${glitch-soc-src}/packages/mastodon" { };
   nym-vpnd = pkgs.callPackage ./nym-vpnd.nix { inherit nym-libwg; };
   durdraw = pkgs.callPackage ./durdraw.nix {};
+  worker-sandbox = pkgs.callPackage ./worker-sandbox.nix { };
 }

@@ -25,6 +25,8 @@ in
       hashedPasswordFile = config.age.secrets.password.path; # reuse same password
     };
 
+    security.unprivilegedUsernsClone = true;
+
     users.users.martijn.extraGroups = [ "code" ];
 
     security.sudo-rs.extraRules = [
