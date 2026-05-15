@@ -5,10 +5,10 @@
 
 pkgs.writeShellApplication {
   name = "worker-sandbox";
-  runtimeInputs = [
-    pkgs.bubblewrap
-    pkgs.coreutils
-    pkgs.rsync
+  runtimeInputs = with pkgs; [
+    bubblewrap
+    coreutils
+    rsync
   ];
 
   text = ''
@@ -53,42 +53,41 @@ pkgs.writeShellApplication {
         }
 
         ensure_state_dirs() {
-          # If older runs left this tree non-writable for worker, reset it.
-          if [[ -d "$workdir/.pi/agent" ]] && ! "$SUDO" -u worker -- test -w "$workdir/.pi/agent"; then
-            rm -rf "$workdir/.pi"
-          fi
+          state_dir=/home/worker/.pi/worker-sandbox
 
           "$SUDO" -u worker -- mkdir -p \
-            "$workdir/.pi/agent/sessions" \
-            "$workdir/.npm"
+            "$state_dir/agent/sessions" \
+            "$state_dir/npm/cache" \
+            "$state_dir/cache" \
+            "$state_dir/home"
         }
 
         seed_agent_config() {
-          local agent_dir="$workdir/.pi/agent"
+          local agent_dir="$state_dir/agent"
 
-          if [[ -e "$agent_dir/.worker-seeded" ]] && [[ -f "$agent_dir/AGENTS.md" ]] && [[ -f "$agent_dir/settings.json" ]]; then
-            return 0
-          fi
-
+          # Keep worker agent config synced with the latest shared base each launch.
           if [[ -d /opt/pi-agent-base ]]; then
             "$SUDO" -u worker -- "$RSYNC" -rltD --delete \
               --exclude 'sessions' \
               --exclude 'auth.json' \
               --exclude 'AGENTS.md' \
               /opt/pi-agent-base/ "$agent_dir"/
+          fi
 
-            # Recreate worker overload header + shared instructions.
-            "$SUDO" -u worker -- "$BASH" -lc "cat > '$agent_dir/AGENTS.md' <<'EOF'
+          # Always regenerate AGENTS so worker preamble and shared instructions stay current.
+          "$SUDO" -u worker -- "$BASH" -lc "cat > '$agent_dir/AGENTS.md' <<'EOF'
     ## Worker-specific note
 
     - This is the isolated \`worker\` account for pi coding agent sessions.
     - You do not have sudo privileges.
     - If something needs sudo or root access, the user must do it themselves in a different terminal.
     - Keep changes scoped to the worker workspace and avoid system-wide edits.
+    - If a required CLI tool is missing, prefer temporary usage via \`nix shell nixpkgs#<package>\`.
 
     ## Shared instructions
     EOF"
 
+          if [[ -f /opt/pi-agent-base/AGENTS.md ]]; then
             "$SUDO" -u worker -- "$BASH" -lc "cat /opt/pi-agent-base/AGENTS.md >> '$agent_dir/AGENTS.md'"
           fi
 
@@ -116,6 +115,9 @@ pkgs.writeShellApplication {
             --bind "$workdir" /opt/workspace
             --chdir /opt/workspace
 
+            --dir /opt/worker-state
+            --bind "$state_dir" /opt/worker-state
+
             --dir /tmp
 
             --dir /nix
@@ -141,7 +143,7 @@ pkgs.writeShellApplication {
             --dir /etc/ssl/certs
             --ro-bind /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-            --setenv HOME /opt/workspace
+            --setenv HOME /opt/worker-state/home
             --setenv USER worker
             --setenv LOGNAME worker
             --setenv SHELL /run/current-system/sw/bin/zsh
@@ -149,15 +151,25 @@ pkgs.writeShellApplication {
             --setenv TERM xterm-256color
             --setenv PATH ${
               lib.makeBinPath [
-                pkgs.nodejs_22
                 pkgs.coreutils
+                pkgs.pandoc # read from docs
+                pkgs.ddgr # cli ddg
+                pkgs.w3m # read from web
+                pkgs.nodejs_22
+                pkgs.python313
+                pkgs.python313Packages.trafilatura # gather text from articles
               ]
             }:/run/current-system/sw/bin
 
-            --setenv PI_CODING_AGENT_DIR /opt/workspace/.pi/agent
-            --setenv PI_CODING_AGENT_SESSION_DIR /opt/workspace/.pi/agent/sessions
+            --setenv PI_CODING_AGENT_DIR /opt/worker-state/agent
+            --setenv PI_CODING_AGENT_SESSION_DIR /opt/worker-state/agent/sessions
             --setenv PI_AUTH_JSON /run/agenix/pi-auth
-            --setenv NPM_CONFIG_PREFIX /opt/workspace/.npm
+            --setenv NPM_CONFIG_PREFIX /opt/worker-state/npm
+            --setenv NPM_CONFIG_CACHE /opt/worker-state/npm/cache
+            --setenv npm_config_prefix /opt/worker-state/npm
+            --setenv npm_config_cache /opt/worker-state/npm/cache
+            --setenv npm_config_update_notifier false
+            --setenv XDG_CACHE_HOME /opt/worker-state/cache
 
             --setenv SSL_CERT_FILE /etc/ssl/certs/ca-certificates.crt
             --setenv REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
