@@ -449,7 +449,7 @@ in
             graph_style = "kitty";
             integrations = {
               mini_pick = true;
-              diffview = true;
+              diffview = false;
             };
             mappings = {
               status = {
@@ -460,19 +460,6 @@ in
                 "g?" = "HelpPopup";
               };
             };
-          };
-        };
-
-        diffview = {
-          enable = true;
-          package = pkgs.vimPlugins.diffview-nvim.overrideAttrs {
-            src = pkgs.fetchFromGitHub {
-              owner = "dlyongemallo";
-              repo = "diffview.nvim";
-              rev = "385f26fd6a50e3b0b11cc9623f1f96cde00ef08c";
-              hash = "sha256-14JZDPF/BYbdY3EWAC509AU4amw5FnV7r0u28vvxJAY=";
-            };
-            doCheck = false;
           };
         };
 

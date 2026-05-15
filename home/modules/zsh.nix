@@ -309,7 +309,7 @@ in
       };
       nh = {
         enable = true; # nixos-rebuild wrapper
-        flake = "/opt/nix";
+        flake = "/etc/nixos/flake";
       };
       fzf = {
         enable = true; # A command-line fuzzy finder

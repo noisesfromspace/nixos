@@ -55,12 +55,12 @@ in
       "d  /opt                         0755 root    root - -"
       "d  /opt/code                    2775 worker  code - -"
       "d  /opt/pi-agent-base           2775 root    code - -"
-      "z  /opt/nix                     2775 martijn users - -"
+      "z  /etc/nixos/flake               2775 martijn users - -"
       "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/pi-auth"
     ];
 
     hosts.borg.paths = [
-      "/opt/nix"
+      "/etc/nixos/flake"
       "/opt/code"
       "/opt/pi-agent-base"
     ];

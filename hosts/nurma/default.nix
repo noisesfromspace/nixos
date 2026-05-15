@@ -111,7 +111,7 @@
     enable = true;
     rules = [
       "-w /home/martijn/.ssh -p rwa -k ssh_file_access"
-      "-w /opt/nix -p wa -k nix_config_changes"
+      "-w /etc/nixos/flake -p wa -k nix_config_changes"
       "-w /dev/video0 -p war"
     ];
   };
