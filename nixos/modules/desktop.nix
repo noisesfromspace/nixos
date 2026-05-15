@@ -21,13 +21,7 @@ in
       DEFAULT_BROWSER = "librewolf";
     };
 
-    environment.systemPackages =
-      with pkgs;
-      with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
-      [
-        veracrypt
-        pi # ai agent
-      ];
+    environment.systemPackages = with pkgs; [ veracrypt ];
 
     users.users.martijn.extraGroups = [
       "wireshark"

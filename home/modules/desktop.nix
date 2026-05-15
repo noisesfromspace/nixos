@@ -52,6 +52,7 @@ in
         nodejs_22
 
         # pi coding deps
+        pi-coding-agent
         ddgr # cli ddg
         pandoc # read from docs
         w3m # read from web

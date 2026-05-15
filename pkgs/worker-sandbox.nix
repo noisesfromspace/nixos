@@ -151,6 +151,7 @@ pkgs.writeShellApplication {
             --setenv TERM xterm-256color
             --setenv PATH ${
               lib.makeBinPath [
+                pkgs.pi-coding-agent
                 pkgs.coreutils
                 pkgs.pandoc # read from docs
                 pkgs.ddgr # cli ddg

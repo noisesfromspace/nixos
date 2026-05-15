@@ -57,7 +57,6 @@
     };
 
     zmx.url = "github:neurosnap/zmx/";
-    llm-agents.url = "github:numtide/llm-agents.nix";
 
     agenix = {
       url = "github:ryantm/agenix";
