@@ -45,11 +45,11 @@ in
     ];
 
     systemd.tmpfiles.rules = [
-      "d  /home/worker                          0755 worker  users - -"
-      "d  /home/worker/.pi                      0755 worker  users - -"
-      "d  /home/worker/.pi/worker-sandbox       0755 worker  users - -"
-      "d  /home/worker/.pi/worker-sandbox/agent 0755 worker  users - -"
-      "d  /home/worker/.pi/worker-sandbox/agent/sessions 0755 worker users - -"
+      "d  /home/worker                                    0755 worker  users - -"
+      "d  /home/worker/.pi                                0755 worker  users - -"
+      "d  /home/worker/.pi/worker-sandbox                 0755 worker  users - -"
+      "d  /home/worker/.pi/worker-sandbox/agent           0755 worker  users - -"
+      "d  /home/worker/.pi/worker-sandbox/agent/sessions  0755 worker users - -"
       "L+ /home/worker/.pi/worker-sandbox/agent/auth.json - - - - /run/agenix/pi-auth"
 
       "d  /opt                         0755 root    root - -"
@@ -64,31 +64,6 @@ in
       "/opt/code"
       "/opt/pi-agent-base"
     ];
-
-    system.activationScripts.piAgentBaseSync = {
-      deps = [ "groups" ];
-      text = ''
-        set -euo pipefail
-
-        src=/home/martijn/.pi/agent
-        dst=/opt/pi-agent-base
-
-        if [ -d "$src" ]; then
-          mkdir -p "$dst"
-          chmod 2775 "$dst"
-
-          ${pkgs.rsync}/bin/rsync -a --delete \
-            --exclude 'sessions' \
-            "$src"/ "$dst"/
-
-          chown -R root:code "$dst"
-          find "$dst" -type d -exec chmod 2775 {} +
-          find "$dst" -type f -exec chmod g+rw {} +
-          find "$dst" -type f -perm -u+x -exec chmod g+rx {} +
-          chmod 2775 "$dst"
-        fi
-      '';
-    };
 
     age.secrets.llm = {
       file = "${inputs.secrets}/llm.age";

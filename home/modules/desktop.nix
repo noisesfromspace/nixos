@@ -56,6 +56,7 @@ in
         pandoc # read from docs
         w3m # read from web
         trafilatura # gather text from articles
+        fd # search pi uses
 
         # work
         citrix_workspace
@@ -87,7 +88,7 @@ in
 
     home.sessionVariables = {
       NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
-      PI_CODING_AGENT_DIR = "/opt/pi-agent";
+      PI_CODING_AGENT_DIR = "/opt/pi-agent-base";
       PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
       PI_AUTH_JSON = "/run/agenix/pi-auth";
     };
@@ -132,7 +133,7 @@ in
           # NFS doesn't support inotify events
           commandOptions.repeat = "60";
           roots = [
-            "/opt/pi-agent"
+            "/opt/pi-agent-base"
             "/mnt/session/pi-agent/"
           ];
         };
