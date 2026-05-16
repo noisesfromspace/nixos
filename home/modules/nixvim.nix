@@ -186,8 +186,6 @@ in
 
               local buffer_mappings = {
                 wipeout = { char = '<C-d>', func = wipeout_cur },
-                scroll_down = '<nop>',
-                scroll_half_down = { char = '<C-e>', func = function() end },
               }
               MiniPick.start({
                 source = {
@@ -518,8 +516,7 @@ in
                     if full_filename == "" then full_filename = "[No Name]" end
 
                     local n_errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-                    local n_warns  = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-                    local s_rec = vim.fn.reg_recording() ~= "" and ( vim.fn.reg_recording()) .. "  " or ""
+                    local s_rec = vim.fn.reg_recording() ~= "" and ( vim.fn.reg_recording()) .. " " or ""
 
                     local n_unwritten = 0
                     local n_unnamed_unwritten = 0
@@ -563,15 +560,16 @@ in
                         { hl = mode_hl,                  strings = { mode } },
                         { hl = 'MiniStatuslineLocation', strings = { location_str } },
                         '%=', '%<',
-                        { hl = 'MiniStatuslineDevinfo',  strings = { percentage .. '%%' } },
-                        { hl = 'MiniStatuslineDevinfo',  strings = { s_rec } },
                     }
                     
-                    if s_git ~= "" then table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { s_git } }) end
-                    
-                    local icon_hl = (n_errors > 0) and 'StatuslineErrorIcon' or 'StatuslineNormalIcon'
-                    local icon_str = (n_errors > 0) and ("󰈸 " .. n_errors) or " "
-                    table.insert(groups, { hl = icon_hl, strings = { icon_str } })
+                    if s_rec ~= "" then 
+                      table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { s_rec } })
+                    elseif n_errors > 0 then
+                      table.insert(groups, { hl = 'StatuslineErrorIcon', strings = { n_errors .. " 󰈸" } })
+                    elseif s_git ~= "" then 
+                      table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { s_git } })
+                    end
+                    table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { percentage .. '%%' } })
 
                     return MiniStatusline.combine_groups(groups)
                   end
@@ -683,7 +681,6 @@ in
         _G.Maatwerk.git = _G.Maatwerk.git or {}
         _G.Maatwerk.ui = _G.Maatwerk.ui or {}
         _G.Maatwerk.buffers = _G.Maatwerk.buffers or {}
-        _G.Maatwerk.buffers.favorites = _G.Maatwerk.buffers.favorites or {}
 
         vim.cmd.packadd('nvim.undotree')
         require('vim._core.ui2').enable()
@@ -694,40 +691,23 @@ in
             return vim.notify('Current buffer has no file path', vim.log.levels.WARN)
           end
 
-          local l1, l2
+          local result = file
+
           if use_visual then
-            -- Try active visual endpoints first
-            local mode = vim.fn.mode()
-            local in_visual = mode:sub(1, 1) == 'v' or mode:sub(1, 1) == 'V' or mode:sub(1, 1) == '\22'
-            if in_visual then
-              local vline = vim.fn.line('v')
-              local cline = vim.fn.line('.')
-              if vline > 0 and cline > 0 then
-                l1, l2 = vline, cline
-              end
-            end
+            -- Check if currently in any Visual mode (v, V, or Ctrl-V)
+            local in_visual = vim.fn.mode():match('^[vV\22]')
+            
+            -- Grab dynamic visual marks or fallback to last-used visual marks
+            local l1 = vim.fn.line(in_visual and 'v' or "'<")
+            local l2 = vim.fn.line(in_visual and '.' or "'>")
 
-            -- Fallback to visual marks
-            if l1 == nil or l2 == nil then
-              local m1 = vim.fn.getpos("'<")[2]
-              local m2 = vim.fn.getpos("'>")[2]
-              if m1 > 0 and m2 > 0 then
-                l1, l2 = m1, m2
-              end
+            if l1 > 0 and l2 > 0 then
+              result = string.format('%s:%d-%d', file, math.min(l1, l2), math.max(l1, l2))
             end
           end
 
-          -- Normal mode, or if visual positions are unavailable: use file path only
-          if l1 == nil or l2 == nil then
-            vim.fn.setreg('+', file)
-            return vim.notify('Yanked to clipboard: ' .. file)
-          end
-
-          local start_line = math.min(l1, l2)
-          local end_line = math.max(l1, l2)
-          local ref = string.format('%s:%d-%d', file, start_line, end_line)
-          vim.fn.setreg('+', ref)
-          vim.notify('Yanked to clipboard: ' .. ref)
+          vim.fn.setreg('+', result)
+          vim.notify('Yanked to clipboard: ' .. result)
         end
 
         _G.Maatwerk.buffers.get_items = function(local_opts)
@@ -741,12 +721,10 @@ in
             local buf_id = tonumber(buf_str)
             if buf_id then
               local path = vim.api.nvim_buf_get_name(buf_id)
-              local is_fav = _G.Maatwerk.buffers.favorites[path] or false
               local item = {
                 text = name,
                 bufnr = buf_id,
                 path = path,
-                favorite = is_fav,
                 is_current = buf_id == cur_buf_id
               }
               if buf_id ~= cur_buf_id or local_opts.include_current then
@@ -754,27 +732,14 @@ in
               end
             end
           end
-
-          table.sort(items, function(a, b)
-            if a.favorite ~= b.favorite then return a.favorite end
-            return a.bufnr < b.bufnr
-          end)
           return items
-        end
-
-        _G.Maatwerk.buffers.toggle_favorite = function()
-          local item = MiniPick.get_picker_matches().current
-          if not item then return end
-          local path = item.path
-          _G.Maatwerk.buffers.favorites[path] = not _G.Maatwerk.buffers.favorites[path]
-          MiniPick.set_picker_items(_G.Maatwerk.buffers.get_items())
         end
 
         _G.Maatwerk.buffers.show = function(buf_id, items, query)
           local decorated_items = {}
           for i, item in ipairs(items) do
             local prefix = " "
-            if item.is_current then prefix = "*" end
+            if item.is_current then prefix = ">" end
 
             -- Create a proxy table so default_show sees the prefixed text but we keep original metadata
             decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
