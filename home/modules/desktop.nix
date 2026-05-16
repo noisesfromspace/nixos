@@ -54,6 +54,7 @@ in
         # pi deps
         ddgr # cli ddg
         pandoc # read from docs
+        bun # context-mode
         w3m # read from web
         trafilatura # gather text from articles
         fd # search pi uses

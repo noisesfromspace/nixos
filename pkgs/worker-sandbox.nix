@@ -159,6 +159,7 @@ pkgs.writeShellApplication {
                 pkgs.pandoc # read from docs
                 pkgs.ddgr # cli ddg
                 pkgs.w3m # read from web
+                pkgs.bun # context-mode
                 pkgs.nodejs_22
                 pkgs.python313
                 pkgs.python313Packages.trafilatura # gather text from articles
