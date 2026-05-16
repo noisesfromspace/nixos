@@ -81,7 +81,7 @@ pkgs.writeShellApplication {
     - You do not have sudo privileges.
     - If something needs sudo or root access, the user must do it themselves in a different terminal.
     - Keep changes scoped to the worker workspace and avoid system-wide edits.
-    - If a required CLI tool is missing, prefer temporary usage via \`nix shell nixpkgs#<package>\`.
+    - If a required CLI tool is missing, prefer temporary usage via \`nix shell nixpkgs#hello --command hello --greeting 'Hi everybody!'\`.
 
     ## Shared instructions
     EOF"

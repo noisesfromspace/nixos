@@ -26,6 +26,7 @@ in
   hyprtasking = pkgs.callPackage ./hyprtasking.nix { };
   hyprspace-custom = pkgs.callPackage ./hyprspace.nix { };
   scooter = pkgs.callPackage ./scooter.nix { };
+  lean-ctx = pkgs.callPackage ./lean-ctx.nix { };
   mq = pkgs.callPackage ./mq.nix { };
   rustfs = pkgs.callPackage ./rustfs.nix { };
   blog = pkgs.callPackage ./blog.nix { };

@@ -184,14 +184,8 @@ in
                 end)
               end
 
-              local toggle_fav = function()
-                preserve_cursor_index_and_operate(function()
-                  _G.Maatwerk.buffers.toggle_favorite()
-                end)
-              end
               local buffer_mappings = {
                 wipeout = { char = '<C-d>', func = wipeout_cur },
-                favorite = { char = '<C-f>', func = toggle_fav },
                 scroll_down = '<nop>',
                 scroll_half_down = { char = '<C-e>', func = function() end },
               }
@@ -779,8 +773,8 @@ in
         _G.Maatwerk.buffers.show = function(buf_id, items, query)
           local decorated_items = {}
           for i, item in ipairs(items) do
-            local prefix = item.favorite and "* " or "  "
-            if item.is_current then prefix = "> " end
+            local prefix = " "
+            if item.is_current then prefix = "*" end
 
             -- Create a proxy table so default_show sees the prefixed text but we keep original metadata
             decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
