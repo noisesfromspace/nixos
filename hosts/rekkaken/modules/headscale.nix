@@ -147,7 +147,7 @@ in
                   src = [ "*" ];
                   dst = [
                     "hadouken:80,443" # everyone access to hadouken web-services
-                    "dosukoi:53,9009,9010,9011,9012,9013" # everyone access to dns and croc
+                    "dosukoi:53" # everyone access to dns 
                     "rekkaken:80,443,8025" # send/receive notifications + internal email
                     "tenshin:123,4460" # timeserver
                   ];

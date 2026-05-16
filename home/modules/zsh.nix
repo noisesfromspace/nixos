@@ -121,7 +121,6 @@ in
           adel = "read -r s&&atuin search '$s' --delete";
           keyboard-compile = "qmk compile -kb peej/lumberjack -km martijn";
           keyboard-flash = "qmk flash -kb peej/lumberjack -km martijn";
-          croc = "croc --relay dosukoi.machine.thuis:9009 --relay6 fd7a:115c:a1e0::9";
           extreme-pro = ''sudo veracrypt -t "/dev/disk/by-partlabel/Extreme\\x20Pro" /mnt/veracrypt1/'';
 
           proxy = "nym-vpnc connect";

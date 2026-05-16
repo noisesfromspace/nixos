@@ -13,7 +13,6 @@
     ./modules/adguard.nix
     ./modules/ntopng.nix
     ./modules/caddy.nix
-    ./modules/croc.nix
     ./modules/acme.nix
   ];
 
@@ -30,7 +29,6 @@
   hosts.wireguard.enable = true;
   hosts.vaultwarden.enable = true;
   hosts.acme.enable = true;
-  hosts.croc.enable = true;
 
   hosts.oidc = {
     enable = true;

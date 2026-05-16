@@ -85,7 +85,6 @@
 
     # diagnostic
     dust # better du
-    croc # send files
     unaware # mask PII-data
     rlwrap # improve editing
 

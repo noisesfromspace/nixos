@@ -56,7 +56,6 @@ in
         pandoc # read from docs
         w3m # read from web
         trafilatura # gather text from articles
-        lean-ctx # cache outputs
         fd # search pi uses
 
         # work

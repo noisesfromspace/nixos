@@ -20,7 +20,6 @@ for a good initial starting point for NixOS with flakes.
 | ACME         | ACME server for internal TLS certificates.         | [acme.nix](hosts/dosukoi/modules/acme.nix)               |
 | AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/dosukoi/modules/adguard.nix)         |
 | Blocklist    | Manages a network-wide blocklist.                  | [blocklist.nix](hosts/dosukoi/modules/blocklist.nix)     |
-| Croc         | Peer-to-peer file transfer relay.                  | [croc.nix](hosts/dosukoi/modules/croc.nix)               |
 | Firewall     | Manages network traffic rules using nftables.      | [firewall.nix](hosts/dosukoi/modules/firewall.nix)       |
 | Interfaces   | Configures network interfaces and PPPoE.           | [interfaces.nix](hosts/dosukoi/modules/interfaces.nix)   |
 | ntopng       | Network traffic monitoring tool.                   | [ntopng.nix](hosts/dosukoi/modules/ntopng.nix)           |

@@ -39,7 +39,6 @@ in
                 iifname { "lan", "wifi", "opt1" } udp dport 67 accept comment "DHCP";
 
                 iifname { "tailscale0" } tcp dport { 80, 443, 4443 } accept comment "Websites hosted on router";
-                iifname { "tailscale0" } tcp dport { 9009, 9010, 9011, 9012, 9013 } accept comment "Croc relay";
                 iifname { "tailscale0", "lan", "wifi", "opt1" } udp dport 53 accept comment "DNS";
                 iifname { "tailscale0", "lan", "wifi", "opt1" } tcp dport 53 accept comment "DNS";
 
