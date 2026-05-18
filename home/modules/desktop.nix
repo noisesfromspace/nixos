@@ -88,23 +88,18 @@ in
       ];
 
     home.sessionVariables = {
-      PI_CODING_AGENT_DIR = "/opt/pi-agent-base";
-      PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
       PI_ASK_USER_DISPLAY_MODE = "inline";
-      PI_AUTH_JSON = "/run/agenix/worker-pi-auth";
     };
 
     home.sessionPath = [
       "$HOME/.local/bin"
-      "/opt/pi-agent-base/npm/bin"
     ];
 
     home.file.".local/bin/pi" = {
       text = ''
         #!/usr/bin/env bash
-        export NPM_CONFIG_PREFIX="/opt/pi-agent-base/npm"
-        export npm_config_prefix="/opt/pi-agent-base/npm"
-        exec /opt/pi-agent-base/npm/bin/pi "$@"
+        export NPM_CONFIG_PREFIX="/home/martijn/.pi/npm"
+        exec /home/martijn/.pi/npm/bin/pi "$@"
       '';
       executable = true;
     };
@@ -130,7 +125,7 @@ in
           # NFS doesn't support inotify events
           commandOptions.repeat = "60";
           roots = [
-            "/opt/pi-agent-base"
+            "/home/martijn/.pi"
             "/mnt/session/pi-agent/"
           ];
         };

@@ -52,17 +52,15 @@ in
       "d  /home/worker/.pi/worker-sandbox/agent/sessions  0755 worker users - -"
       "L+ /home/worker/.pi/worker-sandbox/agent/auth.json - - - - /run/agenix/worker-pi-auth"
 
-      "d  /opt                         0755 root    root - -"
-      "d  /opt/code                    2775 worker  code - -"
-      "d  /opt/pi-agent-base           2775 root    code - -"
-      "z  /etc/nixos/flake               2775 martijn users - -"
+      "d  /opt                                      0755 root    root - -"
+      "d  /opt/code                                 2775 worker  code - -"
+      "z  /etc/nixos/flake                          2775 martijn users - -"
       "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/worker-pi-auth"
     ];
 
     hosts.borg.paths = [
       "/etc/nixos/flake"
       "/opt/code"
-      "/opt/pi-agent-base"
     ];
 
     age.secrets.llm = {
