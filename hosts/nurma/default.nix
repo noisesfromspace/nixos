@@ -92,8 +92,6 @@
     };
   };
 
-  hosts.worker.enable = true;
-
   hosts.openssh = {
     enable = false;
     allowUsers = [

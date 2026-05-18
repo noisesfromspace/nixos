@@ -30,7 +30,6 @@ in
     home.packages =
       with pkgs;
       with pkgs.kdePackages;
-      with pkgs.python313Packages;
       [
         cheese # webcam
         localsend # airdrop
@@ -48,16 +47,29 @@ in
         nix-init # build packages
 
         # developement
-        python314
-        nodejs_22
+        python313
 
         # pi deps
-        ddgr # cli ddg
-        pandoc # read from docs
-        bun # context-mode
-        w3m # read from web
-        trafilatura # gather text from articles
-        fd # search pi uses
+        (pkgs.symlinkJoin {
+          name = "pi-coding-agent";
+          buildInputs = [ pkgs.makeWrapper ];
+          paths = [ pkgs.pi-coding-agent ];
+          postBuild = ''
+            wrapProgram $out/bin/pi \
+              --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
+              --prefix PATH : ${
+                pkgs.lib.makeBinPath [
+                  pkgs.nodejs_22
+                  pkgs.ddgr # cli ddg
+                  pkgs.pandoc # read from docs
+                  pkgs.bun # context-mode
+                  pkgs.w3m # read from web
+                  pkgs.python313Packages.trafilatura # gather text from articles
+                  pkgs.fd # search pi uses
+                ]
+              }
+          '';
+        })
 
         # work
         citrix_workspace
@@ -91,19 +103,6 @@ in
       PI_ASK_USER_DISPLAY_MODE = "inline";
     };
 
-    home.sessionPath = [
-      "$HOME/.local/bin"
-    ];
-
-    home.file.".local/bin/pi" = {
-      text = ''
-        #!/usr/bin/env bash
-        export NPM_CONFIG_PREFIX="/home/martijn/.pi/npm"
-        exec /home/martijn/.pi/npm/bin/pi "$@"
-      '';
-      executable = true;
-    };
-
     # DBus secret service
     services.pass-secret-service.enable = true;
 
@@ -125,7 +124,7 @@ in
           # NFS doesn't support inotify events
           commandOptions.repeat = "60";
           roots = [
-            "/home/martijn/.pi"
+            "/home/martijn/.pi/agent"
             "/mnt/session/pi-agent/"
           ];
         };
