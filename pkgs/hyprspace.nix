@@ -15,7 +15,7 @@ gcc14Stdenv.mkDerivation rec {
     owner = "0xl30";
     repo = "Hyprspace";
     rev = "${version}";
-    hash = "sha256-JBwdu/U5ZpS40g9sq+kbXMG+mFHpY6p1kwhmIcmar4w=";
+    hash = "sha256-zSSEuEdZC3gn3ur/KyaKb5cXXQkRj54fDcU39LJNcUo=";
   };
 
   # src = fetchFromGitHub {

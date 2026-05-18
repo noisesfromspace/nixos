@@ -20,7 +20,7 @@ let
         owner = "intel";
         repo = "vision-drivers";
         rev = "master";
-        hash = "sha256-TdmePzX4waEFXAeCukn+IaVBL5t0xDnBm5XZjvnBho4=";
+        hash = "sha256-i/qZN8GXyqaE6n6pRtxQLdmGhmPDjoArzVvflDmwuSs=";
       };
 
       hardeningDisable = [

@@ -91,7 +91,7 @@ in
       PI_CODING_AGENT_DIR = "/opt/pi-agent-base";
       PI_CODING_AGENT_SESSION_DIR = "$HOME/.pi/agent/sessions";
       PI_ASK_USER_DISPLAY_MODE = "inline";
-      PI_AUTH_JSON = "/run/agenix/pi-auth";
+      PI_AUTH_JSON = "/run/agenix/worker-pi-auth";
     };
 
     home.sessionPath = [

@@ -91,7 +91,7 @@ pkgs.writeShellApplication {
           fi
 
           "$SUDO" -u worker -- touch "$agent_dir/.worker-seeded"
-          "$SUDO" -u worker -- ln -sfn /run/agenix/pi-auth "$agent_dir/auth.json"
+          "$SUDO" -u worker -- ln -sfn /run/agenix/worker-pi-auth "$agent_dir/auth.json"
         }
 
         build_bwrap_args() {
@@ -128,7 +128,7 @@ pkgs.writeShellApplication {
             --ro-bind /run/current-system /run/current-system
             --ro-bind-try /opt/pi-agent-base /opt/pi-agent-base
             --dir /run/agenix
-            --ro-bind /run/agenix/pi-auth /run/agenix/pi-auth
+            --ro-bind /run/agenix/worker-pi-auth /run/agenix/worker-pi-auth
             --ro-bind-try /run/agenix/llm /run/agenix/llm
 
             --dir /usr
@@ -169,7 +169,7 @@ pkgs.writeShellApplication {
             --setenv PI_CODING_AGENT_DIR /opt/worker-state/agent
             --setenv PI_CODING_AGENT_SESSION_DIR /opt/worker-state/agent/sessions
             --setenv PI_ASK_USER_DISPLAY_MODE inline
-            --setenv PI_AUTH_JSON /run/agenix/pi-auth
+            --setenv PI_AUTH_JSON /run/agenix/worker-pi-auth
             --setenv NPM_CONFIG_PREFIX /opt/worker-state/npm
             --setenv NPM_CONFIG_CACHE /opt/worker-state/npm/cache
             --setenv npm_config_prefix /opt/worker-state/npm

@@ -50,13 +50,13 @@ in
       "d  /home/worker/.pi/worker-sandbox                 0755 worker  users - -"
       "d  /home/worker/.pi/worker-sandbox/agent           0755 worker  users - -"
       "d  /home/worker/.pi/worker-sandbox/agent/sessions  0755 worker users - -"
-      "L+ /home/worker/.pi/worker-sandbox/agent/auth.json - - - - /run/agenix/pi-auth"
+      "L+ /home/worker/.pi/worker-sandbox/agent/auth.json - - - - /run/agenix/worker-pi-auth"
 
       "d  /opt                         0755 root    root - -"
       "d  /opt/code                    2775 worker  code - -"
       "d  /opt/pi-agent-base           2775 root    code - -"
       "z  /etc/nixos/flake               2775 martijn users - -"
-      "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/pi-auth"
+      "L+ /home/martijn/.pi/agent/auth.json - - - - /run/agenix/worker-pi-auth"
     ];
 
     hosts.borg.paths = [
@@ -72,7 +72,7 @@ in
       mode = "0440";
     };
 
-    age.secrets.pi-auth = {
+    age.secrets.worker-pi-auth = {
       file = "${inputs.secrets}/worker-pi-auth.age";
       owner = "root";
       group = "code";
