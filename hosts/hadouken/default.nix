@@ -22,6 +22,7 @@
     ./modules/caddy.nix
     ./modules/atuin.nix
     ./modules/media.nix
+    ./modules/litellm.nix
   ];
 
   hosts.shares.enable = true;
@@ -41,7 +42,6 @@
   hosts.atuin.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
-  hosts.nymvpn.enable = true;
 
   users = {
     groups.notes.members = [ "caddy" ];
@@ -76,6 +76,7 @@
   };
 
   # Server defaults
+  hosts.litellm.enable = true;
   hosts.server.enable = true;
 
   boot = {

@@ -46,6 +46,8 @@ in
           kicksecure-module-blacklist = false; # nfs
           kicksecure-gitconfig = false; # allow old repos
         };
+        entropy.jitterentropy = false;
+
         kernel = {
           only-signed-modules = true;
           lockdown = true;
