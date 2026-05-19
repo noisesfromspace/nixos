@@ -33,9 +33,17 @@ in
     age.secrets = {
       password-laptop.file = lib.mkDefault "${inputs.secrets}/password-laptop.age";
       tailscale-desktop.file = lib.mkDefault "${inputs.secrets}/tailscale-desktop.age";
+      pi-auth = {
+        file = lib.mkDefault "${inputs.secrets}/worker-pi-auth.age";
+        owner = "martijn";
+      };
     };
 
     services.tailscale.authKeyFile = config.age.secrets.tailscale-desktop.path;
+
+    systemd.tmpfiles.rules = [
+      "L+ /home/martijn/.pi/agent/auth.json - - - - ${config.age.secrets.pi-auth.path}"
+    ];
 
     hosts.nymvpn = {
       enable = false;

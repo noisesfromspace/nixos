@@ -109,9 +109,45 @@ in
           lid-open.action.spawn = [ "niri msg output eDP-1 on" ];
         };
 
+        # Window rules: workspace pinning + per-app tweaks
+        window-rules = [
+          {
+            matches = [ ];
+            geometry-corner-radius = {
+              top-left = 6.0;
+              top-right = 6.0;
+              bottom-right = 6.0;
+              bottom-left = 6.0;
+            };
+            clip-to-geometry = true;
+          }
+          {
+            matches = [ { app-id = "Wfica"; } ];
+            open-on-workspace = "2";
+          }
+          {
+            matches = [ { app-id = "Fractal"; } ];
+            open-on-workspace = "5";
+          }
+          {
+            matches = [ { app-id = "Signal"; } ];
+            open-on-workspace = "5";
+          }
+          {
+            matches = [ { app-id = "com.mitchellh.ghostty"; } ];
+            opacity = 0.97;
+          }
+        ];
+
         layout = {
           # Single value for all gaps (inner + outer)
           gaps = 5;
+
+          # Default new columns to 50% width so two windows fit side-by-side
+          # without horizontal scrolling.
+          default-column-width = {
+            proportion = 0.5;
+          };
 
           focus-ring = {
             enable = true;
@@ -143,6 +179,8 @@ in
             repeat-rate = 40;
             repeat-delay = 450;
           };
+
+          warp-mouse-to-focus = true;
 
           focus-follows-mouse.enable = true;
 
@@ -189,8 +227,9 @@ in
           # Lock screen
           "Alt+M".action.spawn = "hyprlock";
 
-          # Reset window height to automatic (e.g. after closing a stacked window)
-          "Alt+R".action.reset-window-height = [ ];
+          # Jump to leftmost/rightmost column
+          "Alt+Home".action.focus-column-first = [ ];
+          "Alt+End".action.focus-column-last = [ ];
 
           # Stacking / column management
           # In Niri, windows stack vertically *within* a column.
