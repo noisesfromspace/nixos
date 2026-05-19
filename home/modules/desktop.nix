@@ -49,7 +49,7 @@ in
         # developement
         python313
 
-        # pi deps
+        # pi
         (pkgs.symlinkJoin {
           name = "pi-coding-agent";
           buildInputs = [ pkgs.makeWrapper ];
