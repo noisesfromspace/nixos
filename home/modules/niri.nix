@@ -100,6 +100,15 @@ in
           };
         };
 
+        switch-events = {
+          lid-close.action.spawn = [
+            "sh"
+            "-c"
+            "hyprlock | niri msg output eDP-1 off"
+          ];
+          lid-open.action.spawn = [ "niri msg output eDP-1 on" ];
+        };
+
         layout = {
           # Single value for all gaps (inner + outer)
           gaps = 5;
@@ -181,7 +190,7 @@ in
           "Alt+M".action.spawn = "hyprlock";
 
           # Reset window height to automatic (e.g. after closing a stacked window)
-          "Alt+R".action.reset-window-height = [];
+          "Alt+R".action.reset-window-height = [ ];
 
           # Stacking / column management
           # In Niri, windows stack vertically *within* a column.
@@ -241,11 +250,11 @@ in
 
           # Mouse wheel: Alt+scroll to move between columns
           "Alt+WheelScrollUp" = {
-            action.focus-column-left = [];
+            action.focus-column-left = [ ];
             cooldown-ms = 150;
           };
           "Alt+WheelScrollDown" = {
-            action.focus-column-right = [];
+            action.focus-column-right = [ ];
             cooldown-ms = 150;
           };
           "XF86AudioMute" = {
