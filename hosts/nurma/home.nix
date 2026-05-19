@@ -18,5 +18,5 @@
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519_age" ];
 
   # Enable profiles
-  maatwerk.hyprland.enable = true;
+  maatwerk.niri.enable = true;
 }

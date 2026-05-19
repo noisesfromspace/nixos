@@ -7,7 +7,7 @@
   networking.hostName = "paddy";
 
   hosts = {
-    hyprland.enable = true;
+    niri.enable = true;
     laptop.enable = true;
     secureboot.enable = true;
     tailscale.enable = true;

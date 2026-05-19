@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   networking.hostName = "nurma";
-  hosts.hyprland.enable = true;
+  hosts.niri.enable = true;
   hosts.secureboot.enable = true;
   hosts.yubikey.enable = true;
 

@@ -191,9 +191,10 @@ in
                   nvim 
                 }
 
-                worker() {
-                  env TERM=xterm-256color ${lib.getExe pkgs.worker-sandbox} "$@"
-                }
+                # TODO: worker-sandbox package no longer exists in nixpkgs
+                # worker() {
+                #   env TERM=xterm-256color worker-sandbox "$@"
+                # }
 
                 if [ -n "$NVIM" ]; then
                   # Redirect nvim to parent if $NVIM

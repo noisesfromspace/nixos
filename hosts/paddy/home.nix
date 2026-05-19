@@ -4,10 +4,10 @@
     ../../home
   ];
 
-  wayland.windowManager.hyprland.settings.input.kb_options = "caps:escape";
+  programs.niri.settings.input.keyboard.xkb.options = "caps:escape";
 
   home.packages = [ ];
-  maatwerk.hyprland = {
+  maatwerk.niri = {
     enable = true;
     isLaptop = true;
     laptopMonitorName = "eDP-1";

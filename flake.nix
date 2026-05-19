@@ -56,12 +56,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    jail-nix.url = "sourcehut:~alexdavid/jail.nix";
+    # jail-nix.url = "sourcehut:~alexdavid/jail.nix";
 
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     secrets = {
       url = "git+file:///etc/nixos/secrets";
       flake = false;

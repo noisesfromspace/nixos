@@ -6,8 +6,6 @@
 }:
 with lib;
 let
-  cfg = config.maatwerk.hyprland;
-
   # On-screen keyboard toggle for battery widget
   oskToggle = pkgs.writeShellScriptBin "osk" ''
     PROG="wvkbd"
@@ -16,16 +14,6 @@ let
         "''${PROG}" --hidden --alpha 204 &
     fi
     pkill --signal "''${SIGNAL}" "''${PROG}"
-  '';
-
-  # Screen rotation toggle for disk widget
-  iioToggle = pkgs.writeShellScriptBin "iio-toggle" ''
-    PROG="iio-hyprland"
-    if ! pgrep "''${PROG}" > /dev/null; then
-      "''${PROG}" &
-    else
-      pkill "''${PROG}"
-    fi
   '';
 
   # WAN IP display script
@@ -196,7 +184,7 @@ let
   # Quick settings menu
   quickSettings = pkgs.writeShellScriptBin "quick-settings" ''
     # Define options with icons
-    options="⌨️  Keyboard\n🔄  Rotation"
+    options="⌨️  Keyboard"
 
     # Show wofi menu with larger font/padding for touch
     chosen=$(echo -e "$options" | wofi \
@@ -205,7 +193,7 @@ let
       --insensitive \
       --prompt "" \
       --width 300 \
-      --height 200 \
+      --height 100 \
       --cache-file /dev/null \
       --style ${pkgs.writeText "wofi-quicksettings.css" ''
         #entry {
@@ -219,14 +207,27 @@ let
       "⌨️  Keyboard")
         ${lib.getExe oskToggle}
         ;;
-      "🔄  Rotation")
-        ${lib.getExe iioToggle}
-        ;;
     esac
   '';
+
+  workspaceModule = "niri/workspaces";
+  windowModule = "niri/window";
+
+  workspaceConfig = {
+    all-outputs = false;
+    format = "{icon}";
+    format-icons = {
+      "1" = "󰹈";
+      "2" = "󰭆";
+      "3" = "󱌚";
+      "4" = "";
+      "5" = "";
+      "6" = "󰻈";
+    };
+  };
 in
 {
-  config = mkIf cfg.enable {
+  config = mkIf config.maatwerk.niri.enable {
     programs.wofi = {
       enable = true; # settings menu
       settings = {
@@ -342,7 +343,11 @@ in
 
           #workspaces button.urgent { color: @base08; }
           #workspaces button.empty { color: @base03; }
-          #workspaces button.focused { color: @base0A; }
+          #workspaces button.focused {
+            color: @base03;
+            background-color: @base0A;
+            border-radius: 6px;
+          }
 
           window#waybar.empty #window {
               background-color: transparent;
@@ -433,8 +438,8 @@ in
             "custom/power"
             "custom/quick-settings"
             "custom/khal"
-            "hyprland/workspaces"
-            "hyprland/window"
+            workspaceModule
+            windowModule
           ];
           modules-center = [
             "group/clock-privacy"
@@ -445,32 +450,10 @@ in
             "group/system-tray"
           ];
 
-          "hyprland/workspaces" = {
-            on-click = "activate";
-            # https://github.com/Alexays/Waybar/wiki/Module:-Workspaces#persistent-workspaces
-            persistent-workspaces = {
-              "1" = [ ];
-              "2" = [ ];
-              "3" = [ ];
-              "4" = [ ];
-              "5" = [ ];
-              "6" = [ ];
-            };
-            format = "{icon}";
-            # https://www.nerdfonts.com/cheat-sheet
-            format-icons = {
-              "1" = "󰹈";
-              "2" = "󰭆";
-              "3" = "󱌚";
-              "4" = "";
-              "5" = "";
-              "6" = "󰻈";
-            };
-          };
+          "${workspaceModule}" = workspaceConfig;
 
-          "hyprland.window" = {
+          "${windowModule}" = {
             format = "{}";
-            icon = true;
           };
 
           clock = {
@@ -638,7 +621,6 @@ in
           };
 
           temperature = {
-            # for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
             "hwmon-path" = "/sys/class/hwmon/hwmon1/temp2_input";
             format = "󰈸 {temperatureC}°C";
           };

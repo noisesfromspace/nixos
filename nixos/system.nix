@@ -10,7 +10,7 @@
     ./modules/prometheus.nix
     ./modules/secureboot.nix
     ./modules/tailscale.nix
-    ./modules/hyprland.nix
+    ./modules/niri.nix
     ./modules/authdns.nix
     ./modules/auditd.nix
     ./modules/server.nix
@@ -22,6 +22,7 @@
     ./modules/nym.nix
     ./modules/ssh.nix
     ./modules/stalwart.nix
+    inputs.niri.nixosModules.niri
   ];
 
   age.secrets = {

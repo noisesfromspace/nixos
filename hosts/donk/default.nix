@@ -6,11 +6,10 @@
 }:
 {
   networking.hostName = "donk";
-  hosts.hyprland.enable = true;
+  hosts.niri.enable = true;
   hosts.laptop.enable = true;
   hosts.secureboot.enable = true;
 
-  environment.systemPackages = [ pkgs.iio-hyprland ];
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519" ];
 
   programs.ssh.extraConfig = ''

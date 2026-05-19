@@ -10,6 +10,8 @@ let
   cfg = config.maatwerk.desktop;
 in
 {
+  imports = [ ./waybar.nix ];
+
   options.maatwerk.desktop = {
     enable = mkEnableOption "Enable default desktop packages + configuration";
   };
@@ -97,6 +99,15 @@ in
         # messaging
         signal-desktop
         fractal # matrix-client
+
+        # DE utilities
+        blueman # bluetooth
+        pavucontrol # audio
+        playerctl
+        wlogout
+        wl-clipboard # clipboard
+        cliphist
+        iwgtk # wifi applet
       ];
 
     home.sessionVariables = {
@@ -151,5 +162,156 @@ in
       maxCacheTtl = 43200;
     };
 
+    # Escalate privileges
+    services.hyprpolkitagent.enable = true;
+
+    services.dunst = {
+      enable = true;
+      settings.global = {
+        frame_width = 1;
+        corner_radius = 6;
+        progress_bar_corner_radius = 6;
+        corners = "top-left,bottom";
+        progress_bar_corners = "top-left,bottom-right";
+        offset = "32x20";
+        gap_size = 5;
+        format = "<b>󰁕 %a</b>\n%s\n<i>%b</i>";
+        mouse_left_click = "close_current";
+        mouse_right_click = "context";
+        alignment = "center";
+        word_wrap = true;
+      };
+    };
+
+    programs.satty = {
+      enable = true;
+      settings = {
+        general = {
+          output-filename = "/home/martijn/Pictures/screenshot_%Y-%m-%d_%H:%M:%S.png";
+          early-exit = false;
+        };
+      };
+    };
+
+    home.file = {
+      # Avatar image
+      ".config/avatar.png" = {
+        source = pkgs.fetchurl {
+          url = "https://random.storage.boers.email/icon.png";
+          hash = "sha256-YxJuLqQ4BpWKyMOTl+J09uRVuK4e0CVinXuNb5u/8aY=";
+        };
+      };
+    };
+
+    services.wlsunset = {
+      enable = true;
+      latitude = "52.081038939033604";
+      longitude = "4.306721564001391";
+      temperature.night = 3000;
+    };
+
+    programs.rofi = {
+      enable = true;
+      extraConfig = {
+        show-icons = true;
+        display-combi = " :";
+        display-drun = "";
+        display-window = "";
+        display-run = "󰨡";
+        modes = "combi,calc";
+        combi-modes = "window,drun,run,emoji";
+      };
+      theme =
+        let
+          inherit (config.lib.formats.rasi) mkLiteral;
+        in
+        {
+          "*" = {
+            width = 700;
+          };
+          element-icon = {
+            size = mkLiteral "1.2em";
+          };
+        };
+      plugins = with pkgs; [
+        rofi-calc
+        rofi-emoji
+      ];
+    };
+
+    services.cliphist.enable = true;
+
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          hide_cursor = true;
+        };
+
+        background = [
+          {
+            path = "screenshot";
+            blur_passes = 4;
+            blur_size = 8;
+          }
+        ];
+
+        shape = [
+          {
+            monitor = "";
+            size = "320, 280";
+            rounding = 6;
+            color = "rgba(29, 28, 25, 0.5)";
+            position = "0, 0";
+            halign = "center";
+            valign = "center";
+            zindex = 0;
+
+            shadow_passes = 2;
+            shadow_size = 5;
+            shadow_color = "rgba(13, 12, 12, 0.4)";
+          }
+        ];
+
+        image = [
+          {
+            path = "${config.home.homeDirectory}/.config/avatar.png";
+            size = 90;
+            rounding = -1;
+            border_size = 3;
+            border_color = "rgb(197, 201, 197)";
+            position = "0, 65";
+            halign = "center";
+            valign = "center";
+            zindex = 1;
+          }
+        ];
+
+        "input-field" = [
+          {
+            size = "220, 45";
+            position = "0, -55";
+            halign = "center";
+            valign = "center";
+            zindex = 1;
+            shadow_passes = 1;
+            shadow_size = 2;
+            monitor = "";
+            dots_center = true;
+            fade_on_empty = false;
+            font_color = "rgb(197, 201, 197)";
+            inner_color = "rgb(40, 39, 39)";
+            outer_color = "rgb(197, 201, 197)";
+            outline_thickness = 3;
+            placeholder_text = "Rara...";
+            rounding = 6;
+            fail_color = "rgb(196, 116, 110)";
+            fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
+            check_color = "rgb(135, 169, 135)";
+            capslock_color = "rgb(185, 141, 123)";
+          }
+        ];
+      };
+    };
   };
 }

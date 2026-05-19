@@ -29,7 +29,7 @@
     inputs.agenix.homeManagerModules.default
 
     # Desktop only
-    ./modules/hyprland.nix
+    ./modules/niri.nix
     ./modules/browser.nix
     ./modules/ghostty.nix
   ];
