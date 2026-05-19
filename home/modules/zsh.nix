@@ -145,7 +145,6 @@ in
           grb = "git rebase";
           groh = "git reset --hard HEAD && git clean -fd";
           fixup = "ga . && gc --amend --no-edit";
-          "c?" = "aichat -m gemini:gemini-3-flash-preview -e";
 
           # ssh nicknames
           pow = sshAlias "hadouken";
@@ -254,18 +253,6 @@ in
         size = 10000;
         # Since we aren't using a file, we can't share via file.
         share = false;
-      };
-    };
-    programs.aichat = {
-      enable = true;
-      settings = {
-        model = "gemini:gemini-3-pro-preview";
-        clients = [
-          {
-            # https://ai.google.dev/gemini-api/docs/models
-            type = "gemini";
-          }
-        ];
       };
     };
 

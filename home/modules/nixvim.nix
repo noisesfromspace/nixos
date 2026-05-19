@@ -126,6 +126,14 @@ in
           '';
           desc = "Create a new scratch buffer";
         };
+        Pi = {
+          command = helpers.mkRaw ''
+            function()
+              vim.cmd("terminal pi")
+            end
+          '';
+          desc = "Open a terminal running pi";
+        };
       };
 
       keymaps = with keymaps; [

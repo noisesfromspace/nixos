@@ -56,7 +56,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # jail-nix.url = "sourcehut:~alexdavid/jail.nix";
+    jail-nix.url = "sourcehut:~alexdavid/jail.nix";
 
     agenix = {
       url = "github:ryantm/agenix";

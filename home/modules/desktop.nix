@@ -8,6 +8,42 @@
 with lib;
 let
   cfg = config.maatwerk.desktop;
+
+  jail = inputs.jail-nix.lib.init pkgs;
+
+  piWrapped = pkgs.symlinkJoin {
+    name = "pi-coding-agent";
+    buildInputs = [ pkgs.makeWrapper ];
+    paths = [ pkgs.pi-coding-agent ];
+    postBuild = ''
+      wrapProgram $out/bin/pi \
+        --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
+        --prefix PATH : ${
+          pkgs.lib.makeBinPath [
+            pkgs.nodejs_22
+            pkgs.ddgr # cli ddg
+            pkgs.pandoc # read from docs
+            pkgs.bun # context-mode
+            pkgs.w3m # read from web
+            pkgs.python313Packages.trafilatura # gather text from articles
+            pkgs.fd # search pi uses
+            pkgs.uutils-coreutils-noprefix # grep etc
+          ]
+        }
+    '';
+  };
+
+  piJailed = jail "pi-jailed" "${piWrapped}/bin/pi" (
+    with jail.combinators;
+    [
+      network
+      mount-cwd
+      (rw-bind (noescape "~/.pi") (noescape "~/.pi"))
+      # auth.json inside ~/.pi is a symlink to /run/agenix/pi-auth
+      (ro-bind "/run/agenix/pi-auth" "/run/agenix/pi-auth")
+      (fwd-env "PI_ASK_USER_DISPLAY_MODE")
+    ]
+  );
 in
 {
   imports = [ ./waybar.nix ];
@@ -51,27 +87,10 @@ in
         # developement
         python313
 
-        # pi
-        (pkgs.symlinkJoin {
-          name = "pi-coding-agent";
-          buildInputs = [ pkgs.makeWrapper ];
-          paths = [ pkgs.pi-coding-agent ];
-          postBuild = ''
-            wrapProgram $out/bin/pi \
-              --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
-              --prefix PATH : ${
-                pkgs.lib.makeBinPath [
-                  pkgs.nodejs_22
-                  pkgs.ddgr # cli ddg
-                  pkgs.pandoc # read from docs
-                  pkgs.bun # context-mode
-                  pkgs.w3m # read from web
-                  pkgs.python313Packages.trafilatura # gather text from articles
-                  pkgs.fd # search pi uses
-                ]
-              }
-          '';
-        })
+        # pi (normal — full filesystem access)
+        piWrapped
+        # pi (jailed — sandboxed)
+        piJailed
 
         # work
         citrix_workspace
