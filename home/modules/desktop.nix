@@ -8,42 +8,6 @@
 with lib;
 let
   cfg = config.maatwerk.desktop;
-
-  jail = inputs.jail-nix.lib.init pkgs;
-
-  piWrapped = pkgs.symlinkJoin {
-    name = "pi-coding-agent";
-    buildInputs = [ pkgs.makeWrapper ];
-    paths = [ pkgs.pi-coding-agent ];
-    postBuild = ''
-      wrapProgram $out/bin/pi \
-        --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
-        --prefix PATH : ${
-          pkgs.lib.makeBinPath [
-            pkgs.nodejs_22
-            pkgs.ddgr # cli ddg
-            pkgs.pandoc # read from docs
-            pkgs.bun # context-mode
-            pkgs.w3m # read from web
-            pkgs.python313Packages.trafilatura # gather text from articles
-            pkgs.fd # search pi uses
-            pkgs.uutils-coreutils-noprefix # grep etc
-          ]
-        }
-    '';
-  };
-
-  piJailed = jail "pi-jailed" "${piWrapped}/bin/pi" (
-    with jail.combinators;
-    [
-      network
-      mount-cwd
-      (rw-bind (noescape "~/.pi") (noescape "~/.pi"))
-      # auth.json inside ~/.pi is a symlink to /run/agenix/pi-auth
-      (ro-bind "/run/agenix/pi-auth" "/run/agenix/pi-auth")
-      (fwd-env "PI_ASK_USER_DISPLAY_MODE")
-    ]
-  );
 in
 {
   imports = [ ./waybar.nix ];
@@ -60,6 +24,7 @@ in
     maatwerk.aerc.enable = true;
     maatwerk.khal.enable = true;
     maatwerk.nixvim.enable = true;
+    maatwerk.pi.enable = true;
 
     age.secrets = {
       proton.file = "${inputs.secrets}/proton.age";
@@ -87,11 +52,6 @@ in
         # developement
         python313
 
-        # pi (normal — full filesystem access)
-        piWrapped
-        # pi (jailed — sandboxed)
-        piJailed
-
         # work
         citrix_workspace
 
@@ -109,8 +69,8 @@ in
         gettit # download full website
         ent # test entropy files
         mat2 # remove metadata
-        nmap
-        xca
+        nmap # portscan
+        xca # certs
 
         # music
         strawberry
@@ -129,10 +89,6 @@ in
         iwgtk # wifi applet
       ];
 
-    home.sessionVariables = {
-      PI_ASK_USER_DISPLAY_MODE = "inline";
-    };
-
     # DBus secret service
     services.pass-secret-service.enable = true;
 
@@ -148,14 +104,6 @@ in
           roots = [
             "/home/martijn/Notes"
             "/mnt/notes/"
-          ];
-        };
-        "pi-agent" = {
-          # NFS doesn't support inotify events
-          commandOptions.repeat = "60";
-          roots = [
-            "/home/martijn/.pi/agent"
-            "/mnt/session/pi-agent/"
           ];
         };
       };

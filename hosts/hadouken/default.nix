@@ -22,7 +22,6 @@
     ./modules/caddy.nix
     ./modules/atuin.nix
     ./modules/media.nix
-    ./modules/llmgateway.nix
   ];
 
   hosts.shares.enable = true;
@@ -43,7 +42,6 @@
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
   hosts.nymvpn.enable = true;
-  hosts.llmgateway.enable = true;
 
   users = {
     groups.notes.members = [ "caddy" ];

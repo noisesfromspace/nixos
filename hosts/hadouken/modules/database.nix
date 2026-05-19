@@ -31,16 +31,10 @@ in
       enableTCPIP = true;
       ensureDatabases = [
         "umami"
-        "llmgateway"
       ];
       ensureUsers = [
         {
           name = "umami";
-          ensureDBOwnership = true;
-          ensureClauses.login = true;
-        }
-        {
-          name = "llmgateway";
           ensureDBOwnership = true;
           ensureClauses.login = true;
         }
@@ -50,9 +44,6 @@ in
         local all       all                     trust
         host  all       all     127.0.0.1/32    trust
         host  all       all     100.64.0.0/10   trust
-        # podman bridge networks for oci-containers (llmgateway, etc.)
-        host  all       all     10.88.0.0/16    trust
-        host  all       all     10.89.0.0/16    trust
       '';
     };
 
@@ -71,7 +62,6 @@ in
       databases = [
         "stalwart"
         "umami"
-        "llmgateway"
       ];
     };
 

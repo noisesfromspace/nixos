@@ -155,6 +155,7 @@ in
             "network.trr.disable-heuristics" = true; # Disables the canary telemetry detection request "use-application-dns.net" for DOH
             "signon.rememberSignons" = false; # builtin password manager
             "extensions.autoDisableScopes" = 0; # auto-enable installed plugins
+            "ui.key.menuAccessKeyFocuses" = false; # don't focus menu on Alt
             "full-screen-api.transition-duration.enter" = "0 0";
             "full-screen-api.transition-duration.leave" = "0 0";
             "accessibility.force_disabled" = true;

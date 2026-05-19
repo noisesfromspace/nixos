@@ -217,10 +217,6 @@ in
           last =
             lib.mkOrder 1500 # bash
               ''
-                if [[ -r /run/agenix/llm ]]; then
-                  export $(cat /run/agenix/llm | xargs)
-                fi
-
                 autoload -z edit-command-line
                 zle -N edit-command-line
                 bindkey "^X^E" edit-command-line

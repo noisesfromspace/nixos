@@ -17,6 +17,7 @@
     ./modules/khal.nix
     ./modules/zsh.nix
     ./modules/git.nix
+    ./modules/pi.nix
 
     # Packaged home manager modules
     inputs.nixvim.homeModules.nixvim
