@@ -211,11 +211,14 @@ in
 
           # Window management
           "Alt+F4".action.close-window = [ ];
-          "Alt+Escape".action.toggle-overview = [ ];
+          "Mod+Tab".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
           "Alt+O".action.fullscreen-window = [ ];
           # Make the focused column fill the workspace (not true fullscreen)
           "Alt+P".action.maximize-column = [ ];
+
+          # Resize focused column to exactly half the output width
+          "Alt+R".action.set-column-width = "50%";
 
           # Clipboard history
           "Ctrl+Alt+H".action.spawn = [
@@ -288,11 +291,11 @@ in
           "Alt+Shift+6".action.move-column-to-workspace = 6;
 
           # Mouse wheel: Alt+scroll to move between columns
-          "Alt+WheelScrollUp" = {
+          "Mod+WheelScrollUp" = {
             action.focus-column-left = [ ];
             cooldown-ms = 150;
           };
-          "Alt+WheelScrollDown" = {
+          "Mod+WheelScrollDown" = {
             action.focus-column-right = [ ];
             cooldown-ms = 150;
           };

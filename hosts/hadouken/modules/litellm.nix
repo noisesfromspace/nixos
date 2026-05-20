@@ -31,7 +31,7 @@ in
       respond 403
     '';
 
-    age.secrets.llmgateway.file = "${inputs.secrets}/llmgateway.age";
+    age.secrets.litellm.file = "${inputs.secrets}/litellm.age";
 
     virtualisation.oci-containers.backend = "podman";
     virtualisation.oci-containers.containers.litellm = {
@@ -40,7 +40,7 @@ in
       environment = {
         DATABASE_URL = "postgresql://litellm@127.0.0.1:5432/litellm";
       };
-      environmentFiles = [ config.age.secrets.llmgateway.path ];
+      environmentFiles = [ config.age.secrets.litellm.path ];
       volumes = [
         "${configFile}:/app/config.yaml:ro"
       ];

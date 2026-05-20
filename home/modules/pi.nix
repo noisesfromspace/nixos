@@ -41,7 +41,6 @@ let
       mount-cwd
       (rw-bind (noescape "~/.pi") (noescape "~/.pi"))
       (ro-bind "/run/agenix/pi-auth" "/run/agenix/pi-auth")
-      (fwd-env "PI_ASK_USER_DISPLAY_MODE")
     ]
   );
 in
@@ -58,18 +57,14 @@ in
       piJailed
     ];
 
-    home.sessionVariables = {
-      PI_ASK_USER_DISPLAY_MODE = "inline";
-    };
-
     services.unison = {
       enable = true;
       pairs = {
         "pi-agent" = {
           commandOptions.repeat = "60";
           roots = [
-            "/home/martijn/.pi/agent"
-            "/mnt/session/pi-agent/"
+            "/home/martijn/.pi/agent/sessions"
+            "/mnt/session/pi-agent/sessions"
           ];
         };
       };

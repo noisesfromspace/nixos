@@ -264,7 +264,7 @@ in
           ];
         })
         (lua {
-          key = "<Leader>E";
+          key = "-";
           desc = "Toggle MiniFiles";
           code = "MiniFiles.open(vim.api.nvim_buf_get_name(0))";
           modes = [
