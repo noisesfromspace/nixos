@@ -30,15 +30,9 @@ in
       enable = true;
       enableTCPIP = true;
       ensureDatabases = [
-        "litellm"
         "umami"
       ];
       ensureUsers = [
-        {
-          name = "litellm";
-          ensureDBOwnership = true;
-          ensureClauses.login = true;
-        }
         {
           name = "umami";
           ensureDBOwnership = true;
@@ -66,7 +60,6 @@ in
     services.postgresqlBackup = {
       enable = true;
       databases = [
-        "litellm"
         "stalwart"
         "umami"
       ];

@@ -18,7 +18,6 @@ let
     "garage-admin"
     "immich"
     "jelly"
-    "litellm"
     "media"
     "monitoring"
     "paper"
