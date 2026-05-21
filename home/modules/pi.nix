@@ -22,13 +22,11 @@ let
           pkgs.lib.makeBinPath [
             pkgs.nodejs_22
             pkgs.python313
-            pkgs.ddgr # cli ddg
             pkgs.pandoc # read from docs
-            pkgs.bun # context-mode
-            pkgs.w3m # read from web
-            pkgs.python313Packages.trafilatura # gather text from articles
-            pkgs.fd # search pi uses
+            pkgs.playwright # run browser
             pkgs.uutils-coreutils-noprefix # grep etc
+            pkgs.fd # search pi uses
+            pkgs.rtk # context memmory
           ]
         }
     '';
