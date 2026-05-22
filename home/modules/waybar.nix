@@ -183,29 +183,35 @@ let
 
   # Quick settings menu
   quickSettings = pkgs.writeShellScriptBin "quick-settings" ''
-    # Define options with icons
-    options="⌨️  Keyboard"
+    options="⌨️  Keyboard\n🔄  90°\n🔄  180°\n🔄  Normal"
 
-    # Show wofi menu with larger font/padding for touch
     chosen=$(echo -e "$options" | wofi \
       --dmenu \
       --hide-search \
       --insensitive \
       --prompt "" \
       --width 300 \
-      --height 100 \
+      --height 300 \
       --cache-file /dev/null \
       --style ${pkgs.writeText "wofi-quicksettings.css" ''
         #entry {
-          padding: 20px;
-          font-size: 20px;
+          padding: 16px;
+          font-size: 18px;
         }
       ''})
 
-    # Execute based on selection
     case "$chosen" in
       "⌨️  Keyboard")
         ${lib.getExe oskToggle}
+        ;;
+      "🔄  Normal")
+        niri msg output eDP-1 transform normal
+        ;;
+      "🔄  90°")
+        niri msg output eDP-1 transform 90
+        ;;
+      "🔄  180°")
+        niri msg output eDP-1 transform 180
         ;;
     esac
   '';

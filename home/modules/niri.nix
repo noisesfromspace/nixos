@@ -361,7 +361,6 @@ in
             ];
             repeat = true;
           };
-          # TODO: XF86AudioMedia was used for iio-hyprland toggle. Needs replacement for niri.
         }
         // (lib.optionalAttrs cfg.isLaptop {
           # Brightness keys (locked)
