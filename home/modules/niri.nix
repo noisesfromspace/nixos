@@ -219,6 +219,8 @@ in
 
           # Window management
           "Alt+F4".action.close-window = [ ];
+          "Mod+C".action.close-window = [ ];
+          "Mod+MouseMiddle".action.close-window = [ ];
           "Mod+Tab".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
           "Alt+O".action.fullscreen-window = [ ];
