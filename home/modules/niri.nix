@@ -100,10 +100,6 @@ in
           };
         };
 
-        # Niri's auto lid-handling doesn't work reliably on this hardware.
-        # Manual switch-events control display power directly.
-        # The sleep 1 on lid-open prevents a race condition where the display
-        # gets turned on before the system has settled after opening the lid.
         switch-events = {
           lid-close.action.spawn = [
             "sh"

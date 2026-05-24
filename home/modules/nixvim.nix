@@ -129,10 +129,11 @@ in
         Pi = {
           command = helpers.mkRaw ''
             function()
-              vim.cmd("terminal pi")
+              local cwd = vim.fn.getcwd()
+              vim.cmd("terminal pi --dir=" .. vim.fn.shellescape(cwd))
             end
           '';
-          desc = "Open a terminal running pi";
+          desc = "Open a terminal running pi with --dir set to cwd";
         };
       };
 
@@ -630,7 +631,6 @@ in
           ];
           callback = helpers.mkRaw ''
             function()
-              vim.opt_local.spell = true
               vim.opt_local.linebreak = true
               vim.opt_local.textwidth = 80
             end
