@@ -17,6 +17,7 @@ let
     "garage"
     "garage-admin"
     "immich"
+    "kasm"
     "jelly"
     "media"
     "ollama"
