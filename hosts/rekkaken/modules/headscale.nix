@@ -19,6 +19,7 @@ let
     "immich"
     "jelly"
     "media"
+    "ollama"
     "monitoring"
     "paper"
     "pgadmin"

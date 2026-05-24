@@ -8,4 +8,6 @@
     zfs
     stable.veracrypt
   ];
+  maatwerk.pi.enable = true;
+
 }
