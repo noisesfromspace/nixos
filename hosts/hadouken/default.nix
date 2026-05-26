@@ -6,6 +6,7 @@
   };
 
   imports = [
+    ./modules/kasm.nix
     ./modules/monitoring.nix
     ./modules/detection.nix
     ./modules/mastodon.nix
@@ -25,6 +26,7 @@
     ./modules/ollama.nix
   ];
 
+  hosts.kasm.enable = true;
   hosts.shares.enable = true;
   hosts.caddy.enable = true;
   hosts.media.enable = true;

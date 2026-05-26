@@ -31,10 +31,6 @@ in
       respond 403
     '';
 
-    age.secrets.kasm = {
-      file = "${inputs.secrets}/kasm.age";
-    };
-
     services.kasmweb = {
       enable = true;
       listenAddress = "127.0.0.1";
@@ -50,7 +46,12 @@ in
       redisPassword = "kasmweb";
     };
 
-    virtualisation.docker.enable = true;
+    virtualisation.docker = {
+      enable = true;
+      daemon.settings = {
+        data-root = "/mnt/zwembad/games/containers";
+      };
+    };
 
     # Fix kasmguac config: the nixpkgs init script only replaces GUACTOKEN/APIHOSTNAME
     # but the template uses REGISTRATION_TOKEN/JWTTOKEN/PUBLICCERT. Patch after init.
