@@ -7,6 +7,18 @@
 with lib;
 let
   cfg = config.maatwerk.niri;
+
+  # Premium Wayland On-Screen Keyboard toggle helper 
+  # Checks if active; launches gracefully with a clean 20% transparent slide-over alpha on first boot!
+  oskToggle = pkgs.writeShellScriptBin "osk" ''
+    PROG="wvkbd"
+    SIGNAL="SIGRTMIN"
+    if ! pgrep "''${PROG}" > /dev/null; then
+        "''${PROG}" --hidden --alpha 204 &
+        sleep 0.1 # Secure startup buffer
+    fi
+    pkill --signal "''${SIGNAL}" "''${PROG}"
+  '';
 in
 {
   imports = [
@@ -42,28 +54,26 @@ in
       XDG_SESSION_DESKTOP = "Niri";
       QT_QPA_PLATFORM = "wayland;xcb";
       QT_QPA_PLATFORMTHEME = "qt5ct";
+      QSG_RENDER_LOOP = "threaded"; # Enables hardware-accelerated threaded QML render loops (smooth animations)
+
+      # Enforces GNU Readline / Emacs keyboard behaviors (Ctrl+A, Ctrl+E, Ctrl+K, Ctrl+U, Ctrl+W, etc.) globally in all inputs!
+      GTK_KEY_THEME_NAME = "Emacs";
     };
 
     home.packages = with pkgs; [
       swaybg
+      wvkbd 
+      oskToggle # Expose your premium virtual keyboard runner to your PATH!
     ];
 
+    # Remove conflicting squeekboard services as wvkbd owns the space
     programs.niri = {
       # Installation is handled by hosts.niri.enable via nixosModules.niri
       # We only configure settings here.
       settings = {
         spawn-at-startup = [
-          {
-            argv = [
-              "swaybg"
-              "-i"
-              "${config.stylix.image}"
-              "-m"
-              "fill"
-            ];
-          }
           { argv = [ "fractal" ]; }
-          { argv = [ "blueman-applet" ]; }
+          { argv = [ "noctalia" ]; }
           {
             argv = [
               "systemctl"
@@ -100,6 +110,10 @@ in
           };
         };
 
+        # We can configure layer-rules for Niri window effects such as background contrast/vibrancy.
+        # Background-effect sits globally in Window rules or as an effect in layout.
+        # Let's clean up any invalid layer-rules parameters, relying on Niri default rendering.
+
         switch-events = {
           lid-close.action.spawn = [
             "sh"
@@ -110,6 +124,16 @@ in
             "sh"
             "-c"
             "sleep 1; niri msg output eDP-1 on"
+          ];
+          tablet-mode-on.action.spawn = [
+            "sh"
+            "-c"
+            "squeekboard &"
+          ];
+          tablet-mode-off.action.spawn = [
+            "sh"
+            "-c"
+            "pkill squeekboard"
           ];
         };
 
@@ -143,8 +167,27 @@ in
           }
         ];
 
+        layer-rules = [
+          {
+            matches = [
+              {
+                namespace = "^noctalia-backdrop";
+              }
+            ];
+            place-within-backdrop = true;
+          }
+          {
+            matches = [
+              {
+                namespace = "^noctalia-.*$";
+              }
+            ];
+            opacity = 0.95;
+          }
+        ];
+
         layout = {
-          # Single value for all gaps (inner + outer)
+          # Symmetric spacing: tight inner gaps, generous outer top gap beneath Noctalia islands
           gaps = 5;
 
           # Default new columns to 50% width so two windows fit side-by-side
@@ -184,7 +227,7 @@ in
             repeat-delay = 450;
           };
 
-          warp-mouse-to-focus = true;
+          warp-mouse-to-focus.enable = true;
           focus-follows-mouse.enable = false;
 
           touchpad = lib.mkIf cfg.isLaptop {
@@ -203,9 +246,18 @@ in
           ];
           "Alt+E".action.spawn = "thunar";
           "Alt+Space".action.spawn = [
-            "rofi"
-            "-show"
-            "combi"
+            "noctalia-shell"
+            "ipc"
+            "call"
+            "launcher"
+            "toggle"
+          ];
+          "Alt+S".action.spawn = [
+            "noctalia-shell"
+            "ipc"
+            "call"
+            "controlCenter"
+            "toggle"
           ];
 
           # Screenshots
@@ -227,11 +279,20 @@ in
 
           # Clipboard history
           "Ctrl+Alt+H".action.spawn = [
-            "sh"
-            "-c"
-            "cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+            "noctalia-shell"
+            "ipc"
+            "call"
+            "launcher"
+            "clipboard"
           ];
-
+          
+          # Tablet & Convertible Rotation: Swing eDP-1 monitor by 90 degrees or reset normal!
+          "Mod+R".action.spawn = [ 
+            "sh" 
+            "-c" 
+            "current=$(niri msg --json outputs | jq -r '.[] | select(.name==\"eDP-1\") | .transform'); if [ \"$current\" = \"normal\" ] || [ \"$current\" = \"null\" ]; then niri msg output eDP-1 transform 90; else niri msg output eDP-1 transform normal; fi" 
+          ];
+   
           # Lock screen
           "Alt+M".action.spawn = "hyprlock";
 
@@ -242,7 +303,7 @@ in
           # Stacking / column management
           # In Niri, windows stack vertically *within* a column.
           # To pull the window to the right into the current column (stack it):
-          "Alt+Comma".action.consume-window-into-column = [ ];
+          "Mod+Comma".action.consume-window-into-column = [ ];
           # To remove the focused window from the stack, making it its own column:
           "Alt+Period".action.expel-window-from-column = [ ];
 
@@ -257,7 +318,7 @@ in
           "Alt+Shift+I".action.move-window-up = [ ];
           "Alt+Shift+K".action.move-window-down = [ ];
 
-          # Resize (repeat) — fixed pixels for linear, predictable steps
+          # Resize (repeat) - fixed pixels for linear, predictable steps
           # Note: J/L resize the COLUMN width (all windows in the column together).
           #       I/K resize window height within a column (only when ≥2 windows are stacked).
           "Ctrl+Alt+J" = {
@@ -306,10 +367,11 @@ in
           };
           "XF86AudioMute" = {
             action.spawn = [
-              "wpctl"
-              "set-mute"
-              "@DEFAULT_AUDIO_SINK@"
-              "toggle"
+              "noctalia-shell"
+              "ipc"
+              "call"
+              "volume"
+              "muteOutput"
             ];
             allow-when-locked = true;
           };
@@ -336,23 +398,21 @@ in
           };
           "XF86AudioRaiseVolume" = {
             action.spawn = [
-              "wpctl"
-              "set-volume"
-              "-l"
-              "1.4"
-              "@DEFAULT_AUDIO_SINK@"
-              "3%+"
+              "noctalia-shell"
+              "ipc"
+              "call"
+              "volume"
+              "increase"
             ];
             repeat = true;
           };
           "XF86AudioLowerVolume" = {
             action.spawn = [
-              "wpctl"
-              "set-volume"
-              "-l"
-              "1.4"
-              "@DEFAULT_AUDIO_SINK@"
-              "3%-"
+              "noctalia-shell"
+              "ipc"
+              "call"
+              "volume"
+              "decrease"
             ];
             repeat = true;
           };
@@ -395,42 +455,6 @@ in
           zoom = 0.5;
         };
       };
-    };
-
-    services.hypridle = {
-      enable = true;
-      settings =
-        let
-          lockCmd = lib.getExe pkgs.hyprlock;
-          notifyCmd = lib.getExe pkgs.libnotify;
-        in
-        {
-          general = {
-            # Niri auto-handles monitor power on resume; no after_sleep_cmd needed
-            ignore_dbus_inhibit = true;
-            lock_cmd = lockCmd;
-          };
-
-          listener = [
-            {
-              timeout = (5 * 60) - 15;
-              on-timeout = "${notifyCmd} 'Locking in 15 seconds...' -t 15000 -u critical";
-            }
-            {
-              timeout = 5 * 60;
-              on-timeout = lockCmd;
-            }
-            {
-              timeout = 15 * 60;
-              on-timeout = "niri msg action power-off-monitors";
-              # Niri auto-wakes monitors on input; no on-resume needed
-            }
-            {
-              timeout = 30 * 60;
-              on-timeout = if cfg.isLaptop then "systemctl suspend-then-hibernate" else "systemctl suspend";
-            }
-          ];
-        };
     };
   };
 }

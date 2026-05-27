@@ -31,6 +31,8 @@ in
     # We already have programs.ssh.startAgent enabled system-wide.
     services.gnome.gcr-ssh-agent.enable = lib.mkForce false;
 
+    services.gnome.evolution-data-server.enable = true;
+
     # Portal configuration for Niri
     # xdg-desktop-portal-gnome and gnome-keyring are pulled in by the niri module.
     # We add xdg-desktop-portal-gtk as the fallback for file choosers and basic portals.
@@ -46,6 +48,7 @@ in
     environment.systemPackages = with pkgs; [
       file-roller # archive manager used by thunar
       xwayland-satellite # X11 app support (niri auto-integrates since 25.08)
+      cliphist # Explicitly bind to standard path for clipboard history
     ];
 
     programs.thunar = {

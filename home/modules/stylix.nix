@@ -23,6 +23,8 @@ in
         hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
       };
       polarity = "dark";
+      # Silence GTK4 warning
+      # targets.gtk.gtk4.theme = null;
       icons = {
         enable = true;
         package = pkgs.tela-icon-theme;
@@ -69,6 +71,7 @@ in
         };
         waybar.enable = false;
         hyprlock.enable = false;
+        noctalia-shell.enable = true;
       };
     };
   };

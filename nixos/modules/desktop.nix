@@ -46,6 +46,9 @@ in
     # DBus power information provider
     services.upower.enable = true;
 
+    # System-wide hardware accelerometer sensor proxy for auto-rotation
+    hardware.sensor.iio.enable = true;
+
     programs.wireshark = {
       enable = true;
       usbmon.enable = true;
@@ -67,11 +70,12 @@ in
         substituters = [
           "https://devenv.cachix.org"
           "https://cache.numtide.com"
+          "https://noctalia.cachix.org"
         ];
         trusted-public-keys = [
           "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
           "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-
+          "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
         ];
       };
     };

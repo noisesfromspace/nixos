@@ -29,10 +29,14 @@
     # Secrets manager
     inputs.agenix.homeManagerModules.default
 
+    # Noctalia Shell Integration (replaces waybar)
+    inputs.noctalia.homeModules.default
+
     # Desktop only
     ./modules/niri.nix
     ./modules/browser.nix
     ./modules/ghostty.nix
+    ./modules/noctalia.nix
   ];
 
   age = {
@@ -81,6 +85,8 @@
         // mkMimeAssoc htmlTypes "librewolf.desktop";
     };
   };
+
+
 
   # Let nix-index handle command-not-found
   programs.nix-index.enable = true;
