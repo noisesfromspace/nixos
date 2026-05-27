@@ -2,6 +2,7 @@
   osConfig,
   pkgs,
   lib,
+  config,
   ...
 }:
 {
@@ -33,6 +34,25 @@
       };
       alias = {
         patch = "push rad HEAD:refs/patches";
+        # Email commits as MIME attachments (e.g., git email-patch HEAD~1..HEAD)
+        email-patch = "send-email --attach";
+      };
+      sendemail = {
+        smtpServer = "mx1.boers.email";
+        smtpServerPort = 587;
+        smtpEncryption = "tls";
+        smtpUser = "martijn@boers.email";
+        from = "Martijn Boers <martijn@boers.email>";
+        smtpAuth = "PLAIN";
+        confirm = "auto";
+        suppresscc = "self";
+      };
+      format = {
+        # Send patches as MIME attachments rather than raw text in the email body
+        attach = "yes";
+      };
+      "credential \"smtp://martijn%40boers.email@mx1.boers.email:587\"" = {
+        helper = "!f() { if [ \"$1\" = \"get\" ]; then echo \"password=$(cat ${config.age.secrets.stalwart-password.path})\"; fi; }; f";
       };
       delta = {
         navigate = true;
