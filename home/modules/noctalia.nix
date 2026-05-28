@@ -24,6 +24,10 @@ with lib;
           hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI="; # Let's fetch directly from your server!
         };
       };
+
+      # IPv6-patched ip-monitor plugin (full directory from GitHub + our patches)
+      ".config/noctalia/plugins/ip-monitor".source =
+        pkgs.callPackage ../../pkgs/ip-monitor-patched.nix {};
     };
 
     programs.noctalia-shell = {
@@ -31,6 +35,39 @@ with lib;
       systemd.enable = true;
       package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
         calendarSupport = true;
+      };
+
+      plugins = {
+        sources = [
+          {
+            enabled = true;
+            name = "Noctalia Plugins";
+            url = "https://github.com/noctalia-dev/noctalia-plugins";
+          }
+        ];
+        states = {
+          ip-monitor = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
+          niri-workspaces = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
+          port-monitor = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
+          privacy-indicator = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
+          usb-drive-manager = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
+        };
+        version = 2;
       };
 
       settings = {
@@ -75,14 +112,17 @@ with lib;
             ];
             center = [
               { id = "Clock"; }
-              { id = "KeepAwake"; }
+              { id = "plugin:privacy-indicator"; }
             ];
             right = [
+              { id = "plugin:ip-monitor"; }
+              { id = "plugin:port-monitor"; }
               { id = "Tray"; }
               { id = "NotificationHistory"; }
               { id = "Battery"; }
               { id = "Volume"; }
               { id = "Brightness"; }
+              { id = "plugin:usb-drive-manager"; }
               { 
                 id = "CustomButton"; 
                 icon = "keyboard"; 
@@ -92,7 +132,7 @@ with lib;
                 rightClickExec = "osk";
               }
               { id = "PowerProfile"; } # Direct battery-saver / high-performance scaling slider!
-              { id = "ControlCenter"; }
+              { id = "KeepAwake"; }
             ];
           };
         };
