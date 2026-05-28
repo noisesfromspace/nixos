@@ -36,7 +36,8 @@ in
         size = 26;
       };
       # https://tinted-theming.github.io/tinted-gallery/
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/kanagawa-dragon.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/black-metal-gorgoroth.yaml";
+      # base16Scheme = "${pkgs.base16-schemes}/share/themes/brushtrees.yaml";
       fonts = {
         serif = {
           package = pkgs.inter;

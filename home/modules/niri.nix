@@ -167,25 +167,6 @@ in
           }
         ];
 
-        layer-rules = [
-          {
-            matches = [
-              {
-                namespace = "^noctalia-backdrop";
-              }
-            ];
-            place-within-backdrop = true;
-          }
-          {
-            matches = [
-              {
-                namespace = "^noctalia-.*$";
-              }
-            ];
-            opacity = 0.95;
-          }
-        ];
-
         layout = {
           # Symmetric spacing: tight inner gaps, generous outer top gap beneath Noctalia islands
           gaps = 5;

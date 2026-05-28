@@ -77,14 +77,14 @@ with lib;
           position = "top";
           density = "default";
           showOutline = false;
-          showCapsule = true;
+          showCapsule = false;
           
-          # Cohesive unified rendering (disable separate opacity logic)
-          useSeparateOpacity = false;
+          # Let Noctalia handle separate capsule/bar opacity for visual depth
+          useSeparateOpacity = true;
 
-          # Default background colors (Niri's layer rules will scale the final alpha to 85%)
-          backgroundOpacity = lib.mkForce 1.00; 
-          capsuleOpacity = lib.mkForce 1.00;
+          # Slightly transparent bar background with separate capsule opacity
+          backgroundOpacity = lib.mkForce 0.95; 
+          capsuleOpacity = 1.00;
           outerCorners = true;
 
           # Match Niri's sharp modern 6.0px corners
@@ -95,20 +95,16 @@ with lib;
           # Snug to top bezel, letting Niri's outer top gap create the room below!
           marginVertical = 6;
           marginHorizontal = 7;
-          widgetSpacing = 10; # Beautiful snug separation gaps between capsules (was 12)
-          contentPadding = 2; # Sleek, compact height for the visual bar (was 4)
-          outerPadding = 0;   # Restore compact flush alignments (was 4)
+          widgetSpacing = 8; # Beautiful snug separation gaps between capsules
+          contentPadding = 4; # Balanced height for the visual bar
           fontScale = 1.04;   # Mild legibility text increase without inflating bar height!
-
-          # Stop windows from bleeding under the bar segment (creates clean empty buffer)
-          enableExclusionZoneInset = false;
-          exclusionZoneOffset = false;
           
           widgets = {
             left = [
-              { id = "Launcher"; }
+              { id = "SessionMenu"; iconColor = "error"; }
+              { id = "Launcher"; icon = "antenna"; useDistroLogo = false; }
               { id = "Workspace"; }
-              { id = "ActiveWindow"; }
+              { id = "ActiveWindow"; hideMode = "hidden"; showIcon = true; showText = true; }
             ];
             center = [
               { id = "Clock"; }
@@ -140,13 +136,19 @@ with lib;
         # Force the Control Center dropdown to slide down in the absolute screen middle (HUD style!)
         controlCenter = {
           position = "center";
+          shortcuts.left = [
+            { id = "Network"; }
+            { id = "Bluetooth"; }
+            { id = "WallpaperSelector"; }
+            { id = "NoctaliaPerformance"; }
+            { id = "AirplaneMode"; }
+          ];
         };
 
         # Align bottom app dock (Niri's layer rules will scale the final alpha to 85%)
         dock = {
           enabled = true;
           dockType = "floating"; # Stands floatingly above the bottom border
-          backgroundOpacity = lib.mkForce 1.00; # We let Niri's forced layer-rules own the rendering!
         };
 
         general = {
@@ -166,10 +168,10 @@ with lib;
           enableShadows = true;
 
           # Stylized lockscreen clock & behavior
-          clockStyle = "custom";
+          clockStyle = "analog";
           clockFormat = "hh\nmm";
-          lockScreenBlur = 8;
-          lockScreenTint = 0.3;
+          lockScreenBlur = 0.38;
+          lockScreenTint = 0.4;
           enableLockScreenMediaControls = true;
           showSessionButtonsOnLockScreen = true;
         };
@@ -217,7 +219,7 @@ with lib;
         # Spacious, highly-visible notification styling
         notifications = {
           respectExpireTimeout = true;
-          density = "comfortable"; # Big, elegant cards with perfect typography
+          density = "default";
           sounds.enabled = false;
           offset_x = 24; # Pushed safely in from the right edge
           offset_y = 12; # Pushed safely down from the status gaps
