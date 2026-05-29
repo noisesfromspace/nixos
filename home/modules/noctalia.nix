@@ -68,10 +68,6 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
-          niri-workspaces = {
-            enabled = true;
-            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-          };
           port-monitor = {
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
@@ -102,9 +98,9 @@ with lib;
           capsuleColorKey = "none";
           widgetSpacing = 8;
           contentPadding = 4;
-          fontScale = 1.04;
+          fontScale = 1;
           enableExclusionZoneInset = true;
-          backgroundOpacity = lib.mkForce 0.73;
+          backgroundOpacity = lib.mkForce 0.80;
           useSeparateOpacity = true;
           marginVertical = 6;
           marginHorizontal = 7;

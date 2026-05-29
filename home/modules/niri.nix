@@ -293,7 +293,7 @@ in
           # Stacking / column management
           # In Niri, windows stack vertically *within* a column.
           # To pull the window to the right into the current column (stack it):
-          "Mod+Comma".action.consume-window-into-column = [ ];
+          "Alt+Comma".action.consume-window-into-column = [ ];
           # To remove the focused window from the stack, making it its own column:
           "Alt+Period".action.expel-window-from-column = [ ];
 

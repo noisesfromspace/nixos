@@ -80,7 +80,6 @@ in
         smartcase = true; # Override ignorecase if search contains capitals
         swapfile = false; # Don't create cluttering .swp files
         undofile = true; # Save undo history
-        cmdheight = 0; # Hide command line
         sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,globals";
         nrformats = "unsigned"; # Ctrl+a always treated as positive number
 
@@ -130,10 +129,10 @@ in
           command = helpers.mkRaw ''
             function()
               local cwd = vim.fn.getcwd()
-              vim.cmd("terminal pi --dir=" .. vim.fn.shellescape(cwd))
+              vim.cmd("terminal pi")
             end
           '';
-          desc = "Open a terminal running pi with --dir set to cwd";
+          desc = "Open a terminal running pi";
         };
       };
 
@@ -406,12 +405,6 @@ in
       };
 
       highlight = {
-        StatuslineErrorIcon = {
-          fg = config.lib.stylix.colors.withHashtag.red;
-        };
-        StatuslineNormalIcon = {
-          fg = config.lib.stylix.colors.withHashtag.green;
-        };
         YankHighlight = {
           bg = config.lib.stylix.colors.withHashtag.yellow;
           fg = config.lib.stylix.colors.withHashtag.base00;
@@ -419,9 +412,6 @@ in
       };
 
       highlightOverride = {
-        StatusLineNC = {
-          bg = config.lib.stylix.colors.withHashtag.base00;
-        };
         LineNr = {
           fg = config.lib.stylix.colors.withHashtag.yellow;
         };
@@ -514,100 +504,11 @@ in
                 line_down = "<C-S-Down>";
               };
             };
-
-            statusline = {
-              use_icons = true;
-              content = {
-                active = helpers.mkRaw ''
-                  function()
-                    local mode, mode_hl = MiniStatusline.section_mode({})
-                    local full_filename = vim.fn.pathshorten(vim.fn.expand('%:~:.'))
-                    if full_filename == "" then full_filename = "[No Name]" end
-
-                    local n_errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-                    local s_rec = vim.fn.reg_recording() ~= "" and ( vim.fn.reg_recording()) .. " " or ""
-
-                    local n_unwritten = 0
-                    local n_unnamed_unwritten = 0
-                    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                      if vim.bo[buf].modified and vim.bo[buf].buflisted and vim.bo[buf].buftype ~= "nofile" then 
-                        if vim.api.nvim_buf_get_name(buf) == "" then
-                          n_unnamed_unwritten = n_unnamed_unwritten + 1
-                        else
-                          n_unwritten = n_unwritten + 1 
-                        end
-                      end
-                    end
-
-                    local root = _G.Maatwerk.git.get_git_root(0)
-                    local dirty = root and (vim.g.git_dirty or {})[root]
-                    
-                    local s_git = ""
-                    if n_unwritten > 0 then
-                      s_git = "●"
-                    elseif n_unnamed_unwritten > 0 then
-                      s_git = "○"
-                    elseif dirty then
-                      s_git = "◌"
-                    end
-                    
-                    local total_lines = vim.fn.line('$')
-                    local percentage = total_lines > 0 and math.floor((vim.fn.line('.') / total_lines) * 100) or 0
-
-                    local navic = ""
-                    local ok, navic_mod = pcall(require, "nvim-navic")
-                    if ok and navic_mod.is_available() then
-                      navic = navic_mod.get_location()
-                    end
-
-                    local location_str = full_filename
-                    if navic ~= "" then
-                      location_str = location_str .. " › " .. navic
-                    end
-
-                    local groups = {
-                        { hl = mode_hl,                  strings = { mode } },
-                        { hl = 'MiniStatuslineLocation', strings = { location_str } },
-                        '%=', '%<',
-                    }
-                    
-                    if s_rec ~= "" then 
-                      table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { s_rec } })
-                    elseif n_errors > 0 then
-                      table.insert(groups, { hl = 'StatuslineErrorIcon', strings = { n_errors .. " 󰈸" } })
-                    elseif s_git ~= "" then 
-                      table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { s_git } })
-                    end
-                    table.insert(groups, { hl = 'MiniStatuslineDevinfo', strings = { percentage .. '%%' } })
-
-                    return MiniStatusline.combine_groups(groups)
-                  end
-                '';
-              };
-            };
           };
         };
       };
 
       autoCmd = [
-        {
-          event = "User";
-          pattern = [
-            "NeogitStatusRefreshed"
-            "NeogitCommitComplete"
-            "NeogitPushComplete"
-            "NeogitPullComplete"
-          ];
-          callback = helpers.mkRaw "_G.Maatwerk.git.update_status";
-        }
-        {
-          event = [
-            "BufWritePost"
-            "BufEnter"
-            "FocusGained"
-          ];
-          callback = helpers.mkRaw "_G.Maatwerk.git.update_status";
-        }
         {
           event = [
             "TermOpen"
@@ -686,7 +587,6 @@ in
 
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
-        _G.Maatwerk.git = _G.Maatwerk.git or {}
         _G.Maatwerk.ui = _G.Maatwerk.ui or {}
         _G.Maatwerk.buffers = _G.Maatwerk.buffers or {}
 
@@ -753,37 +653,6 @@ in
             decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
           end
           return MiniPick.default_show(buf_id, decorated_items, query, { show_icons = true })
-        end
-
-        _G.Maatwerk.git.get_git_root = function(bufnr)
-          if bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end
-          local name = vim.api.nvim_buf_get_name(bufnr)
-          if name == "" then return nil end
-          return vim.fs.root(name, ".git")
-        end
-
-        local checking = {}
-
-        _G.Maatwerk.git.update_status = function()
-          local root = _G.Maatwerk.git.get_git_root(0)
-          if not root then return end
-          if checking[root] then return end
-
-          checking[root] = true
-          vim.system(
-            { "git", "status", "--porcelain" },
-            { text = true, cwd = root },
-            function(obj)
-              checking[root] = nil
-              local dirty = obj.code == 0 and obj.stdout and obj.stdout ~= ""
-              vim.schedule(function()
-                local d = vim.g.git_dirty or {}
-                d[root] = dirty
-                vim.g.git_dirty = d
-                vim.cmd("redrawstatus")
-              end)
-            end
-          )
         end
 
         _G.Maatwerk.ui.update_search_count = function()

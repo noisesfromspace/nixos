@@ -148,17 +148,6 @@ in
             };
           };
         }; # language servers
-
-        navic = {
-          enable = true;
-          settings = {
-            lsp.auto_attach = true;
-            depth_limit = 3;
-            separator = " › ";
-            highlight = false;
-            safe_output = true;
-          };
-        }; # code context in statusline
       };
 
       keymaps = [
