@@ -19,12 +19,10 @@ in
     stylix = {
       enable = true;
       image = pkgs.fetchurl {
-        url = "https://random.storage.boers.email/wallpaper_optimized.jpg";
-        hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
+        url = "https://random.storage.boers.email/Boccioni,%20Umberto;%20Stati%20d'animo%20-%20Gli%20addii;%201911.jpg";
+        hash = "sha256-Tm10QEY04CD6h2MDhKgNjIPVlIgvF2rHkFkGRwMC3sQ=";
       };
       polarity = "dark";
-      # Silence GTK4 warning
-      # targets.gtk.gtk4.theme = null;
       icons = {
         enable = true;
         package = pkgs.tela-icon-theme;
@@ -37,7 +35,6 @@ in
       };
       # https://tinted-theming.github.io/tinted-gallery/
       base16Scheme = "${pkgs.base16-schemes}/share/themes/black-metal-gorgoroth.yaml";
-      # base16Scheme = "${pkgs.base16-schemes}/share/themes/brushtrees.yaml";
       fonts = {
         serif = {
           package = pkgs.inter;

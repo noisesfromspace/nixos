@@ -56,7 +56,7 @@ in
       QT_QPA_PLATFORMTHEME = "qt5ct";
       QSG_RENDER_LOOP = "threaded"; # Enables hardware-accelerated threaded QML render loops (smooth animations)
 
-      # Enforces GNU Readline / Emacs keyboard behaviors (Ctrl+A, Ctrl+E, Ctrl+K, Ctrl+U, Ctrl+W, etc.) globally in all inputs!
+      # Enforces GNU Readline 
       GTK_KEY_THEME_NAME = "Emacs";
     };
 
@@ -139,6 +139,7 @@ in
 
         # Window rules: workspace pinning + per-app tweaks
         window-rules = [
+          # Catch-all: all windows get rounded corners and slight transparency
           {
             matches = [ ];
             geometry-corner-radius = {
@@ -148,10 +149,18 @@ in
               bottom-left = 6.0;
             };
             clip-to-geometry = true;
+            opacity = 0.95;
           }
+          # Wfica (Citrix): fully opaque
           {
             matches = [ { app-id = "Wfica"; } ];
             open-on-workspace = "2";
+            opacity = 1.0;
+          }
+          # LibreWolf: fully opaque
+          {
+            matches = [ { app-id = "librewolf"; } ];
+            opacity = 1.0;
           }
           {
             matches = [ { app-id = "Fractal"; } ];
