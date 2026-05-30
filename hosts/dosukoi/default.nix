@@ -10,7 +10,6 @@
     ./modules/wireguard.nix
     ./modules/blocklist.nix
     ./modules/firewall.nix
-    ./modules/adguard.nix
     ./modules/ntopng.nix
     ./modules/caddy.nix
     ./modules/acme.nix
@@ -23,7 +22,6 @@
 
   nix.settings.trusted-users = [ "martijn" ]; # allows remote push
   hosts.server.enable = true;
-  hosts.adguard.enable = true;
   hosts.caddy.enable = true;
   hosts.ntopng.enable = true;
   hosts.wireguard.enable = true;

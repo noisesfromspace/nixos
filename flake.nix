@@ -47,10 +47,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-bitcoin = {
-      url = "github:fort-nix/nix-bitcoin/master";
-    };
-
     nix-mineral = {
       url = "github:cynicsketch/nix-mineral";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -168,7 +164,7 @@
                       rekkaken = "100.64.0.1";
                       shoryuken = "100.64.0.18";
                       suzaku = "100.64.0.7";
-                      tatsumaki = "100.64.0.2";
+                      tatsumaki = "100.64.0.10";
                       tenshin = "100.64.0.4";
                     };
                   };
@@ -209,7 +205,6 @@
         call = inputs.nixos-raspberrypi.lib.nixosSystem;
         modules = with inputs.nixos-raspberrypi.nixosModules; [
           raspberry-pi-4.base
-          inputs.disko.nixosModules.disko
         ];
       };
       nixosConfigurations.suzaku = importSystem "suzaku" {
@@ -217,7 +212,6 @@
         call = inputs.nixos-raspberrypi.lib.nixosSystem;
         modules = with inputs.nixos-raspberrypi.nixosModules; [
           raspberry-pi-5.base
-          inputs.disko.nixosModules.disko
         ];
       };
       nixosConfigurations.hadouken = importSystem "hadouken" {
@@ -225,14 +219,10 @@
       };
       nixosConfigurations.dosukoi = importSystem "dosukoi" {
         system = "x86_64-linux";
-        modules = [ inputs.disko.nixosModules.disko ];
       };
       nixosConfigurations.tatsumaki = importSystem "tatsumaki" {
         system = "x86_64-linux";
-        modules = [
-          inputs.disko.nixosModules.disko
-          inputs.nix-bitcoin.nixosModules.default
-        ];
+        modules = [ inputs.disko.nixosModules.disko ];
       };
 
       # -------------- PCs --------------

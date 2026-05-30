@@ -51,10 +51,10 @@
     in
     lib.attrsets.mergeAttrsList (
       map defaultNetwork [
-        {
-          adapter = "enp2s0";
-          ip = "2";
-        }
+        # {
+        #   adapter = "enp2s0";
+        #   ip = "2";
+        # }
         {
           adapter = "enp3s0";
           ip = "3";
@@ -62,30 +62,47 @@
       ]
     );
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/1e1c9093-f746-4f2e-adc7-9c3a5d990024";
-    fsType = "ext4";
+  disko.devices = {
+    disk = {
+      main = {
+        type = "disk";
+        device = "/dev/mmcblk0";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02";
+              priority = 1;
+            };
+            ESP = {
+              size = "512M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+              };
+            };
+            root = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
+              };
+            };
+          };
+        };
+      };
+    };
   };
 
-  fileSystems."/mnt/backups" = {
+  fileSystems."/mnt/evo" = {
     device = "/dev/disk/by-partuuid/75dd214a-61d2-4af7-9c23-1d441d8f7d47";
     fsType = "ext4";
   };
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/108E-DD09";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
-  };
-
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/a310c3dc-fcab-4f46-a123-ba866980f35d"; }
-  ];
-
-  zramSwap.enable = true; # needed for fulcrum
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

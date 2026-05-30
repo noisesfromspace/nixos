@@ -43,6 +43,7 @@
     identityPaths = [
       "${config.home.homeDirectory}/.ssh/id_ed25519"
     ];
+    secrets.stalwart-password.file = "${inputs.secrets}/stalwart-password.age";
   };
 
   xdg = {
@@ -85,8 +86,6 @@
         // mkMimeAssoc htmlTypes "librewolf.desktop";
     };
   };
-
-
 
   # Let nix-index handle command-not-found
   programs.nix-index.enable = true;

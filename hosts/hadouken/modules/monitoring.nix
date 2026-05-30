@@ -138,29 +138,7 @@ in
             }
           ];
         }
-        {
-          job_name = "adguard";
-          static_configs = [
-            {
-              targets = [ "dosukoi.machine.thuis:9617" ];
-            }
-          ];
-        }
-        {
-          job_name = "zfs";
-          static_configs = [
-            {
-              targets = [ "127.0.0.1:2020" ];
-            }
-          ];
-        }
       ];
-      exporters = {
-        zfs = {
-          enable = true;
-          port = 2020;
-        };
-      };
     };
   };
 }

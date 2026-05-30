@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   inputs,
   ...
 }:
@@ -28,40 +27,12 @@ in
 
     age.secrets.adguard.file = "${inputs.secrets}/adguard.age";
 
+    services.resolved = {
+      # Resolved should not bind to port 53
+      settings.Resolve.DNSStubListener = "no";
+    };
+
     systemd.services = {
-      "adguard-exporter" = {
-        enable = true;
-        description = "AdGuard metric exporter for Prometheus";
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
-          ExecStart = ''
-            ${pkgs.adguard-exporter}/bin/adguard-exporter \
-                -adguard_hostname 127.0.0.1 -adguard_port ${toString config.services.adguardhome.port} \
-                -adguard_username admin -adguard_password $ADGUARD_PASSWORD -log_limit 10000
-          '';
-          Restart = "on-failure";
-          RestartSec = 5;
-          DynamicUser = true;
-          EnvironmentFile = config.age.secrets.adguard.path;
-
-          ProtectControlGroups = true;
-          LockPersonality = true;
-          MemoryDenyWriteExecute = true;
-          NoNewPrivileges = true;
-          PrivateDevices = true;
-          PrivateUsers = true;
-          ProtectClock = true;
-          ProtectHostname = true;
-          ProtectKernelLogs = true;
-          ProtectKernelModules = true;
-          ProtectKernelTunables = true;
-          ProtectSystem = "strict";
-          RestrictRealtime = true;
-          RestrictSUIDSGID = true;
-          SystemCallArchitectures = "native";
-
-        };
-      };
       adguardhome = {
         after = [ "tailscaled.service" ];
         requires = [ "tailscaled.service" ];
@@ -78,12 +49,7 @@ in
       settings = {
         dns = {
           ratelimit = 0;
-          bind_hosts = [
-            config.global.tailscale_hosts.dosukoi
-            "10.10.0.1" # lan
-            "10.20.0.1" # wifi
-            "10.30.0.1" # opt1
-          ];
+          bind_hosts = [ "0.0.0.0" ];
           upstream_dns = [
             "https://dns10.quad9.net/dns-query"
             "https://dns.freedom.nl/dns-query"

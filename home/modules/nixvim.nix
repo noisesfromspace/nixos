@@ -164,47 +164,7 @@ in
         (lua {
           key = "<BS>";
           desc = "Overview of buffers";
-          code = # lua
-            ''
-              local function preserve_cursor_index_and_operate(operation)
-                -- Get current cursor index
-                local index = MiniPick.get_picker_matches().current_ind
-                operation()
-                -- Re-obtain items and attempt to restore the cursor position
-                MiniPick.set_picker_items(_G.Maatwerk.buffers.get_items())
-                local new_items = MiniPick.get_picker_matches().all
-                if index and new_items and index <= #new_items then
-                  -- Restore the cursor position if within bounds
-                  MiniPick.set_picker_match_inds({index}, 'current')
-                else
-                  -- Fallback if index is out of range
-                  MiniPick.set_picker_match_inds({1}, 'current')
-                end
-              end
-
-              local wipeout_cur = function()
-                preserve_cursor_index_and_operate(function()
-                  local item = MiniPick.get_picker_matches().current
-                  if item then
-                    -- Force for terminal buffers
-                    vim.api.nvim_buf_delete(item.bufnr, {force = true})
-                  end
-                end)
-              end
-
-              local buffer_mappings = {
-                wipeout = { char = '<C-d>', func = wipeout_cur },
-              }
-              MiniPick.start({
-                source = {
-                  items = _G.Maatwerk.buffers.get_items(),
-                  name = 'Buffers',
-                  show = _G.Maatwerk.buffers.show,
-                  choose = MiniPick.default_choose,
-                },
-                mappings = buffer_mappings,
-              })
-            '';
+          code = "MiniPick.builtin.buffers()";
         })
         (lua {
           key = "<Leader>h";
@@ -286,7 +246,7 @@ in
         (cmd {
           key = "gb";
           desc = "Git blame";
-          command = "Git log --patch --max-count=50 -- %";
+          command = "Git log --patch --max-count=40 -- %";
         })
         (lua {
           key = "gb";
@@ -297,7 +257,7 @@ in
         (cmd {
           key = "gl";
           desc = "Commit log";
-          command = "Git log --patch --max-count=50";
+          command = "Git log --patch --max-count=25";
           modes = [ "n" ];
         })
         (cmd {
@@ -334,18 +294,6 @@ in
           desc = "Yank file:selected-range";
           code = "_G.Maatwerk.yank_file_line_range(true)";
           modes = [ "v" ];
-        })
-        (mk {
-          key = "<Leader>y";
-          desc = "Add to sytem clipboard";
-          action = ''"+y'';
-          modes = [ "v" ];
-        })
-        (cmd {
-          key = "<Leader>y";
-          desc = "Add whole file to sytem clipboard";
-          command = "%y+";
-          modes = [ "n" ];
         })
 
         # Tab management
@@ -579,7 +527,6 @@ in
 
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
-        _G.Maatwerk.buffers = _G.Maatwerk.buffers or {}
 
         vim.cmd.packadd('nvim.undotree')
         require('vim._core.ui2').enable()
@@ -605,45 +552,8 @@ in
             end
           end
 
-          vim.fn.setreg('+', result)
-          vim.notify('Yanked to clipboard: ' .. result)
-        end
-
-        _G.Maatwerk.buffers.get_items = function(local_opts)
-          local_opts = vim.tbl_deep_extend('force', { include_current = true, include_unlisted = false }, local_opts or {})
-          local buffers_output = vim.api.nvim_exec('buffers' .. (local_opts.include_unlisted and '!' or ""), true)
-          local cur_buf_id = vim.api.nvim_get_current_buf()
-          local items = {}
-
-          for _, l in ipairs(vim.split(buffers_output, '\n')) do
-            local buf_str, name = l:match('^%s*(%d+)'), l:match('"(.*)"')
-            local buf_id = tonumber(buf_str)
-            if buf_id then
-              local path = vim.api.nvim_buf_get_name(buf_id)
-              local item = {
-                text = name,
-                bufnr = buf_id,
-                path = path,
-                is_current = buf_id == cur_buf_id
-              }
-              if buf_id ~= cur_buf_id or local_opts.include_current then
-                table.insert(items, item)
-              end
-            end
-          end
-          return items
-        end
-
-        _G.Maatwerk.buffers.show = function(buf_id, items, query)
-          local decorated_items = {}
-          for i, item in ipairs(items) do
-            local prefix = " "
-            if item.is_current then prefix = ">" end
-
-            -- Create a proxy table so default_show sees the prefixed text but we keep original metadata
-            decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
-          end
-          return MiniPick.default_show(buf_id, decorated_items, query, { show_icons = true })
+          vim.fn.setreg('"', result)
+          vim.notify('Yanked: ' .. result)
         end
       '';
 

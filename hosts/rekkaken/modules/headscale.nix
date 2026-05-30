@@ -47,12 +47,12 @@ let
     "tools"
   ];
   tatsumakiRecords = [
+    "dns"
     "mempool"
   ];
   dosukoiRecords = [
     "acme"
     "auth"
-    "dns"
     "leases"
     "vaultwarden"
   ];
@@ -149,7 +149,7 @@ in
                   src = [ "*" ];
                   dst = [
                     "hadouken:80,443" # everyone access to hadouken web-services
-                    "dosukoi:53" # everyone access to dns 
+                    "tatsumaki:80,443,53" # everyone access to dns (over TLS)
                     "rekkaken:80,443,8025" # send/receive notifications + internal email
                     "tenshin:123,4460" # timeserver
                   ];
@@ -169,7 +169,7 @@ in
                   ];
                   dst = [
                     "hadouken:5551,5552,5553,5555,3902" # reverse proxy ports
-                    "hadouken:${toString config.services.immich.port}" 
+                    "hadouken:${toString config.services.immich.port}"
                     "hadouken:5432" # postgresql for stalwart
                   ];
                 }
@@ -209,7 +209,6 @@ in
                     "headscale-server@:9002" # node exporter
                     "headscale-server@:2019" # caddy exporter
                     "headscale-server@:${toString config.services.endlessh-go.prometheus.port}"
-                    "headscale-server@:9617" # adguard exporter
                   ];
                 }
                 {
@@ -245,7 +244,10 @@ in
             {
               magic_dns = true;
               base_domain = "machine.thuis";
-              nameservers.global = [ config.global.tailscale_hosts.dosukoi ];
+              nameservers.global = [
+                config.global.tailscale_hosts.tatsumaki
+                "9.9.9.9" # quad
+              ];
               extra_records =
                 (map (name: makeRecord name config.global.tailscale_hosts.hadouken) hadoukenRecords)
                 ++ (map (name: makeRecord name config.global.tailscale_hosts.shoryuken) shoryukenRecords)

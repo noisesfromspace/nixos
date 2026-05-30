@@ -157,8 +157,6 @@ in
       $ex = <C-x>
     '';
 
-    age.secrets.stalwart-password.file = "${inputs.secrets}/stalwart-password.age";
-
     accounts.email.accounts = {
       main =
         let

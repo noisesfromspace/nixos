@@ -33,10 +33,7 @@ in
 
     age.secrets = {
       password-laptop.file = lib.mkDefault "${inputs.secrets}/password-laptop.age";
-      tailscale-desktop.file = lib.mkDefault "${inputs.secrets}/tailscale-desktop.age";
     };
-
-    services.tailscale.authKeyFile = config.age.secrets.tailscale-desktop.path;
 
     hosts.nymvpn = {
       enable = false;
