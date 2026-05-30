@@ -14,7 +14,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    age.secrets.geoip.file = "${inputs.secrets}/geoip.age";
 
     users.users.umami = {
       isSystemUser = true;
@@ -22,15 +21,27 @@ in
     };
     users.groups.umami = { };
 
-    age.secrets.umami = {
-      file = "${inputs.secrets}/umami.age";
-      owner = "umami";
-      group = "umami";
+    age.secrets = {
+      geoip.file = "${inputs.secrets}/geoip.age";
+      umami = {
+        file = "${inputs.secrets}/umami.age";
+        owner = "umami";
+        group = "umami";
+      };
+      umami-db = {
+        file = "${inputs.secrets}/umami-db.age";
+        owner = "umami";
+        group = "umami";
+      };
     };
-    age.secrets.umami-db = {
-      file = "${inputs.secrets}/umami-db.age";
-      owner = "umami";
-      group = "umami";
+
+    geoipupdate = {
+      enable = true;
+      settings = {
+        EditionIDs = [ "GeoLite2-City" ];
+        AccountID = 1232114;
+        LicenseKey = config.age.secrets.geoip.path;
+      };
     };
 
     services.caddy.virtualHosts = {
