@@ -25,6 +25,7 @@ in
     maatwerk.khal.enable = true;
     maatwerk.nixvim.enable = true;
     maatwerk.pi.enable = true;
+    maatwerk.sync.enable = true;
 
     age.secrets = {
       proton.file = "${inputs.secrets}/proton.age";

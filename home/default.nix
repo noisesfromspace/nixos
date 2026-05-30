@@ -18,6 +18,7 @@
     ./modules/zsh.nix
     ./modules/git.nix
     ./modules/pi.nix
+    ./modules/sync.nix
 
     # Packaged home manager modules
     inputs.nixvim.homeModules.nixvim
