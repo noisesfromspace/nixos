@@ -100,7 +100,7 @@ with lib;
           contentPadding = 4;
           fontScale = 1;
           enableExclusionZoneInset = true;
-          backgroundOpacity = lib.mkForce 0.80;
+          backgroundOpacity = lib.mkForce 0.89;
           useSeparateOpacity = true;
           marginVertical = 6;
           marginHorizontal = 7;

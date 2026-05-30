@@ -8,12 +8,55 @@
 with lib;
 let
   cfg = config.maatwerk.sync;
-  rcloneBin = "${pkgs.rclone}/bin/rclone";
+  rcloneBin = lib.getExe pkgs.rclone;
   rcloneConfig = config.age.secrets.sync-rclone-conf.path;
+
+  syncPairs = [
+    {
+      name = "notes";
+      path = cfg.notesPath;
+      remote = "notes-crypt:";
+    }
+    {
+      name = "sessions";
+      path = cfg.sessionsPath;
+      remote = "sessions-crypt:";
+    }
+  ];
+
+  mkService =
+    {
+      name,
+      path,
+      remote,
+    }:
+    nameValuePair "rclone-${name}-sync" {
+      Unit = {
+        Description = "Bidirectional sync ${path} <-> ${remote}";
+        After = [ "network-online.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${rcloneBin} --config ${rcloneConfig} bisync ${path} ${remote} --conflict-resolve newer --create-empty-src-dirs --resilient --max-lock 2m";
+        IOSchedulingClass = "idle";
+        Nice = 19;
+      };
+    };
+  mkTimer =
+    { name, ... }:
+    nameValuePair "rclone-${name}-sync" {
+      Unit.Description = "Sync ${name} every ${cfg.timerInterval}";
+      Timer = {
+        OnUnitActiveSec = cfg.timerInterval;
+        OnBootSec = "2m";
+        Persistent = true;
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
 in
 {
-  options.maatwerk.sync = {
-    enable = mkEnableOption "Bidirectional rclone bisync for Notes and pi sessions to Garage S3 (encrypted)";
+  options.maatwork.sync = {
+    enable = mkEnableOption "Bidirectional rclone bisync to remote (encrypted)";
     notesPath = mkOption {
       type = types.str;
       default = "${config.home.homeDirectory}/Notes";
@@ -40,66 +83,10 @@ in
     };
 
     systemd.user = {
-      services = {
-        rclone-notes-sync = {
-          Unit = {
-            Description = "Bidirectional sync ~/Notes <-> Garage S3 (encrypted)";
-            After = [ "network-online.target" ];
-          };
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${rcloneBin} --config ${rcloneConfig} bisync ${cfg.notesPath} notes-crypt: --conflict-resolve newer --create-empty-src-dirs --resilient --max-lock 2m";
-            IOSchedulingClass = "idle";
-            Nice = 19;
-          };
-        };
-
-        rclone-sessions-sync = {
-          Unit = {
-            Description = "Bidirectional sync ~/.pi/agent/sessions <-> Garage S3 (encrypted)";
-            After = [ "network-online.target" ];
-          };
-          Service = {
-            Type = "oneshot";
-            ExecStart = "${rcloneBin} --config ${rcloneConfig} bisync ${cfg.sessionsPath} sessions-crypt: --conflict-resolve newer --create-empty-src-dirs --resilient --max-lock 2m";
-            IOSchedulingClass = "idle";
-            Nice = 19;
-          };
-        };
-      };
-
-      timers = {
-        rclone-notes-sync = {
-          Unit = {
-            Description = "Sync notes every ${cfg.timerInterval}";
-          };
-          Timer = {
-            OnUnitActiveSec = cfg.timerInterval;
-            OnBootSec = "2m";
-            Persistent = true;
-          };
-          Install = {
-            WantedBy = [ "timers.target" ];
-          };
-        };
-
-        rclone-sessions-sync = {
-          Unit = {
-            Description = "Sync pi sessions every ${cfg.timerInterval}";
-          };
-          Timer = {
-            OnUnitActiveSec = cfg.timerInterval;
-            OnBootSec = "2m";
-            Persistent = true;
-          };
-          Install = {
-            WantedBy = [ "timers.target" ];
-          };
-        };
-      };
+      services = listToAttrs (map mkService syncPairs);
+      timers = listToAttrs (map mkTimer syncPairs);
     };
 
-    # Ensure parent directories exist for rclone bisync state files
     home.file.".cache/rclone/bisync/.keep".text = "";
   };
 }
