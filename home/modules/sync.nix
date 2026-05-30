@@ -55,7 +55,7 @@ let
     };
 in
 {
-  options.maatwork.sync = {
+  options.maatwerk.sync = {
     enable = mkEnableOption "Bidirectional rclone bisync to remote (encrypted)";
     notesPath = mkOption {
       type = types.str;
