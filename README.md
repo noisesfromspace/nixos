@@ -36,7 +36,6 @@ for a good initial starting point for NixOS with flakes.
 | Garage                              | Object storage (Garage API + UI) for media assets.          | [garage.nix](hosts/hadouken/modules/garage.nix)         |
 | Calendar (Radicale)                 | CalDAV and CardDAV server.                                  | [calendar.nix](hosts/hadouken/modules/calendar.nix)     |
 | Database stack                      | PostgreSQL, MinIO buckets, pgAdmin UI.                      | [database.nix](hosts/hadouken/modules/database.nix)     |
-| Changedetection.io                  | Website change detection and notification service.          | [detection.nix](hosts/hadouken/modules/detection.nix)   |
 | Immich                              | Self-hosted photo and video backup solution.                | [immich.nix](hosts/hadouken/modules/immich.nix)         |
 | Mastodon (glitch-soc) & Fedifetcher | Federated social media server.                              | [mastodon.nix](hosts/hadouken/modules/mastodon.nix)     |
 | Matrix Synapse                      | Secure, decentralized communication server.                 | [matrix.nix](hosts/hadouken/modules/matrix.nix)         |

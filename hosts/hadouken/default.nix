@@ -7,7 +7,6 @@
 
   imports = [
     ./modules/monitoring.nix
-    ./modules/detection.nix
     ./modules/mastodon.nix
     ./modules/paperless.nix
     ./modules/microbin.nix
@@ -33,7 +32,6 @@
   hosts.matrix.enable = true;
   hosts.mastodon.enable = true;
   hosts.microbin.enable = true;
-  hosts.changedetection.enable = true;
   hosts.immich.enable = true;
   hosts.prometheus.enable = true;
   hosts.calendar.enable = true;

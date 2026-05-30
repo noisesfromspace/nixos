@@ -156,7 +156,6 @@
     };
   };
 
-  # disko {{{
   # disko.devices = {
   #   disk = {
   #     main = {
@@ -217,7 +216,6 @@
   #     };
   #   };
   # };
-  #}}}
 
   zramSwap.enable = true;
 

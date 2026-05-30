@@ -13,7 +13,6 @@ let
     "bincache"
     "cal"
     "cal-http"
-    "detection"
     "garage"
     "garage-admin"
     "immich"
