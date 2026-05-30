@@ -566,14 +566,6 @@ in
           '';
         }
         {
-          event = "CursorMoved";
-          callback = helpers.mkRaw "_G.Maatwerk.ui.update_search_count";
-        }
-        {
-          event = "CmdlineLeave";
-          callback = helpers.mkRaw "_G.Maatwerk.ui.clear_search_count";
-        }
-        {
           event = [ "VimLeavePre" ];
           callback = helpers.mkRaw ''
             function()
@@ -587,7 +579,6 @@ in
 
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
-        _G.Maatwerk.ui = _G.Maatwerk.ui or {}
         _G.Maatwerk.buffers = _G.Maatwerk.buffers or {}
 
         vim.cmd.packadd('nvim.undotree')
@@ -653,43 +644,6 @@ in
             decorated_items[i] = setmetatable({ text = prefix .. item.text }, { __index = item })
           end
           return MiniPick.default_show(buf_id, decorated_items, query, { show_icons = true })
-        end
-
-        _G.Maatwerk.ui.update_search_count = function()
-          if vim.v.hlsearch == 0 then return end
-          local bufnr = vim.api.nvim_get_current_buf()
-          local ns = vim.api.nvim_create_namespace('searchcount')
-          vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
-
-          local pattern = vim.fn.getreg('/')
-          local cursor = vim.api.nvim_win_get_cursor(0)
-          local cursor_line, cursor_col = cursor[1], cursor[2] + 1
-
-          local match_line, match_col = unpack(vim.fn.searchpos(pattern, 'bcn'))
-          if match_line == 0 then return end
-          if cursor_line ~= match_line then return end
-
-          local saved_pos = vim.api.nvim_win_get_cursor(0)
-          vim.api.nvim_win_set_cursor(0, {match_line, match_col - 1})
-          local count = vim.fn.searchcount({maxcount = 1000, timeout = 100})
-          vim.api.nvim_win_set_cursor(0, saved_pos)
-
-          if count.current > 0 and count.total > 0 then
-            local text = string.format(" -- [%d/%d]", count.current, count.total)
-            vim.api.nvim_buf_set_extmark(bufnr, ns, match_line - 1, match_col - 1, {
-              virt_text = {{text, "Question"}},
-              virt_text_pos = "eol",
-              priority = 100,
-            })
-          end
-        end
-
-        _G.Maatwerk.ui.clear_search_count = function()
-          local cmd = vim.fn.getcmdline()
-          if cmd == "noh" or cmd == "nohlsearch" then
-            local ns = vim.api.nvim_create_namespace('searchcount')
-            vim.api.nvim_buf_clear_namespace(0, ns, 0, -1)
-          end
         end
       '';
 
