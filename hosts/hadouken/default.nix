@@ -44,10 +44,6 @@
   hosts.bincache.enable = true;
   hosts.ollama.enable = true;
 
-  users = {
-    groups.notes.members = [ "caddy" ];
-  };
-
   systemd.services.loki = {
     after = [ "tailscaled.service" ];
     requires = [ "tailscaled.service" ];

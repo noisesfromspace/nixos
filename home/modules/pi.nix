@@ -54,18 +54,5 @@ in
       # pi (jailed — sandboxed)
       piJailed
     ];
-
-    services.unison = {
-      enable = true;
-      pairs = {
-        "pi-agent" = {
-          commandOptions.repeat = "60";
-          roots = [
-            "/home/martijn/.pi/agent/sessions"
-            "/mnt/session/pi-agent/sessions"
-          ];
-        };
-      };
-    };
   };
 }

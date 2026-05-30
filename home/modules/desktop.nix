@@ -92,20 +92,6 @@ in
     # Power notifications
     services.poweralertd.enable = true;
 
-    services.unison = {
-      enable = true;
-      pairs = {
-        "notes" = {
-          # NFS doesn't support inotify events
-          commandOptions.repeat = "60";
-          roots = [
-            "/home/martijn/Notes"
-            "/mnt/notes/"
-          ];
-        };
-      };
-    };
-
     programs.gpg = {
       enable = true;
       scdaemonSettings = {

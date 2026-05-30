@@ -25,18 +25,6 @@ in
       options = [ "bind" ];
     };
 
-    fileSystems."/export/notes" = {
-      device = "/mnt/zwembad/app/notes";
-      fsType = "nfs";
-      options = [ "bind" ];
-    };
-
-    fileSystems."/export/session" = {
-      device = "/mnt/zwembad/app/session";
-      fsType = "nfs";
-      options = [ "bind" ];
-    };
-
     boot.supportedFilesystems = [ "nfs" ];
 
     services.nfs.server = {
@@ -45,8 +33,6 @@ in
         /export          100.64.0.0/10(rw,fsid=0,no_subtree_check) 
         /export/music    100.64.0.0/10(rw,nohide,insecure,no_subtree_check)
         /export/share    100.64.0.0/10(rw,nohide,insecure,no_subtree_check)
-        /export/notes  	 100.64.0.0/24(rw,nohide,insecure,no_subtree_check)
-        /export/session	 100.64.0.0/24(rw,nohide,insecure,no_subtree_check)
       '';
     };
   };
