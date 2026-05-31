@@ -120,7 +120,7 @@ with lib;
               }
               {
                 id = "Launcher";
-                icon = "antenna";
+                icon = "wave-saw-tool";
                 useDistroLogo = false;
                 colorizeSystemIcon = "none";
                 colorizeSystemText = "none";
@@ -229,6 +229,21 @@ with lib;
                 };
               }
               {
+                id = "plugin:display-settings";
+              }
+              {
+                id = "plugin:usb-drive-manager";
+                defaultSettings = {
+                  autoMount = false;
+                  fileBrowser = "yazi";
+                  hideWhenEmpty = false;
+                  iconColor = "none";
+                  showBadge = false;
+                  showNotifications = true;
+                  terminalCommand = "kitty";
+                };
+              }
+              {
                 id = "Tray";
                 blacklist = [ ];
                 chevronColor = "none";
@@ -267,18 +282,6 @@ with lib;
                 displayMode = "onhover";
                 iconColor = "none";
                 textColor = "none";
-              }
-              {
-                id = "plugin:usb-drive-manager";
-                defaultSettings = {
-                  autoMount = false;
-                  fileBrowser = "yazi";
-                  hideWhenEmpty = false;
-                  iconColor = "none";
-                  showBadge = false;
-                  showNotifications = true;
-                  terminalCommand = "kitty";
-                };
               }
               {
                 id = "CustomButton";

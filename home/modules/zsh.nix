@@ -128,7 +128,7 @@ in
           gcb = "git checkout -b";
           gf = "git fetch";
           gl = "git pull";
-          gll = "rad sync -v --fetch && git pull";
+          gll = "rad sync -v --fetch --replicas=1 && git pull";
           gs = "git status";
           glg = "git log --stat";
           gp = "git push";
