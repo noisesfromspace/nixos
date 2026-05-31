@@ -6,7 +6,7 @@
 }:
 {
   networking.hostName = "donk";
-  hosts.niri.enable = true;
+  hosts.desktop.enable = true;
   hosts.laptop.enable = true;
   hosts.secureboot.enable = true;
 

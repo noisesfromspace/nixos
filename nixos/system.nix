@@ -10,7 +10,7 @@
     ./modules/prometheus.nix
     ./modules/secureboot.nix
     ./modules/tailscale.nix
-    ./modules/niri.nix
+    ./modules/desktop.nix
     ./modules/authdns.nix
     ./modules/auditd.nix
     ./modules/server.nix

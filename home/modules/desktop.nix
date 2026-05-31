@@ -82,7 +82,6 @@ in
 
         # DE utilities
         pavucontrol # audio
-        playerctl
         wl-clipboard # clipboard
         cliphist # manager
       ];
@@ -112,21 +111,6 @@ in
       defaultCacheTtl = 43200;
       maxCacheTtl = 43200;
     };
-
-    # Escalate privileges
-    services.hyprpolkitagent.enable = true;
-
-    programs.satty = {
-      enable = true;
-      settings = {
-        general = {
-          output-filename = "/home/martijn/Pictures/screenshot_%Y-%m-%d_%H:%M:%S.png";
-          early-exit = false;
-        };
-      };
-    };
-
-    services.cliphist.enable = true;
 
   };
 }

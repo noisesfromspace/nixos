@@ -554,6 +554,11 @@ in
 
           vim.fn.setreg('"', result)
           vim.notify('Yanked: ' .. result)
+
+          -- Exit visual mode if we were in it
+          if use_visual then
+            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true)
+          end
         end
       '';
 

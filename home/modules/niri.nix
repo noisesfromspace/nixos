@@ -8,8 +8,27 @@ with lib;
 let
   cfg = config.maatwerk.niri;
 
-  # Premium Wayland On-Screen Keyboard toggle helper 
-  # Checks if active; launches gracefully with a clean 20% transparent slide-over alpha on first boot!
+  noctalia =
+    cmd:
+    [
+      "noctalia-shell"
+      "ipc"
+      "call"
+    ]
+    ++ (lib.splitString " " cmd);
+  noctaliaStr = cmd: "noctalia-shell ipc call " + cmd;
+
+  rotateScript = let
+    jq = "${pkgs.jq}/bin/jq";
+  in ''
+    current=$(niri msg --json outputs | ${jq} -r '.[] | select(.name=="eDP-1") | .transform')
+    if [ "$current" = "normal" ] || [ "$current" = "null" ]; then
+      niri msg output eDP-1 transform 90
+    else
+      niri msg output eDP-1 transform normal
+    fi
+  '';
+
   oskToggle = pkgs.writeShellScriptBin "osk" ''
     PROG="wvkbd"
     SIGNAL="SIGRTMIN"
@@ -47,6 +66,9 @@ in
   config = mkIf cfg.enable {
     maatwerk.desktop.enable = true;
 
+    # Escalate privileges
+    services.hyprpolkitagent.enable = true;
+
     # Compositor-agnostic wayland session variables
     home.sessionVariables = {
       XDG_CURRENT_DESKTOP = "Niri";
@@ -56,19 +78,19 @@ in
       QT_QPA_PLATFORMTHEME = "qt5ct";
       QSG_RENDER_LOOP = "threaded"; # Enables hardware-accelerated threaded QML render loops (smooth animations)
 
-      # Enforces GNU Readline 
+      # Enforces GNU Readline
       GTK_KEY_THEME_NAME = "Emacs";
     };
 
     home.packages = with pkgs; [
       swaybg
-      wvkbd 
+      wvkbd
       oskToggle # Expose your premium virtual keyboard runner to your PATH!
     ];
 
     # Remove conflicting squeekboard services as wvkbd owns the space
     programs.niri = {
-      # Installation is handled by hosts.niri.enable via nixosModules.niri
+      # Installation is handled by hosts.desktop.enable via nixosModules.niri
       # We only configure settings here.
       settings = {
         spawn-at-startup = [
@@ -110,15 +132,11 @@ in
           };
         };
 
-        # We can configure layer-rules for Niri window effects such as background contrast/vibrancy.
-        # Background-effect sits globally in Window rules or as an effect in layout.
-        # Let's clean up any invalid layer-rules parameters, relying on Niri default rendering.
-
         switch-events = {
           lid-close.action.spawn = [
             "sh"
             "-c"
-            "hyprlock & niri msg output eDP-1 off"
+            "${noctaliaStr "lockScreen lock"} && niri msg output eDP-1 off"
           ];
           lid-open.action.spawn = [
             "sh"
@@ -177,11 +195,9 @@ in
         ];
 
         layout = {
-          # Symmetric spacing: tight inner gaps, generous outer top gap beneath Noctalia islands
-          gaps = 5;
+          gaps = 7;
 
           # Default new columns to 50% width so two windows fit side-by-side
-          # without horizontal scrolling.
           default-column-width = {
             proportion = 0.5;
           };
@@ -209,7 +225,7 @@ in
           };
         };
 
-        # Input settings (ported from hyprland)
+        # Input settings
         input = {
           keyboard = {
             xkb.layout = "us";
@@ -226,29 +242,17 @@ in
           };
         };
 
-        # Key bindings (ported from hyprland)
+        # Key bindings
         binds = {
           # App launchers
-          "Alt+W".action.spawn = "librewolf";
+          "Alt+W".action.spawn = [ "librewolf" ];
           "Alt+Q".action.spawn = [
             "ghostty"
             "+new-window"
           ];
-          "Alt+E".action.spawn = "thunar";
-          "Alt+Space".action.spawn = [
-            "noctalia-shell"
-            "ipc"
-            "call"
-            "launcher"
-            "toggle"
-          ];
-          "Alt+S".action.spawn = [
-            "noctalia-shell"
-            "ipc"
-            "call"
-            "controlCenter"
-            "toggle"
-          ];
+          "Alt+E".action.spawn = [ "thunar" ];
+          "Alt+Space".action.spawn = noctalia "launcher toggle";
+          "Alt+S".action.spawn = noctalia "controlCenter toggle";
 
           # Screenshots
           "Print".action.screenshot = [ ];
@@ -269,33 +273,24 @@ in
           "Alt+BracketRight".action.maximize-column = [ ];
 
           # Clipboard history
-          "Ctrl+Alt+H".action.spawn = [
-            "noctalia-shell"
-            "ipc"
-            "call"
-            "launcher"
-            "clipboard"
-          ];
-          
+          "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
+
           # Tablet & Convertible Rotation: Swing eDP-1 monitor by 90 degrees or reset normal!
-          "Mod+R".action.spawn = [ 
-            "sh" 
-            "-c" 
-            "current=$(niri msg --json outputs | jq -r '.[] | select(.name==\"eDP-1\") | .transform'); if [ \"$current\" = \"normal\" ] || [ \"$current\" = \"null\" ]; then niri msg output eDP-1 transform 90; else niri msg output eDP-1 transform normal; fi" 
+          "Mod+R".action.spawn = [
+            "sh"
+            "-c"
+            rotateScript
           ];
-   
+
           # Lock screen
-          "Alt+M".action.spawn = "hyprlock";
+          "Alt+M".action.spawn = noctalia "lockScreen lock";
 
           # Jump to leftmost/rightmost column
           "Alt+Home".action.focus-column-first = [ ];
           "Alt+End".action.focus-column-last = [ ];
 
           # Stacking / column management
-          # In Niri, windows stack vertically *within* a column.
-          # To pull the window to the right into the current column (stack it):
           "Alt+Comma".action.consume-window-into-column = [ ];
-          # To remove the focused window from the stack, making it its own column:
           "Alt+Period".action.expel-window-from-column = [ ];
 
           # Movement (column-based tiling)
@@ -310,8 +305,6 @@ in
           "Alt+Shift+K".action.move-window-down = [ ];
 
           # Resize (repeat) - fixed pixels for linear, predictable steps
-          # Note: J/L resize the COLUMN width (all windows in the column together).
-          #       I/K resize window height within a column (only when ≥2 windows are stacked).
           "Ctrl+Alt+J" = {
             action.set-column-width = "-128";
             repeat = true;
@@ -357,92 +350,49 @@ in
             cooldown-ms = 150;
           };
           "XF86AudioMute" = {
-            action.spawn = [
-              "noctalia-shell"
-              "ipc"
-              "call"
-              "volume"
-              "muteOutput"
-            ];
+            action.spawn = noctalia "volume muteOutput";
             allow-when-locked = true;
           };
           "XF86AudioPlay" = {
-            action.spawn = [
-              "playerctl"
-              "play-pause"
-            ];
+            action.spawn = noctalia "media playPause";
             allow-when-locked = true;
           };
           "XF86AudioNext" = {
-            action.spawn = [
-              "playerctl"
-              "next"
-            ];
+            action.spawn = noctalia "media next";
             allow-when-locked = true;
           };
           "XF86AudioPrev" = {
-            action.spawn = [
-              "playerctl"
-              "previous"
-            ];
+            action.spawn = noctalia "media previous";
             allow-when-locked = true;
           };
           "XF86AudioRaiseVolume" = {
-            action.spawn = [
-              "noctalia-shell"
-              "ipc"
-              "call"
-              "volume"
-              "increase"
-            ];
+            action.spawn = noctalia "volume increase";
             repeat = true;
           };
           "XF86AudioLowerVolume" = {
-            action.spawn = [
-              "noctalia-shell"
-              "ipc"
-              "call"
-              "volume"
-              "decrease"
-            ];
+            action.spawn = noctalia "volume decrease";
             repeat = true;
           };
         }
         // (lib.optionalAttrs cfg.isLaptop {
           # Brightness keys (locked)
           "XF86MonBrightnessDown" = {
-            action.spawn = [
-              "brightnessctl"
-              "s"
-              "10%-"
-            ];
+            action.spawn = noctalia "brightness decrease";
             allow-when-locked = true;
           };
           "XF86MonBrightnessUp" = {
-            action.spawn = [
-              "brightnessctl"
-              "s"
-              "+10%"
-            ];
+            action.spawn = noctalia "brightness increase";
             allow-when-locked = true;
           };
         });
 
         # Gestures (Niri has hardcoded touchpad gestures; only edge-scroll + hot-corners are configurable).
-        # Native touchpad gestures:
-        #   3-finger vertical swipe   → switch workspaces
-        #   3-finger horizontal swipe → horizontal view scroll
-        #   4-finger vertical swipe   → toggle overview
-        # Lost from Hyprland (no Niri equivalent):
-        #   2-finger pinch → close window
-        #   4-finger swipe → resize window
         gestures = {
           hot-corners.enable = true;
         };
 
         # Overview settings
         overview = {
-          # Niri overview zoom; 0.5 is a reasonable default
           zoom = 0.5;
         };
       };

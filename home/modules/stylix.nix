@@ -68,7 +68,6 @@ in
           transparentBackground.numberLine = true;
         };
         waybar.enable = false;
-        hyprlock.enable = false;
         noctalia-shell.enable = true;
       };
     };

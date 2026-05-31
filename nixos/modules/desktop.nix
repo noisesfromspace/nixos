@@ -10,20 +10,32 @@ let
   cfg = config.hosts.desktop;
 in
 {
+  imports = [ ];
 
-  options.hosts.desktop = {
-    enable = mkEnableOption "Base desktop";
+  options = {
+    hosts.desktop = {
+      enable = mkEnableOption "Base desktop (with Niri compositor)";
+    };
   };
 
   config = mkIf cfg.enable {
+    hosts.nymvpn = {
+      enable = false;
+      autoConnect = false;
+    };
+
     environment.sessionVariables = {
       TERM = "xterm-ghostty";
       BROWSER = "librewolf";
       DEFAULT_BROWSER = "librewolf";
+      QT_QPA_PLATFORMTHEME = "qt5ct";
     };
 
     environment.systemPackages = with pkgs; [
       veracrypt
+      file-roller # archive manager used by thunar
+      xwayland-satellite # X11 app support (niri auto-integrates since 25.08)
+      cliphist # Explicitly bind to standard path for clipboard history
     ];
 
     users.users.martijn.extraGroups = [
@@ -32,12 +44,7 @@ in
     ];
 
     age.secrets = {
-      password-laptop.file = lib.mkDefault "${inputs.secrets}/password-laptop.age";
-    };
-
-    hosts.nymvpn = {
-      enable = false;
-      autoConnect = false;
+      password-laptop.file = mkDefault "${inputs.secrets}/password-laptop.age";
     };
 
     # DBus power information provider
@@ -61,6 +68,7 @@ in
           "python3.12-ecdsa-0.19.1" # electrum
         ];
       };
+      overlays = [ inputs.niri.overlays.niri ];
     };
     nix = {
       settings = {
@@ -121,7 +129,7 @@ in
           };
         };
       in
-      lib.attrsets.mergeAttrsList (
+      attrsets.mergeAttrsList (
         map mkNfsShare [
           "music"
           "share"
@@ -140,7 +148,61 @@ in
       keyboard.qmk.enable = true; # Access QMK without sudo
     };
 
-    programs.dconf.enable = true; # used for stylix
+    programs = {
+      dconf.enable = true; # used for stylix
+      niri = {
+        enable = true;
+        package = pkgs.niri-stable;
+      };
+      thunar = {
+        enable = true;
+        plugins = with pkgs; [
+          thunar-media-tags-plugin
+          thunar-archive-plugin
+          thunar-volman
+        ];
+      };
+    };
+
+    # Niri module pulls in GNOME portals which enable gcr-ssh-agent.
+    # We already have programs.ssh.startAgent enabled system-wide.
+    services.gnome.gcr-ssh-agent.enable = mkForce false;
+
+    services.gnome.evolution-data-server.enable = true;
+
+    # Portal configuration for Niri
+    # xdg-desktop-portal-gnome and gnome-keyring are pulled in by the niri module.
+    # We add xdg-desktop-portal-gtk as the fallback for file choosers and basic portals.
+    xdg.portal = {
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+      ];
+      config.niri = {
+        default = "gnome;gtk;";
+        "org.freedesktop.impl.portal.FileChooser" = "gtk";
+      };
+    };
+
+    services.tumbler.enable = true;
+    services.gvfs.enable = true;
+
+    services.greetd = {
+      enable = true;
+      settings = {
+        # only first session auto-login
+        initial_session = {
+          command = "niri-session";
+          user = "martijn";
+        };
+        default_session = {
+          command = "${lib.getExe pkgs.tuigreet} --time --cmd niri-session";
+          user = "martijn";
+        };
+      };
+    };
+
+    # protocol for unpriv proces to speak to become privileged
+    security.polkit.enable = true;
 
     # Enable sound with pipewire.
     security.rtkit.enable = true;

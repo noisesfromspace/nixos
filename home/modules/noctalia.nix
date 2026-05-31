@@ -44,6 +44,20 @@ with lib;
       python3Packages.pygobject3 # system file picker support
     ];
 
+    # Screenshots
+    programs.satty = {
+      enable = true;
+      settings = {
+        general = {
+          output-filename = "/home/martijn/Pictures/screenshot_%Y-%m-%d_%H:%M:%S.png";
+          early-exit = false;
+        };
+      };
+    };
+
+    # Clipboard history
+    services.cliphist.enable = true;
+
     programs.noctalia-shell = {
       enable = true;
       systemd.enable = true;
