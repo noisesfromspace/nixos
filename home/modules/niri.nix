@@ -260,12 +260,11 @@ in
           "Mod+MouseMiddle".action.close-window = [ ];
           "Mod+Tab".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
-          "Alt+O".action.fullscreen-window = [ ];
-          # Make the focused column fill the workspace (not true fullscreen)
-          "Alt+P".action.maximize-column = [ ];
 
-          # Resize focused column to exactly half the output width
-          "Alt+R".action.set-column-width = "50%";
+          "Alt+O".action.fullscreen-window = [ ];
+          "Alt+P".action.center-column = [ ];
+          "Alt+BracketLeft".action.set-column-width = "50%";
+          "Alt+BracketRight".action.maximize-column = [ ];
 
           # Clipboard history
           "Ctrl+Alt+H".action.spawn = [

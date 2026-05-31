@@ -55,11 +55,6 @@ in
           "ctrl+9=decrease_font_size:1"
           "ctrl+0=increase_font_size:1"
           "ctrl+shift+0=reset_font_size"
-
-          # vim keybind
-          "alt+s=activate_key_table:vim"
-          "vim/j=scroll_page_lines:1"
-          "vim/k=scroll_page_lines:-1"
         ];
       };
     };

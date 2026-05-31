@@ -80,6 +80,10 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
+          display-settings = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
         };
         version = 2;
       };
@@ -153,7 +157,7 @@ with lib;
                 id = "ActiveWindow";
                 colorizeIcons = false;
                 hideMode = "hidden";
-                maxWidth = 145;
+                maxWidth = 400;
                 scrollingMode = "hover";
                 showIcon = true;
                 showText = true;
@@ -244,13 +248,18 @@ with lib;
                 };
               }
               {
-                id = "Tray";
-                blacklist = [ ];
-                chevronColor = "none";
-                colorizeIcons = false;
-                drawerEnabled = true;
-                hidePassive = false;
-                pinned = [ ];
+                id = "Brightness";
+                applyToAllMonitors = false;
+                displayMode = "onhover";
+                iconColor = "none";
+                textColor = "none";
+              }
+              {
+                id = "Volume";
+                displayMode = "onhover";
+                iconColor = "none";
+                middleClickCommand = "pwvucontrol || pavucontrol";
+                textColor = "none";
               }
               {
                 id = "NotificationHistory";
@@ -268,20 +277,6 @@ with lib;
                 hideIfNotDetected = true;
                 showNoctaliaPerformance = false;
                 showPowerProfiles = false;
-              }
-              {
-                id = "Volume";
-                displayMode = "onhover";
-                iconColor = "none";
-                middleClickCommand = "pwvucontrol || pavucontrol";
-                textColor = "none";
-              }
-              {
-                id = "Brightness";
-                applyToAllMonitors = false;
-                displayMode = "onhover";
-                iconColor = "none";
-                textColor = "none";
               }
               {
                 id = "CustomButton";
@@ -317,10 +312,6 @@ with lib;
                 wheelUpExec = "";
                 wheelUpUpdateText = false;
                 wheelUpdateText = false;
-              }
-              {
-                id = "PowerProfile";
-                iconColor = "none";
               }
             ];
           };
