@@ -21,7 +21,6 @@
     ./modules/caddy.nix
     ./modules/atuin.nix
     ./modules/media.nix
-    ./modules/ollama.nix
   ];
 
   hosts.shares.enable = true;
@@ -40,7 +39,6 @@
   hosts.atuin.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
-  hosts.ollama.enable = true;
 
   systemd.services.loki = {
     after = [ "tailscaled.service" ];
