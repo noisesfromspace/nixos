@@ -7,7 +7,7 @@
   networking.hostName = "paddy";
 
   hosts = {
-    niri.enable = true;
+    desktop.enable = true;
     laptop.enable = true;
     secureboot.enable = true;
     tailscale.enable = true;

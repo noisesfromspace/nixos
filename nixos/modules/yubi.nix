@@ -62,7 +62,9 @@ in
          ENV{ID_BUS}=="usb",\
          ENV{ID_VENDOR_ID}=="1050",\
          ENV{ID_VENDOR}=="Yubico",\
-         RUN+="noctalia-shell ipc call lockScreen lock"
+         RUN+="${
+           lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+         } ipc call lockScreen lock"
       '';
     };
   };
