@@ -4,23 +4,10 @@ let
   # https://git.eisfunke.com/config/nixos/-/tree/main/packages/mastodon
   glitch-soc-src = pkgs.fetchgit {
     url = "https://git.eisfunke.com/config/nixos.git";
-    rev = "e3963eeb6021a85cdc4bd1a0427f89c2d8959642";
-    sha256 = "sha256-hbSgTwm0RlMCm4XUqBlc+JmZNnFq0LMo00zC2gl7vmc=";
+    rev = "b21ef5cb262459eae3711f83b03ffdf6cb46d653";
+    sha256 = "sha256-4x+UcHqG8lWPmAj7E/2sU18HYb56U2lEWl0hofM35HM=";
   };
   nym-libwg = pkgs.callPackage ./nym-libwg.nix { };
-
-  # Pin yarn-berry to 4.13.0 to work around 4.14.1 regression
-  # https://github.com/NixOS/nixpkgs/pull/512685
-  # https://github.com/yarnpkg/berry/issues/7089
-  yarn-berry = pkgs.yarn-berry.overrideAttrs (old: {
-    version = "4.13.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "yarnpkg";
-      repo = "berry";
-      tag = "@yarnpkg/cli/4.13.0";
-      hash = "sha256-FP15a2ueihDm6f/GdXsnqI5drVHo0EtbmrhCZfRdugQ=";
-    };
-  });
 in
 {
   inherit nym-libwg;
@@ -45,7 +32,7 @@ in
   info = pkgs.callPackage ./info.nix { };
   resume = pkgs.callPackage ./resume.nix { };
   stalwart-custom = pkgs.callPackage ./stalwart.nix { };
-  glitch-soc = pkgs.callPackage "${glitch-soc-src}/packages/mastodon" { inherit yarn-berry; };
+  glitch-soc = pkgs.callPackage "${glitch-soc-src}/packages/mastodon" { };
   nym-vpnd = pkgs.callPackage ./nym-vpnd.nix { inherit nym-libwg; };
   durdraw = pkgs.callPackage ./durdraw.nix { };
 }

@@ -279,12 +279,6 @@
     martijn: notif@thuis
   '';
 
-  # System-wide git config: ignore file permission changes (e.g., from /etc/nixos/flake)
-  environment.etc."gitconfig".text = ''
-    [core]
-      fileMode = false
-  '';
-
   environment.sessionVariables = {
     EDITOR = "nvim";
     REQUESTS_CA_BUNDLE = config.security.pki.caBundle; # python

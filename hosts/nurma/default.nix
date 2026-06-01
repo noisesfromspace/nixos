@@ -13,6 +13,11 @@
 
   # ssh-keygen -t ed25519 -C remote-build -f remote-build
   programs.ssh.extraConfig = ''
+    Host *.machine.thuis
+      ControlMaster auto
+      ControlPath ~/.ssh/control-%h-%p-%r
+      ControlPersist 10m
+
     Host eu.nixbuild.net
       PubkeyAcceptedKeyTypes ssh-ed25519
       ServerAliveInterval 60
