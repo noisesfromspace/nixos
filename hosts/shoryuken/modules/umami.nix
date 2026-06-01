@@ -35,7 +35,7 @@ in
       };
     };
 
-    geoipupdate = {
+    services.geoipupdate = {
       enable = true;
       settings = {
         EditionIDs = [ "GeoLite2-City" ];

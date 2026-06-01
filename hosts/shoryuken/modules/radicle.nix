@@ -152,7 +152,7 @@ in
               "rad:z2r9euHZW161kfQNxdF4apHddD3mm" # mq
               "rad:z2AdUML1AaZmUVidUJ4vwQDJhmvKg" # unaware
               "rad:z24gQBBitUHvTz4y8t4JrCNCPrfpG" # gettit
-              "rad:zb1FuXow3wJemDDPFWGFa49rNA4z"  # gpg-poc-T8044
+              "rad:zb1FuXow3wJemDDPFWGFa49rNA4z" # gpg-poc-T8044
             ];
           };
         };

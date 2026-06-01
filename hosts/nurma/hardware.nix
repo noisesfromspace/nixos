@@ -45,7 +45,7 @@
     "50-dhcp" = {
       matchConfig.Name = "enp11s0";
       networkConfig = {
-        DHCP = "no"; 
+        DHCP = "no";
         IPv6AcceptRA = true;
       };
       address = [

@@ -18,16 +18,18 @@ let
     ++ (lib.splitString " " cmd);
   noctaliaStr = cmd: "noctalia-shell ipc call " + cmd;
 
-  rotateScript = let
-    jq = "${pkgs.jq}/bin/jq";
-  in ''
-    current=$(niri msg --json outputs | ${jq} -r '.[] | select(.name=="eDP-1") | .transform')
-    if [ "$current" = "normal" ] || [ "$current" = "null" ]; then
-      niri msg output eDP-1 transform 90
-    else
-      niri msg output eDP-1 transform normal
-    fi
-  '';
+  rotateScript =
+    let
+      jq = "${pkgs.jq}/bin/jq";
+    in
+    ''
+      current=$(niri msg --json outputs | ${jq} -r '.[] | select(.name=="eDP-1") | .transform')
+      if [ "$current" = "normal" ] || [ "$current" = "null" ]; then
+        niri msg output eDP-1 transform 90
+      else
+        niri msg output eDP-1 transform normal
+      fi
+    '';
 
   oskToggle = pkgs.writeShellScriptBin "osk" ''
     PROG="wvkbd"

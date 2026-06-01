@@ -9,7 +9,7 @@
   home.homeDirectory = "/home/martijn";
   home.stateVersion = "24.05";
 
-  # Deploy error? 
+  # Deploy error?
   gtk.gtk4.theme = config.gtk.theme;
 
   imports = [
