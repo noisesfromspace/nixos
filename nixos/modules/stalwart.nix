@@ -202,38 +202,12 @@ in
           };
         };
 
-        # Sieve interpreter and system scripts
-        "sieve-system-interpreter" = {
-          dkimSignDomain = { "else" = "system('domain')"; };
-        };
-
-        "sieve-system-script" = {
-          shipping_filter = {
-            name = "shipping_filter";
-            isActive = true;
-            contents = ''
-              require ["fileinto", "envelope", "variables"];
-
-              if envelope :is "to" "shipping@boers.email" {
-                  fileinto "INBOX.Shipping";
-                  stop;
-              }
-
-              if envelope :is "to" "signups@boers.email" {
-                  fileinto "INBOX.Signups";
-                  stop;
-              }
-            '';
-          };
-        };
-
         session = {
           rcpt = {
             spf.verify = "relaxed"; # Verify SPF on incoming mail
             dkim.verify = true; # Verify DKIM signatures
             arc.verify = true; # Verify ARC chains
             dmarc.verify = true; # Verify DMARC policy
-            script = "shipping_filter";
 
             # DNSBL/RBL spam blacklist checking
             dnsbl = {

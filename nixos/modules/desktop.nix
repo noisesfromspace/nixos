@@ -164,12 +164,6 @@ in
       };
     };
 
-    # Niri module pulls in GNOME portals which enable gcr-ssh-agent.
-    # We already have programs.ssh.startAgent enabled system-wide.
-    services.gnome.gcr-ssh-agent.enable = mkForce false;
-
-    services.gnome.evolution-data-server.enable = true;
-
     # Portal configuration for Niri
     # xdg-desktop-portal-gnome and gnome-keyring are pulled in by the niri module.
     # We add xdg-desktop-portal-gtk as the fallback for file choosers and basic portals.

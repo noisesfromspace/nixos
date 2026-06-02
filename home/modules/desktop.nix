@@ -36,7 +36,6 @@ in
       with pkgs.kdePackages;
       [
         cheese # webcam
-        localsend # airdrop
         wvkbd-desktop # osk
         gnupg
         devenv
@@ -59,7 +58,6 @@ in
         # networking
         wireguard-tools # wg-quick
         podman-compose # replace for dud
-        nyx # tor debugging
 
         # forensics
         magika-cli # recognize filetype
@@ -79,11 +77,6 @@ in
         # messaging
         signal-desktop
         fractal # matrix-client
-
-        # DE utilities
-        pavucontrol # audio
-        wl-clipboard # clipboard
-        cliphist # manager
       ];
 
     # DBus secret service

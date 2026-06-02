@@ -22,7 +22,6 @@
     ./modules/nym.nix
     ./modules/ssh.nix
     ./modules/stalwart.nix
-    inputs.niri.nixosModules.niri
   ];
 
   age.secrets = {
