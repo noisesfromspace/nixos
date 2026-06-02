@@ -33,6 +33,7 @@ let
     "ci"
     "admin-1-mail"
     "analytics"
+    "sieve-1"
   ];
   rekkakenRecords = [
     "notifications"
@@ -40,6 +41,7 @@ let
     "vpn"
     "uptime"
     "admin-2-mail"
+    "sieve-2"
   ];
   tenshinRecords = [
     "chef"

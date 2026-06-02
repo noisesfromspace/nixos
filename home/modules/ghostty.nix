@@ -25,6 +25,7 @@ in
 
         scrollback-limit = 250 * 1024 * 1024;
         shell-integration-features = "ssh-env";
+        confirm-close-surface = "false";
 
         notify-on-command-finish = "unfocused";
         notify-on-command-finish-action = "notify";

@@ -140,7 +140,7 @@
               home-manager.nixosModules.home-manager
               lanzaboote.nixosModules.lanzaboote # secureboot
               nix-mineral.nixosModules.nix-mineral # schizo settings
-              inputs.niri.nixosModules.niri # window-manager
+              niri.nixosModules.niri # window-manager
 
               {
                 options.global = with lib; {
