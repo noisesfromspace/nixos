@@ -20,14 +20,14 @@
       IdentityFile /home/martijn/.ssh/my-nixbuild-key
   '';
 
-  nix = {
-    settings = {
-      substituters = [ "ssh://eu.nixbuild.net" ];
-      trusted-public-keys = [
-        "nixbuild.net/HCCJGO-1:CJ14jk1iYfkrCFCxEJXuaozznRwCIbvgQymwWZW3t94="
-      ];
-    };
-  };
+  # nix = {
+  #   settings = {
+  #     substituters = [ "ssh://eu.nixbuild.net" ];
+  #     trusted-public-keys = [
+  #       "nixbuild.net/HCCJGO-1:CJ14jk1iYfkrCFCxEJXuaozznRwCIbvgQymwWZW3t94="
+  #     ];
+  #   };
+  # };
 
   hosts.borg = {
     enable = true;
