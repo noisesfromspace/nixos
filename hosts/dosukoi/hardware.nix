@@ -47,6 +47,12 @@
       # Enable strict ARP filtering
       "net.ipv4.conf.all.arp_filter" = 1;
       "net.ipv4.conf.default.arp_filter" = 1;
+
+      # Prevent WebRTC/video call media streams from dying due to NAT timeouts.
+      # Defaults (30s/120s) are too short — a lost STUN keepalive (sent every 10-15s)
+      # causes the conntrack entry to expire, breaking the media stream.
+      "net.netfilter.nf_conntrack_udp_timeout" = 90;
+      "net.netfilter.nf_conntrack_udp_timeout_stream" = 300;
     };
     loader = {
       systemd-boot.enable = true;

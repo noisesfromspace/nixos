@@ -67,11 +67,11 @@
         ${pkgs.ethtool}/bin/ethtool -K peepee gso off tso off gro off
         ${pkgs.iproute2}/bin/tc qdisc replace dev peepee root cake \
             bandwidth 950Mbit \
-            rtt 10ms \
+            rtt 30ms \
             nat \
             overhead 12 \
-            diffserv3 \
-            ack-filter
+            diffserv4 \
+            no-ack-filter
       '';
       ExecStop = "${pkgs.iproute2}/bin/tc qdisc del dev peepee root";
     };

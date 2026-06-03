@@ -68,7 +68,6 @@ in
 
                 # --- INBOUND PORT FORWARDING RULES ---
                 iifname "peepee" oifname "lan" ip daddr ${hadouken} meta l4proto { tcp, udp } th dport 22000 ct state new accept comment "Syncthing IPv4";
-                iifname "peepee" oifname "lan" ip daddr ${tatsumaki} tcp dport 8333 ct state new accept comment "Bitcoin";
 
                 # --- GRANULAR INTER-LAN FORWARDING ---
                 iifname { "opt1" } oifname { "lan", "opt1", "wifi" } accept comment "opt1 free to do anything";
