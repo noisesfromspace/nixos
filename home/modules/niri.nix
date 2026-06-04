@@ -87,6 +87,7 @@ in
     home.packages = with pkgs; [
       swaybg
       wvkbd
+      iwgtk
       oskToggle # Expose your premium virtual keyboard runner to your PATH!
     ];
 
