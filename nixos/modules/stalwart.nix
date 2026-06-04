@@ -53,7 +53,6 @@ in
         465 # SMTPS
         587 # SMTP Submission
         993 # IMAPS
-        8629 # JMAP
       ];
     };
 
@@ -154,7 +153,6 @@ in
         };
 
         server = {
-          hostname = "admin-${toString cfg.nodeId}-mail.thuis";
           listener = {
             smtp = {
               bind = [ "[::]:25" ];
@@ -177,7 +175,7 @@ in
               tls.implicit = true;
             };
             http = {
-              bind = [ "[::]:8629" ];
+              bind = [ "127.0.0.1:8629" ];
               protocol = "http";
             };
           };
@@ -302,8 +300,6 @@ in
       ];
       requires = [ "tailscaled.service" ];
       wants = [ "stalwart-certs.service" ];
-      serviceConfig.Environment = [
-      ];
     };
 
     # Copy Caddy certificates to Stalwart directory with proper permissions

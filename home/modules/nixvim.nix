@@ -419,7 +419,6 @@ in
           enable = true;
           mockDevIcons = true;
           modules = {
-            files.enable = true; # file explorer
             extra.enable = true; # more picker sources
             icons.enable = true; # icons support for extensions
             git.enable = true; # git log/blame file
@@ -427,6 +426,11 @@ in
             completion.enable = true; # autocomplete
             notify.enable = true; # vim.notify capture
             surround.enable = true; # surround words with something
+
+            files = {
+              enable = true; # file explorer
+              options.lsp_timeout = 0;
+            };
 
             pick = {
               enable = true;
