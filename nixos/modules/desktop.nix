@@ -10,8 +10,6 @@ let
   cfg = config.hosts.desktop;
 in
 {
-  imports = [ ];
-
   options = {
     hosts.desktop = {
       enable = mkEnableOption "Base desktop (with Niri compositor)";
@@ -23,6 +21,8 @@ in
       enable = false;
       autoConnect = false;
     };
+
+    services.mullvad-vpn.enable = true;
 
     environment.sessionVariables = {
       TERM = "xterm-ghostty";

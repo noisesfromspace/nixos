@@ -69,6 +69,7 @@ in
         ent # test entropy files
         mat2 # remove metadata
         nmap # portscan
+        whatweb # web tech detection
         xca # certs
 
         # message utilities

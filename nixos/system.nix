@@ -62,6 +62,7 @@
 
     # core
     uutils-coreutils-noprefix
+    wl-clipboard-rs
     ripgrep
     openssl
     file

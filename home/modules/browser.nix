@@ -129,9 +129,14 @@ in
           Containers = {
             Default = [
               {
-                name = "Work";
+                name = "Container";
                 icon = "briefcase";
                 color = "yellow";
+              }
+              {
+                name = "Tor";
+                icon = "apple";
+                color = "green";
               }
             ];
           };

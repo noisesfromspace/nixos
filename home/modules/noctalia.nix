@@ -98,6 +98,10 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
+          mullvad = {
+            enabled = true;
+            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
+          };
         };
         version = 2;
       };
@@ -247,6 +251,9 @@ with lib;
                 };
               }
               {
+                id = "plugin:mullvad";
+              }
+              {
                 id = "plugin:display-settings";
               }
               {
@@ -260,6 +267,9 @@ with lib;
                   showNotifications = true;
                   terminalCommand = "kitty";
                 };
+              }
+              {
+                id = "plugin:bluetooth";
               }
               {
                 id = "Brightness";
