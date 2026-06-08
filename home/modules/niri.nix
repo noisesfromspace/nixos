@@ -272,8 +272,6 @@ in
           "Alt+P".action.center-column = [ ];
           "Alt+9".action.set-column-width = "50%";
           "Alt+0".action.maximize-column = [ ];
-          "Alt+BracketLeft".action.set-column-width = "50%";
-          "Alt+BracketRight".action.maximize-column = [ ];
 
           # Clipboard history
           "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
