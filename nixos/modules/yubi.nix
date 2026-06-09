@@ -37,11 +37,11 @@ in
       services = {
         sudo = {
           u2fAuth = true;
-          unixAuth = false;
+          unixAuth = true; # temp
         };
         polkit-1 = {
           u2fAuth = true;
-          unixAuth = false;
+          unixAuth = true; # temp
         };
       };
     };
