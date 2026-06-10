@@ -31,8 +31,6 @@ in
       u2f.settings = {
         authfile = config.age.secrets.u2fkeys.path;
         origin = "pam://nixos";
-        pinverification = true;
-        userverification = "preferred";
       };
       services = {
         sudo = {

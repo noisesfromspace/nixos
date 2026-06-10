@@ -221,7 +221,7 @@ with lib;
                 id = "plugin:privacy-indicator";
                 defaultSettings = {
                   activeColor = "primary";
-                  camFilterRegex = "";
+                  camFilterRegex = "wireplumber";
                   enableToast = true;
                   hideInactive = false;
                   iconSpacing = 4;
