@@ -471,6 +471,7 @@ in
               if vim.bo.buftype == "terminal" then
                 vim.opt_local.number = true
                 vim.opt_local.relativenumber = true
+                vim.opt_local.scrollback = 100000
               end
             end
           '';

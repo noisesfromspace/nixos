@@ -132,6 +132,10 @@
                     })
                     # bring in custom package on pkgs.custom-package
                     (final: prev: import ./pkgs { pkgs = final; })
+                    (final: prev: import ./pkgs/neovim-ghostty.nix {
+                      pkgs = prev;
+                      inherit (prev) lib stdenv fetchFromGitHub callPackage zig_0_15;
+                    })
                   ];
                 };
               }
