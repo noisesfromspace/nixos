@@ -104,7 +104,7 @@
 
     # forensics
     binutils # strings+ld
-    hexyl # hexviewer
+    xxd # hexviewer
     jless # cli json viewer
     jq # query json
     avml # make memory dump

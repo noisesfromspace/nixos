@@ -134,6 +134,22 @@ in
           '';
           desc = "Open a terminal running pi";
         };
+        Binary = {
+          command = helpers.mkRaw ''
+            function()
+              if vim.bo.binary then
+                vim.cmd("%!xxd -r")
+                vim.bo.binary = false
+                vim.notify("Binary mode off")
+              else
+                vim.bo.binary = true
+                vim.cmd("%!xxd")
+                vim.notify("Binary mode on — edit hex, then :Binary to convert back")
+              end
+            end
+          '';
+          desc = "Toggle binary file editing via xxd hex dump";
+        };
       };
 
       keymaps = with keymaps; [

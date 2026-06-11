@@ -18,7 +18,6 @@ for a good initial starting point for NixOS with flakes.
 | Service      | Description                                        | Configuration                                            |
 | ------------ | -------------------------------------------------- | -------------------------------------------------------- |
 | ACME         | ACME server for internal TLS certificates.         | [acme.nix](hosts/dosukoi/modules/acme.nix)               |
-| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/dosukoi/modules/adguard.nix)         |
 | Blocklist    | Manages a network-wide blocklist.                  | [blocklist.nix](hosts/dosukoi/modules/blocklist.nix)     |
 | Firewall     | Manages network traffic rules using nftables.      | [firewall.nix](hosts/dosukoi/modules/firewall.nix)       |
 | Interfaces   | Configures network interfaces and PPPoE.           | [interfaces.nix](hosts/dosukoi/modules/interfaces.nix)   |
@@ -32,7 +31,6 @@ for a good initial starting point for NixOS with flakes.
 | ----------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
 | Atuin                               | Shell history synchronization.                              | [atuin.nix](hosts/hadouken/modules/atuin.nix)           |
 | Bincache                            | Binary cache with Attic.                                    | [bincache.nix](hosts/hadouken/modules/bincache.nix)     |
-| Caddy WebDAV                        | Authenticated WebDAV endpoints with Coraza + WebDAV plugin. | [caddy.nix](hosts/hadouken/modules/caddy.nix)           |
 | Garage                              | Object storage (Garage API + UI) for media assets.          | [garage.nix](hosts/hadouken/modules/garage.nix)         |
 | Calendar (Radicale)                 | CalDAV and CardDAV server.                                  | [calendar.nix](hosts/hadouken/modules/calendar.nix)     |
 | Database stack                      | PostgreSQL, MinIO buckets, pgAdmin UI.                      | [database.nix](hosts/hadouken/modules/database.nix)     |
@@ -43,7 +41,6 @@ for a good initial starting point for NixOS with flakes.
 | Microbin                            | Self-hosted pastebin.                                       | [microbin.nix](hosts/hadouken/modules/microbin.nix)     |
 | Monitoring                          | Grafana, Loki, Promtail, Prometheus, InfluxDB.              | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
 | Paperless-NGX                       | Document management system.                                 | [paperless.nix](hosts/hadouken/modules/paperless.nix)   |
-| Proton Bridge                       | Headless ProtonMail bridge relays.                          | [proton.nix](hosts/hadouken/modules/proton.nix)         |
 | Shares                              | NFS exports for internal hosts.                             | [shares.nix](hosts/hadouken/modules/shares.nix)         |
 | Storage                             | ZFS datasets, syncoid replication.                          | [storage.nix](hosts/hadouken/modules/storage.nix)       |
 
@@ -64,15 +61,16 @@ for a good initial starting point for NixOS with flakes.
 | ----------------- | --------------------------------------------- | ---------------------------------------------------- |
 | Authoritative DNS | Authoritative DNS server.                     | [authdns.nix](nixos/modules/authdns.nix)             |
 | Derper            | Tailscale DERP server.                        | [derper.nix](nixos/modules/derper.nix)               |
-| Caddy (shoryuken) | Reverse proxy for boers.email + static sites. | [caddy.nix](hosts/shoryuken/modules/caddy.nix)       |
+| Caddy             | Reverse proxy for boers.email + static sites. | [caddy.nix](hosts/shoryuken/modules/caddy.nix)       |
 | Endlessh          | SSH tarpit.                                   | [endlessh.nix](hosts/shoryuken/modules/endlessh.nix) |
 | Radicle           | Radicle seed node + explorer.                 | [radicle.nix](hosts/shoryuken/modules/radicle.nix)   |
+| Umami             | Self-hosted web analytics.                    | [umami.nix](hosts/shoryuken/modules/umami.nix)       |
 
 #### Bitcoin Node
 
-| Service | Description   | Configuration                                      |
-| ------- | ------------- | -------------------------------------------------- |
-| Bitcoin | Bitcoin node. | [bitcoin.nix](hosts/tatsumaki/modules/bitcoin.nix) |
+| Service      | Description                                        | Configuration                                            |
+| ------------ | -------------------------------------------------- | -------------------------------------------------------- |
+| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/tatsumaki/modules/adguard.nix)       |
 
 #### WiFi AP
 
