@@ -200,11 +200,6 @@ in
         layout = {
           gaps = 7;
 
-          # Default new columns to 50% width so two windows fit side-by-side
-          default-column-width = {
-            proportion = 0.5;
-          };
-
           focus-ring = {
             enable = true;
             width = 2;
@@ -315,11 +310,11 @@ in
             repeat = true;
           };
           "Ctrl+Alt+I" = {
-            action.set-window-height = "-128";
+            action.set-window-height = "+128";
             repeat = true;
           };
           "Ctrl+Alt+K" = {
-            action.set-window-height = "+128";
+            action.set-window-height = "-128";
             repeat = true;
           };
 

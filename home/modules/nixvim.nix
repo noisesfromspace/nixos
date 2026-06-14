@@ -120,7 +120,6 @@ in
               vim.bo.buftype = "nofile"
               vim.bo.bufhidden = "hide"
               vim.bo.swapfile = false
-              vim.api.nvim_buf_set_name(0, "[scratch]")
             end
           '';
           desc = "Create a new scratch buffer";
