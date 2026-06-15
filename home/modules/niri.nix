@@ -200,6 +200,11 @@ in
         layout = {
           gaps = 7;
 
+          # Default new columns to 50% width so two windows fit side-by-side
+          default-column-width = {
+            proportion = 0.5;
+          };
+
           focus-ring = {
             enable = true;
             width = 2;

@@ -187,6 +187,29 @@
         "type": "github"
       }
     },
+    "dmatools": {
+      "inputs": {
+        "flake-parts": "flake-parts_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-303193": "nixpkgs-303193",
+        "treefmt-nix": "treefmt-nix"
+      },
+      "locked": {
+        "lastModified": 1714751052,
+        "narHash": "sha256-Srh2rcrDk9oWJnSZRyhfqWRRLQTop/g09KkO8KkqviI=",
+        "owner": "tie-infra",
+        "repo": "dmatools",
+        "rev": "efbaae026cc5b1f0d4763546ca6ac49edfbb8ce5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tie-infra",
+        "repo": "dmatools",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -286,6 +309,26 @@
     },
     "flake-parts_2": {
       "inputs": {
+        "nixpkgs-lib": [
+          "dmatools",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1712014858,
+        "narHash": "sha256-sB4SWl2lX95bExY2gMFG5HIzvva5AVMJd4Igm+GpZNw=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "9126214d0a59633752a136528f5f3b9aa8565b7d",
+        "type": "github"
+      },
+      "original": {
+        "id": "flake-parts",
+        "type": "indirect"
+      }
+    },
+    "flake-parts_3": {
+      "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
@@ -302,7 +345,7 @@
         "type": "github"
       }
     },
-    "flake-parts_3": {
+    "flake-parts_4": {
       "inputs": {
         "nixpkgs-lib": [
           "nixvim",
@@ -323,7 +366,7 @@
         "type": "github"
       }
     },
-    "flake-parts_4": {
+    "flake-parts_5": {
       "inputs": {
         "nixpkgs-lib": [
           "stylix",
@@ -636,7 +679,7 @@
     "nix-mineral": {
       "inputs": {
         "flake-compat": "flake-compat_3",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "ndg": "ndg",
         "nixpkgs": [
           "nixpkgs"
@@ -734,6 +777,21 @@
         "repo": "nixpkgs",
         "rev": "a62e6edd6d5e1fa0329b8653c801147986f8d446",
         "type": "github"
+      }
+    },
+    "nixpkgs-303193": {
+      "locked": {
+        "lastModified": 1713082163,
+        "narHash": "sha256-dSdzt64OwXJ/Cq6I+VBKjjkd+W6DCeIRCZyr75Yw99c=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "dd8e61da4aadb1288e9db2ded077bb74628c28ac",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "rev": "dd8e61da4aadb1288e9db2ded077bb74628c28ac",
+        "type": "indirect"
       }
     },
     "nixpkgs-lib": {
@@ -846,7 +904,7 @@
     },
     "nixvim": {
       "inputs": {
-        "flake-parts": "flake-parts_3",
+        "flake-parts": "flake-parts_4",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -894,7 +952,7 @@
           "nixpkgs"
         ],
         "systems": "systems_3",
-        "treefmt-nix": "treefmt-nix"
+        "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
         "lastModified": 1780194487,
@@ -963,6 +1021,7 @@
         "agenix": "agenix",
         "determinate": "determinate",
         "disko": "disko",
+        "dmatools": "dmatools",
         "hardware": "hardware",
         "hardware-fork": "hardware-fork",
         "home-manager": "home-manager_2",
@@ -1024,7 +1083,7 @@
         "base16-helix": "base16-helix",
         "base16-vim": "base16-vim",
         "firefox-gnome-theme": "firefox-gnome-theme",
-        "flake-parts": "flake-parts_4",
+        "flake-parts": "flake-parts_5",
         "gnome-shell": "gnome-shell",
         "nixpkgs": [
           "nixpkgs"
@@ -1176,6 +1235,27 @@
       }
     },
     "treefmt-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "dmatools",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1714058656,
+        "narHash": "sha256-Qv4RBm4LKuO4fNOfx9wl40W2rBbv5u5m+whxRYUMiaA=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "c6aaf729f34a36c445618580a9f95a48f5e4e03f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": [
           "noctalia",

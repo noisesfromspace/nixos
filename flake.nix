@@ -2,6 +2,10 @@
   description = "Everything, everywhere, all at once";
 
   inputs = {
+    dmatools = {
+      url = "github:tie-infra/dmatools";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
     hardware.url = "github:NixOS/nixos-hardware";
@@ -191,7 +195,11 @@
         # });
       };
 
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (system: (import ./pkgs nixpkgs.legacyPackages.${system}) // {
+        memprocfs = ((import nixpkgs { inherit system; overlays = [ inputs.dmatools.overlays.default ]; }).memprocfs.overrideAttrs (old: {
+          env = (old.env or {}) // { NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration"; };
+        }));
+      });
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
 
       # ------------ Cloud ------------
