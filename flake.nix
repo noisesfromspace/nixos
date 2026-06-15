@@ -3,7 +3,7 @@
 
   inputs = {
     dmatools = {
-      url = "github:tie-infra/dmatools";
+      url = "github:tie-infra/dmatools/efbaae026cc5b1f0d4763546ca6ac49edfbb8ce5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
