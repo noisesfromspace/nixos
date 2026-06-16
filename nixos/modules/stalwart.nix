@@ -95,6 +95,7 @@ in
             config = ''
               {
                 mode: "peer",
+                ###
                 scouting: {
                   multicast: {
                     enabled: false

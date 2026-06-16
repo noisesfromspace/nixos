@@ -10,6 +10,24 @@ let
   cfg = config.maatwerk.sync;
   rcloneBin = lib.getExe pkgs.rclone;
   rcloneConfig = config.age.secrets.sync-rclone-conf.path;
+  bisyncCacheDir = "${config.home.homeDirectory}/.cache/rclone/bisync";
+
+  restoreListings = pkgs.writeShellScript "rclone-restore-listings" ''
+    set -e
+    cache="$1"
+    restored=0
+    for f in "$cache"/*.lst-old; do
+      [ -f "$f" ] || continue
+      lst="''${f%-old}"
+      if [ ! -f "$lst" ]; then
+        cp "$f" "$lst"
+        restored=1
+      fi
+    done
+    if [ "$restored" -eq 1 ]; then
+      echo "rclone-restore-listings: restored missing .lst files from -old backups"
+    fi
+  '';
 
   syncPairs = [
     {
@@ -37,6 +55,7 @@ let
       };
       Service = {
         Type = "oneshot";
+        ExecStartPre = "${restoreListings} ${bisyncCacheDir}";
         ExecStart = "${rcloneBin} --config ${rcloneConfig} bisync ${path} ${remote} --conflict-resolve newer --create-empty-src-dirs --resilient --max-lock 2m";
         IOSchedulingClass = "idle";
         Nice = 19;
