@@ -72,6 +72,7 @@ in
 
       globals = {
         mapleader = " ";
+        maplocalleader = "\\";
       };
       opts = {
         number = true; # Show line numbers
@@ -547,38 +548,23 @@ in
 
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
-
-        vim.cmd.packadd('nvim.undotree')
+        vim.cmd.packadd('nvim.undotree'); 
         require('vim._core.ui2').enable()
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')
-          if file == "" then
-            return vim.notify('Current buffer has no file path', vim.log.levels.WARN)
-          end
-
+          if file == ''' then return vim.notify('No file path', vim.log.levels.WARN) end
           local result = file
-
           if use_visual then
-            -- Check if currently in any Visual mode (v, V, or Ctrl-V)
-            local in_visual = vim.fn.mode():match('^[vV\22]')
-            
-            -- Grab dynamic visual marks or fallback to last-used visual marks
-            local l1 = vim.fn.line(in_visual and 'v' or "'<")
-            local l2 = vim.fn.line(in_visual and '.' or "'>")
-
-            if l1 > 0 and l2 > 0 then
-              result = string.format('%s:%d-%d', file, math.min(l1, l2), math.max(l1, l2))
+            local mode = vim.fn.mode():match('[vV\22]')
+            local start_line = vim.fn.line(mode and 'v' or "'<")
+            local end_line = vim.fn.line(mode and '.' or "'>")
+            if start_line > 0 then
+              result = file .. ':' .. math.min(start_line, end_line) .. '-' .. math.max(start_line, end_line)
             end
           end
-
-          vim.fn.setreg('"', result)
-          vim.notify('Yanked: ' .. result)
-
-          -- Exit visual mode if we were in it
-          if use_visual then
-            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true)
-          end
+          vim.fn.setreg('+', result); vim.fn.setreg('"', result); vim.notify('Yanked: ' .. result)
+          if use_visual then vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true) end
         end
       '';
 
