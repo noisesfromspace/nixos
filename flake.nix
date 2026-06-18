@@ -7,9 +7,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # https://github.com/NixOS/nixos-hardware/pull/1912
+    hardware.url = "github:cooparo/nixos-hardware/dell-xps-14-da14260";
+
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
-    hardware.url = "github:NixOS/nixos-hardware";
-    hardware-fork.url = "github:noisesfromspace/nixos-hardware";
 
     nixos-raspberrypi = {
       # https://github.com/nvmd/nixos-raspberrypi/pull/131
@@ -136,10 +138,19 @@
                     })
                     # bring in custom package on pkgs.custom-package
                     (final: prev: import ./pkgs { pkgs = final; })
-                    (final: prev: import ./pkgs/neovim-ghostty.nix {
-                      pkgs = prev;
-                      inherit (prev) lib stdenv fetchFromGitHub callPackage zig_0_15;
-                    })
+                    (
+                      final: prev:
+                      import ./pkgs/neovim-ghostty.nix {
+                        pkgs = prev;
+                        inherit (prev)
+                          lib
+                          stdenv
+                          fetchFromGitHub
+                          callPackage
+                          zig_0_15
+                          ;
+                      }
+                    )
                   ];
                 };
               }
@@ -195,11 +206,23 @@
         # });
       };
 
-      packages = forAllSystems (system: (import ./pkgs nixpkgs.legacyPackages.${system}) // {
-        memprocfs = ((import nixpkgs { inherit system; overlays = [ inputs.dmatools.overlays.default ]; }).memprocfs.overrideAttrs (old: {
-          env = (old.env or {}) // { NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration"; };
-        }));
-      });
+      packages = forAllSystems (
+        system:
+        (import ./pkgs nixpkgs.legacyPackages.${system})
+        // {
+          memprocfs = (
+            (import nixpkgs {
+              inherit system;
+              overlays = [ inputs.dmatools.overlays.default ];
+            }).memprocfs.overrideAttrs
+              (old: {
+                env = (old.env or { }) // {
+                  NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration";
+                };
+              })
+          );
+        }
+      );
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
 
       # ------------ Cloud ------------
@@ -244,7 +267,7 @@
       };
       nixosConfigurations.paddy = importSystem "paddy" {
         system = "x86_64-linux";
-        modules = [ inputs.hardware-fork.nixosModules.dell-da14250 ];
+        modules = [ inputs.hardware.nixosModules.dell-xps-14-da14260 ];
       };
       nixosConfigurations.donk = importSystem "donk" {
         system = "x86_64-linux";

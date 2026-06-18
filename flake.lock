@@ -472,30 +472,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1780065812,
-        "narHash": "sha256-SCSLUKBmwlSLGQ8Xbr8PjRFtiHNk0l9ktqkcmqdBkfE=",
-        "owner": "NixOS",
+        "lastModified": 1781606227,
+        "narHash": "sha256-c9YAcaH1dr4IwhPnC9W/KaZTA49k8uMVh55fZ2gW3+Q=",
+        "owner": "cooparo",
         "repo": "nixos-hardware",
-        "rev": "b76b5639c0593e0aeb0b5879ad62d4b30596c144",
+        "rev": "7243316dae6153eaef9359732d53d9f085668c43",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "repo": "nixos-hardware",
-        "type": "github"
-      }
-    },
-    "hardware-fork": {
-      "locked": {
-        "lastModified": 1765121810,
-        "narHash": "sha256-Zx0+qTeqyO8RYoYzwGcaHcMItVqV4xmgl4SDDiZrALU=",
-        "owner": "noisesfromspace",
-        "repo": "nixos-hardware",
-        "rev": "7d6c25ea467d52163ee7ea5c23b591eda05461c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "noisesfromspace",
+        "owner": "cooparo",
+        "ref": "dell-xps-14-da14260",
         "repo": "nixos-hardware",
         "type": "github"
       }
@@ -1024,7 +1010,6 @@
         "disko": "disko",
         "dmatools": "dmatools",
         "hardware": "hardware",
-        "hardware-fork": "hardware-fork",
         "home-manager": "home-manager_2",
         "jail-nix": "jail-nix",
         "lanzaboote": "lanzaboote",

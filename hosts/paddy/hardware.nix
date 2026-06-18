@@ -4,64 +4,16 @@
   modulesPath,
   ...
 }:
-let
-  intel-vision-driver = config.boot.kernelPackages.callPackage (
-    {
-      stdenv,
-      lib,
-      fetchFromGitHub,
-      kernel,
-    }:
-    stdenv.mkDerivation {
-      pname = "intel-vision-drivers";
-      version = "master";
-
-      src = fetchFromGitHub {
-        owner = "intel";
-        repo = "vision-drivers";
-        rev = "master";
-        hash = "sha256-i/qZN8GXyqaE6n6pRtxQLdmGhmPDjoArzVvflDmwuSs=";
-      };
-
-      hardeningDisable = [
-        "pic"
-        "format"
-      ];
-      nativeBuildInputs = kernel.moduleBuildDependencies;
-
-      buildPhase = ''
-        runHook preBuild
-        make -C ${kernel.dev}/lib/modules/${kernel.modDirVersion}/build M=$(pwd) modules
-        runHook postBuild
-      '';
-
-      installPhase = ''
-        runHook preInstall
-        mkdir -p $out/lib/modules/${kernel.modDirVersion}/extra
-        cp intel_cvs.ko $out/lib/modules/${kernel.modDirVersion}/extra/
-        runHook postInstall
-      '';
-
-      meta = with lib; {
-        description = "Intel Vision Drivers (CVS)";
-        license = licenses.gpl2Only;
-        platforms = platforms.linux;
-      };
-    }
-  ) { };
-in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
   boot = {
-    # kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [
       "kvm-intel"
       "intel_cvs"
     ];
-    extraModulePackages = [ intel-vision-driver ];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
