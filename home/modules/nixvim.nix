@@ -276,11 +276,6 @@ in
           command = "Git log --patch --max-count=25";
           modes = [ "n" ];
         })
-        (cmd {
-          key = "go";
-          desc = "Open file in source control";
-          command = "GitPortal";
-        })
         (lua {
           key = "g\\";
           desc = "Show buffer changes";
@@ -393,8 +388,8 @@ in
       };
 
       plugins = {
-        # Edit quickfix like buffer
         quicker.enable = true;
+        image.enable = true;
 
         neogit = {
           enable = true;
@@ -416,19 +411,6 @@ in
               };
             };
           };
-        };
-
-        gitportal = {
-          enable = true; # open gh or gitlab web
-          package = pkgs.vimPlugins.gitportal-nvim.overrideAttrs {
-            src = pkgs.fetchFromCodeberg {
-              owner = "martijnboers";
-              repo = "gitportal.nvim";
-              rev = "154c4b9633aebb9a0c588f0870a1a6107f870b78";
-              hash = "sha256-rmHKGNea1JNjkEwfkHShAgUWnuiqFbFZ4DjkiqYcYWA=";
-            };
-          };
-          settings.always_use_commit_hash_in_url = true;
         };
 
         mini = {

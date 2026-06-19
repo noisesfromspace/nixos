@@ -15,34 +15,34 @@ for a good initial starting point for NixOS with flakes.
 
 #### Router
 
-| Service      | Description                                        | Configuration                                            |
-| ------------ | -------------------------------------------------- | -------------------------------------------------------- |
-| ACME         | ACME server for internal TLS certificates.         | [acme.nix](hosts/dosukoi/modules/acme.nix)               |
-| Blocklist    | Manages a network-wide blocklist.                  | [blocklist.nix](hosts/dosukoi/modules/blocklist.nix)     |
-| Firewall     | Manages network traffic rules using nftables.      | [firewall.nix](hosts/dosukoi/modules/firewall.nix)       |
-| Interfaces   | Configures network interfaces and PPPoE.           | [interfaces.nix](hosts/dosukoi/modules/interfaces.nix)   |
-| ntopng       | Network traffic monitoring tool.                   | [ntopng.nix](hosts/dosukoi/modules/ntopng.nix)           |
-| Vaultwarden  | Password manager (Bitwarden compatible).           | [vaultwarden.nix](hosts/dosukoi/modules/vaultwarden.nix) |
-| WireGuard    | VPN tunnel.                                        | [wireguard.nix](hosts/dosukoi/modules/wireguard.nix)     |
+| Service     | Description                                   | Configuration                                            |
+| ----------- | --------------------------------------------- | -------------------------------------------------------- |
+| ACME        | ACME server for internal TLS certificates.    | [acme.nix](hosts/dosukoi/modules/acme.nix)               |
+| Blocklist   | Manages a network-wide blocklist.             | [blocklist.nix](hosts/dosukoi/modules/blocklist.nix)     |
+| Firewall    | Manages network traffic rules using nftables. | [firewall.nix](hosts/dosukoi/modules/firewall.nix)       |
+| Interfaces  | Configures network interfaces and PPPoE.      | [interfaces.nix](hosts/dosukoi/modules/interfaces.nix)   |
+| ntopng      | Network traffic monitoring tool.              | [ntopng.nix](hosts/dosukoi/modules/ntopng.nix)           |
+| Vaultwarden | Password manager (Bitwarden compatible).      | [vaultwarden.nix](hosts/dosukoi/modules/vaultwarden.nix) |
+| WireGuard   | VPN tunnel.                                   | [wireguard.nix](hosts/dosukoi/modules/wireguard.nix)     |
 
 #### Main file server
 
-| Service                             | Description                                                 | Configuration                                           |
-| ----------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
-| Atuin                               | Shell history synchronization.                              | [atuin.nix](hosts/hadouken/modules/atuin.nix)           |
-| Bincache                            | Binary cache with Attic.                                    | [bincache.nix](hosts/hadouken/modules/bincache.nix)     |
-| Garage                              | Object storage (Garage API + UI) for media assets.          | [garage.nix](hosts/hadouken/modules/garage.nix)         |
-| Calendar (Radicale)                 | CalDAV and CardDAV server.                                  | [calendar.nix](hosts/hadouken/modules/calendar.nix)     |
-| Database stack                      | PostgreSQL, MinIO buckets, pgAdmin UI.                      | [database.nix](hosts/hadouken/modules/database.nix)     |
-| Immich                              | Self-hosted photo and video backup solution.                | [immich.nix](hosts/hadouken/modules/immich.nix)         |
-| Mastodon (glitch-soc) & Fedifetcher | Federated social media server.                              | [mastodon.nix](hosts/hadouken/modules/mastodon.nix)     |
-| Matrix Synapse                      | Secure, decentralized communication server.                 | [matrix.nix](hosts/hadouken/modules/matrix.nix)         |
-| Media stack                         | Jellyfin, Jellyseerr and Syncthing.                         | [media.nix](hosts/hadouken/modules/media.nix)           |
-| Microbin                            | Self-hosted pastebin.                                       | [microbin.nix](hosts/hadouken/modules/microbin.nix)     |
-| Monitoring                          | Grafana, Loki, Promtail, Prometheus, InfluxDB.              | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
-| Paperless-NGX                       | Document management system.                                 | [paperless.nix](hosts/hadouken/modules/paperless.nix)   |
-| Shares                              | NFS exports for internal hosts.                             | [shares.nix](hosts/hadouken/modules/shares.nix)         |
-| Storage                             | ZFS datasets, syncoid replication.                          | [storage.nix](hosts/hadouken/modules/storage.nix)       |
+| Service                             | Description                                        | Configuration                                           |
+| ----------------------------------- | -------------------------------------------------- | ------------------------------------------------------- |
+| Atuin                               | Shell history synchronization.                     | [atuin.nix](hosts/hadouken/modules/atuin.nix)           |
+| Bincache                            | Binary cache with Attic.                           | [bincache.nix](hosts/hadouken/modules/bincache.nix)     |
+| Garage                              | Object storage (Garage API + UI) for media assets. | [garage.nix](hosts/hadouken/modules/garage.nix)         |
+| Calendar (Radicale)                 | CalDAV and CardDAV server.                         | [calendar.nix](hosts/hadouken/modules/calendar.nix)     |
+| Database stack                      | PostgreSQL, MinIO buckets, pgAdmin UI.             | [database.nix](hosts/hadouken/modules/database.nix)     |
+| Immich                              | Self-hosted photo and video backup solution.       | [immich.nix](hosts/hadouken/modules/immich.nix)         |
+| Mastodon (glitch-soc) & Fedifetcher | Federated social media server.                     | [mastodon.nix](hosts/hadouken/modules/mastodon.nix)     |
+| Matrix Synapse                      | Secure, decentralized communication server.        | [matrix.nix](hosts/hadouken/modules/matrix.nix)         |
+| Media stack                         | Jellyfin, Jellyseerr and Syncthing.                | [media.nix](hosts/hadouken/modules/media.nix)           |
+| Microbin                            | Self-hosted pastebin.                              | [microbin.nix](hosts/hadouken/modules/microbin.nix)     |
+| Monitoring                          | Grafana, Loki, Promtail, Prometheus, InfluxDB.     | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
+| Paperless-NGX                       | Document management system.                        | [paperless.nix](hosts/hadouken/modules/paperless.nix)   |
+| Shares                              | NFS exports for internal hosts.                    | [shares.nix](hosts/hadouken/modules/shares.nix)         |
+| Storage                             | ZFS datasets, syncoid replication.                 | [storage.nix](hosts/hadouken/modules/storage.nix)       |
 
 #### Cloud #1
 
@@ -68,9 +68,9 @@ for a good initial starting point for NixOS with flakes.
 
 #### Bitcoin Node
 
-| Service      | Description                                        | Configuration                                            |
-| ------------ | -------------------------------------------------- | -------------------------------------------------------- |
-| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/tatsumaki/modules/adguard.nix)       |
+| Service      | Description                                        | Configuration                                      |
+| ------------ | -------------------------------------------------- | -------------------------------------------------- |
+| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/tatsumaki/modules/adguard.nix) |
 
 #### WiFi AP
 
