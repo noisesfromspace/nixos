@@ -220,8 +220,8 @@ in
         }
         {
           mode = "t";
-          key = "<C-esc>";
-          # :tnoremap <S-Esc> <Esc>
+          key = "<M-Esc>";
+          # :tnoremap <M-Esc> <Esc>
           action = "<Esc>";
           options = {
             silent = true;
@@ -531,6 +531,7 @@ in
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
         vim.cmd.packadd('nvim.undotree'); 
+        vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
