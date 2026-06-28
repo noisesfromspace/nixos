@@ -15,6 +15,7 @@ in
       (pkgs.mdformat.withPlugins (p: [
         p.mdformat-beautysh
         p.mdformat-footnote
+        p.mdformat-wikilink
         p.mdformat-frontmatter
         p.mdformat-gfm
       ]))
@@ -42,6 +43,11 @@ in
           enable = true;
           settings = {
             stop_after_first = true;
+            formatters = {
+              mdformat = {
+                args = [ "--number" "-" ];
+              };
+            };
             formatters_by_ft = {
               css = [ "biome" ];
               html = [ "prettier" ];
