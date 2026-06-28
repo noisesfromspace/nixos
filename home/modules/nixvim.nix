@@ -388,7 +388,6 @@ in
 
       plugins = {
         quicker.enable = true;
-        image.enable = true;
 
         neogit = {
           enable = true;

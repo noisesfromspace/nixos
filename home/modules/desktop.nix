@@ -42,7 +42,6 @@ in
         # file support
         zathura # pdf
         imv # image
-        mpv # video
         mousepad # gui-notepad
         imagemagick # convert images
         nurl # nix fetchUrl
@@ -84,6 +83,14 @@ in
 
     # Power notifications
     services.poweralertd.enable = true;
+
+    programs.mpv = {
+      enable = true;
+      config = {
+        vo = "dmabuf-wayland";
+        hwdec = "auto-safe";
+      };
+    };
 
     programs.gpg = {
       enable = true;
