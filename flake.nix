@@ -204,6 +204,7 @@
           src = prev.requireFile {
             name = "linuxx64-26.04.0.105.tar.gz";
             sha256 = "sha256-qPIdL+i9mevCopJj8GfAVQ223zOuw12ZWS812WhYhs4=";
+            url = "https://www.citrix.com/downloads/workspace-app/linux/workspace-app-for-linux-latest.html";
           };
         });
         # strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
