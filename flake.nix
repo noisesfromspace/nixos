@@ -29,12 +29,12 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
 
     lanzaboote = {
       # https://github.com/nix-community/lanzaboote/releases
-      url = "github:nix-community/lanzaboote/v1.0.0";
+      url = "github:nix-community/lanzaboote/v1.1.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -70,7 +70,7 @@
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      url = "github:noctalia-dev/noctalia/legacy-v4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -199,6 +199,13 @@
       # prev = unaltered (before overlays)
       # final = after overlay mods, like rec keyword
       overlays = final: prev: {
+        citrix-workspace = prev.citrix-workspace.overrideAttrs (old: {
+          version = "26.04.0.105";
+          src = prev.requireFile {
+            name = "linuxx64-26.04.0.105.tar.gz";
+            sha256 = "sha256-qPIdL+i9mevCopJj8GfAVQ223zOuw12ZWS812WhYhs4=";
+          };
+        });
         # strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
         #   dontStrip = true;
         #   dontPatchELF = true;

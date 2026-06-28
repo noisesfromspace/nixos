@@ -61,9 +61,6 @@ with lib;
     programs.noctalia-shell = {
       enable = true;
       systemd.enable = true;
-      package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-        calendarSupport = true;
-      };
 
       plugins = {
         sources = [
@@ -602,38 +599,6 @@ with lib;
         noctaliaPerformance = {
           disableWallpaper = true;
           disableDesktopWidgets = true;
-        };
-
-        dock = {
-          enabled = true;
-          position = "bottom";
-          displayMode = "auto_hide";
-          dockType = "floating";
-          backgroundOpacity = lib.mkForce 1;
-          floatingRatio = 1;
-          size = 1;
-          onlySameOutput = true;
-          monitors = [ ];
-          pinnedApps = [ ];
-          colorizeIcons = false;
-          showLauncherIcon = false;
-          launcherPosition = "end";
-          launcherUseDistroLogo = false;
-          launcherIcon = "";
-          launcherIconColor = "none";
-          pinnedStatic = false;
-          inactiveIndicators = false;
-          groupApps = false;
-          groupContextMenuMode = "extended";
-          groupClickAction = "cycle";
-          groupIndicatorStyle = "dots";
-          deadOpacity = 0.6;
-          animationSpeed = 1;
-          sitOnFrame = false;
-          showDockIndicator = false;
-          indicatorThickness = 3;
-          indicatorColor = "primary";
-          indicatorOpacity = 0.6;
         };
 
         network = {

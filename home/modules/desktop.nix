@@ -35,7 +35,6 @@ in
       with pkgs;
       with pkgs.kdePackages;
       [
-        cheese # webcam
         wvkbd-desktop # osk
         gnupg
         devenv
@@ -53,7 +52,7 @@ in
         python313
 
         # work
-        citrix_workspace
+        citrix-workspace
 
         # networking
         wireguard-tools # wg-quick

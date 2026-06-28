@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }:
 with lib;
@@ -484,7 +483,7 @@ in
           callback = helpers.mkRaw ''
             function()
               vim.opt_local.linebreak = true
-              vim.opt_local.textwidth = 80
+              vim.opt_local.textwidth = 120
             end
           '';
         }
