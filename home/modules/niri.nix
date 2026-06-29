@@ -241,7 +241,7 @@ in
 
           touchpad = lib.mkIf cfg.isLaptop {
             natural-scroll = true;
-            scroll-factor = 0.8;
+            scroll-factor = 0.5;
           };
         };
 

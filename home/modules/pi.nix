@@ -14,7 +14,12 @@ let
   piWrapped = pkgs.symlinkJoin {
     name = "pi-coding-agent";
     buildInputs = [ pkgs.makeWrapper ];
-    paths = [ pkgs.pi-coding-agent ];
+    paths = [
+      (pkgs.writeShellScriptBin "pi" ''
+        exec ${pkgs.nodejs_22}/bin/node ${config.home.homeDirectory}/.pi/agent/node_modules/@earendil-works/pi-coding-agent/dist/cli.js "$@"
+      '')
+      pkgs.nodejs_22
+    ];
     postBuild = ''
       wrapProgram $out/bin/pi \
         --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
