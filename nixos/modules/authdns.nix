@@ -47,9 +47,6 @@ let
     mta-sts               IN      CNAME   @
     _mta-sts              IN      TXT     "v=STSv1; id=1"
 
-    ; TLS Reporting
-    _smtp._tls            IN      TXT     "v=TLSRPTv1; rua=mailto:tlsrpt@${domain}"
-
     ; Autoconfiguration for email clients
     autoconfig            IN      CNAME   @
     autodiscover          IN      CNAME   @
@@ -93,7 +90,7 @@ let
         ; openssl x509 -in cert.pem -pubkey -noout | openssl pkey -pubin -outform DER | openssl sha256
         ;
         ; TODO: Add hash after certificates are generated
-        ; _25._tcp.plebian.nl.    IN      TLSA    3 1 1 <SHA256_HASH_OF_PUBLIC_KEY>
+        ; _25._tcp            IN      TLSA    3 1 1 <SHA256_HASH_OF_PUBLIC_KEY>
       ''
       + mkStalwartEmail "plebian.nl";
     }
@@ -126,9 +123,9 @@ let
         202604e._domainkey IN TXT   "v=DKIM1; k=ed25519; h=sha256; p=aKwl+KIQgsgqwMysx3kVNDbeFYlBiRxAqUHNn7LpaL4="
         202604r._domainkey IN TXT   "v=DKIM1; k=rsa; h=sha256; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzAOjSgbHsF6mRggl7BgkUCx+82wSPhB29TzsEY7vsTMkFw5b77o24QN6/mi7nq546QFIiQGg37R4YeCJSYTYoo26zoNsQXSDOT0idg+547rMSaTM8NVi5wLZjX4NCGkzqkofqjcDPbUk1xYMcxZ5LRp10vOfnljSXF1ftFfacmv6m/fHdaw6eHU" "SByEc+BGl/MXOtL9bMf4n4RJqydSCVysC3JtWyZFdxx/ZoSiFdME/HBVPnmwc5bgRXEF9beDDqxYh7QCw5v0Qb2UJr0A7LH/RlOMnUZBw+yVhjS/nz8pGpiuybOvAdTmaxi5Bsu5FzLJSXIthOY0LxHPJs2AmmQIDAQAB"
 
-        seed._radicle-node._tcp.boers.email.  3600  IN SRV  32767 32767 8776 seed.boers.email.
-        seed._radicle-node._tcp.boers.email.  3600  IN TXT  "nid=z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB"
-        _radicle-node._tcp.boers.email.       3600  IN PTR  seed._radicle-node._tcp.boers.email.
+        seed._radicle-node._tcp  3600  IN SRV  32767 32767 8776 seed.boers.email.
+        seed._radicle-node._tcp  3600  IN TXT  "nid=z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB"
+        _radicle-node._tcp       3600  IN PTR  seed._radicle-node._tcp.boers.email.
 
       ''
       + mkStalwartEmail "boers.email";
