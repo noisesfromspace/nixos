@@ -29,16 +29,43 @@ let
     fi
   '';
 
-  syncPairs = [
+  mkSyncOpts =
+    {
+      defaultEnable ? false,
+      defaultPath,
+      description,
+    }:
+    {
+      enable = mkOption {
+        type = types.bool;
+        default = defaultEnable;
+        description = "Enable ${description} sync";
+      };
+      path = mkOption {
+        type = types.str;
+        default = defaultPath;
+        description = "Local path to ${description} directory";
+      };
+    };
+
+  syncPairs = builtins.filter (p: p.enable) [
     {
       name = "notes";
-      path = cfg.notesPath;
+      path = cfg.notes.path;
       remote = "notes-crypt:";
+      enable = cfg.notes.enable;
     }
     {
       name = "sessions";
-      path = cfg.sessionsPath;
+      path = cfg.sessions.path;
       remote = "sessions-crypt:";
+      enable = cfg.sessions.enable;
+    }
+    {
+      name = "work";
+      path = cfg.work.path;
+      remote = "work-crypt:";
+      enable = cfg.work.enable;
     }
   ];
 
@@ -47,6 +74,7 @@ let
       name,
       path,
       remote,
+      ...
     }:
     nameValuePair "rclone-${name}-sync" {
       Unit = {
@@ -76,15 +104,19 @@ in
 {
   options.maatwerk.sync = {
     enable = mkEnableOption "Bidirectional rclone bisync to remote (encrypted)";
-    notesPath = mkOption {
-      type = types.str;
-      default = "${config.home.homeDirectory}/Notes";
-      description = "Local path to notes directory";
+    notes = mkSyncOpts {
+      defaultEnable = true;
+      defaultPath = "${config.home.homeDirectory}/Notes";
+      description = "notes";
     };
-    sessionsPath = mkOption {
-      type = types.str;
-      default = "${config.home.homeDirectory}/.pi/agent/sessions";
-      description = "Local path to pi sessions directory";
+    sessions = mkSyncOpts {
+      defaultEnable = true;
+      defaultPath = "${config.home.homeDirectory}/.pi/agent/sessions";
+      description = "pi sessions";
+    };
+    work = mkSyncOpts {
+      defaultPath = "/opt/work";
+      description = "work";
     };
     timerInterval = mkOption {
       type = types.str;

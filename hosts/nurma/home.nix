@@ -17,6 +17,6 @@
   programs.yt-dlp.enable = true;
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519_age" ];
 
-  # Enable profiles
+  maatwerk.sync.work.enable = true;
   maatwerk.niri.enable = true;
 }

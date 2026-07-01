@@ -601,6 +601,10 @@ with lib;
           disableDesktopWidgets = true;
         };
 
+        dock = {
+          enabled = false;
+        };
+
         network = {
           bluetoothRssiPollingEnabled = false;
           bluetoothRssiPollIntervalMs = 60000;

@@ -5,8 +5,7 @@
   ];
 
   programs.niri.settings.input.keyboard.xkb.options = "caps:escape";
-
-  home.packages = [ ];
+  maatwerk.sync.work.enable = true;
   maatwerk.niri = {
     enable = true;
     isLaptop = true;
