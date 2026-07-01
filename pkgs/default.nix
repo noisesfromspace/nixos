@@ -17,6 +17,7 @@ in
   tormon-exporter = pkgs.callPackage ./tormon-exporter.nix { };
   wvkbd-desktop = pkgs.callPackage ./wvkbd.nix { };
   karlender-dev = pkgs.callPackage ./karlender.nix { };
+  koito = pkgs.callPackage ./koito { };
   geonet = pkgs.callPackage ./geonet.nix { };
   ladder = pkgs.callPackage ./ladder.nix { };
   flowmark = pkgs.callPackage ./flowmark.nix { };

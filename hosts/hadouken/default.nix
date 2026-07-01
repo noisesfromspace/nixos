@@ -19,6 +19,7 @@
     ./modules/immich.nix
     ./modules/shares.nix
     ./modules/caddy.nix
+    ./modules/koito.nix
     ./modules/atuin.nix
     ./modules/media.nix
   ];
@@ -36,6 +37,7 @@
   hosts.calendar.enable = true;
   hosts.database.enable = true;
   hosts.garage.enable = true;
+  hosts.koito.enable = true;
   hosts.atuin.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
