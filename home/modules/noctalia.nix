@@ -5,6 +5,17 @@
   inputs,
   ...
 }:
+let
+  oskToggle = pkgs.writeShellScriptBin "osk" ''
+    PROG="wvkbd"
+    SIGNAL="SIGRTMIN"
+    if ! pgrep "''${PROG}" > /dev/null; then
+        "''${PROG}" --hidden --alpha 204 &
+        sleep 0.1 # Secure startup buffer
+    fi
+    pkill --signal "''${SIGNAL}" "''${PROG}"
+  '';
+in
 with lib;
 {
   config = mkIf config.maatwerk.niri.enable {
@@ -17,7 +28,6 @@ with lib;
         };
       };
 
-      # Download and place your gorgeous default wallpaper into the monitored Wallpapers drawer!
       "Pictures/Wallpapers/default_wallpaper.jpg" = {
         source = pkgs.fetchurl {
           url = "https://random.storage.boers.email/wallpaper_optimized.jpg";
@@ -25,7 +35,6 @@ with lib;
         };
       };
 
-      # IPv6-patched ip-monitor plugin (full directory from GitHub + our patches)
       ".config/noctalia/plugins/ip-monitor".source =
         pkgs.callPackage ../../pkgs/ip-monitor-patched.nix
           { };
@@ -42,6 +51,7 @@ with lib;
       ffmpeg # video processing
       gifski # high-quality gif encoding
       python3Packages.pygobject3 # system file picker support
+      oskToggle 
     ];
 
     # Screenshots

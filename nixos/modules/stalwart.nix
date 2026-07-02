@@ -282,6 +282,7 @@ in
 
         # Use pkgs because not built with overrideAttrs
         spam-filter.resource = "file://${pkgs.stalwart-spam-filter}/spam-filter.toml";
+        spam-filter.threshold = 9.0;
 
         webadmin = {
           resource = "file://${pkgs.stalwart-webadmin}/webadmin.zip";

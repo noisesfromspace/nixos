@@ -30,16 +30,6 @@ let
         niri msg output eDP-1 transform normal
       fi
     '';
-
-  oskToggle = pkgs.writeShellScriptBin "osk" ''
-    PROG="wvkbd"
-    SIGNAL="SIGRTMIN"
-    if ! pgrep "''${PROG}" > /dev/null; then
-        "''${PROG}" --hidden --alpha 204 &
-        sleep 0.1 # Secure startup buffer
-    fi
-    pkill --signal "''${SIGNAL}" "''${PROG}"
-  '';
 in
 {
   imports = [
@@ -88,7 +78,6 @@ in
       swaybg
       wvkbd
       iwgtk
-      oskToggle # Expose your premium virtual keyboard runner to your PATH!
     ];
 
     # Remove conflicting squeekboard services as wvkbd owns the space
@@ -123,6 +112,11 @@ in
         # Disable default hotkey overlay on startup
         hotkey-overlay = {
           skip-at-startup = true;
+        };
+
+        cursor = {
+          hide-when-typing = true;
+          hide-after-inactive-ms = 1000;
         };
 
         # Screenshot path
@@ -199,6 +193,7 @@ in
 
         layout = {
           gaps = 7;
+          always-center-single-column = true;
 
           # Default new columns to 50% width so two windows fit side-by-side
           default-column-width = {
