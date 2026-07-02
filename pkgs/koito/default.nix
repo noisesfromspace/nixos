@@ -75,6 +75,10 @@ buildGoModule {
     "-X main.Version=${version}"
   ];
 
+  patches = [
+    ../patches/koito-format-numbers.patch
+  ];
+
   postPatch = ''
     mkdir -p client/build/client
     cp -r ${frontend}/build/client/. client/build/client/

@@ -1,0 +1,279 @@
+diff --git a/client/app/components/AlbumDisplay.tsx b/client/app/components/AlbumDisplay.tsx
+index 7470c7b..395f035 100644
+--- a/client/app/components/AlbumDisplay.tsx
++++ b/client/app/components/AlbumDisplay.tsx
+@@ -1,5 +1,6 @@
+ import { type Album } from "api/api";
+ import { Link } from "react-router";
++import { formatNumber } from "~/utils/utils";
+ 
+ interface Props {
+   album: Album;
+@@ -25,7 +26,7 @@ export default function AlbumDisplay({ album, size }: Props) {
+         >
+           <h4>{album.title}</h4>
+         </Link>
+-        <p className="color-fg-secondary">{album.listen_count} plays</p>
++        <p className="color-fg-secondary">{formatNumber(album.listen_count)} plays</p>
+       </div>
+     </div>
+   );
+diff --git a/client/app/components/AllTimeStats.tsx b/client/app/components/AllTimeStats.tsx
+index 5fb8b0e..4b14987 100644
+--- a/client/app/components/AllTimeStats.tsx
++++ b/client/app/components/AllTimeStats.tsx
+@@ -1,6 +1,7 @@
+ import { useQuery } from "@tanstack/react-query";
+ import { apiFetch, type Stats } from "api/api";
+ import CardHeader from "./primitives/CardHeader";
++import { formatNumber } from "~/utils/utils";
+ 
+ const getStats = (period: string) =>
+   apiFetch<Stats>("/apis/web/v1/stats", { period });
+@@ -38,30 +39,30 @@ export default function AllTimeStats() {
+               className={numberClasses}
+               title={Math.floor(data.minutes_listened / 60) + " hours"}
+             >
+-              {data.minutes_listened}
++              {formatNumber(data.minutes_listened)}
+             </span>{" "}
+             Minutes
+           </div>
+           <div>
+-            <span className={numberClasses}>{data.listen_count}</span> Plays
++            <span className={numberClasses}>{formatNumber(data.listen_count)}</span> Plays
+           </div>
+           <div>
+-            <span className={numberClasses}>{data.track_count}</span> Tracks
++            <span className={numberClasses}>{formatNumber(data.track_count)}</span> Tracks
+           </div>
+           <div>
+-            <span className={numberClasses}>{data.album_count}</span> Albums
++            <span className={numberClasses}>{formatNumber(data.album_count)}</span> Albums
+           </div>
+           <div>
+-            <span className={numberClasses}>{data.artist_count}</span> Artists
++            <span className={numberClasses}>{formatNumber(data.artist_count)}</span> Artists
+           </div>
+         </div>
+         <div>
+           <div className="mt-6">
+-            <span className={numberClasses}>{data.days_active}</span> Days
++            <span className={numberClasses}>{formatNumber(data.days_active)}</span> Days
+             Active
+           </div>
+           <div>
+-            <span className={numberClasses}>{data.longest_streak}</span> Longest
++            <span className={numberClasses}>{formatNumber(data.longest_streak)}</span> Longest
+             Streak
+           </div>
+           <div>
+diff --git a/client/app/components/ArtistAlbums.tsx b/client/app/components/ArtistAlbums.tsx
+index 4c5c566..bea5d4d 100644
+--- a/client/app/components/ArtistAlbums.tsx
++++ b/client/app/components/ArtistAlbums.tsx
+@@ -1,4 +1,5 @@
+ import { useQuery } from "@tanstack/react-query";
++import { formatNumber } from "~/utils/utils";
+ import {
+   apiFetch,
+   type PaginatedResponse,
+@@ -58,7 +59,7 @@ export default function ArtistAlbums({ artistId, name }: Props) {
+               alt={item.item.title}
+               alignTop
+               title={item.item.title}
+-              meta={`${item.item.listen_count} plays`}
++              meta={`${formatNumber(item.item.listen_count)} plays`}
+             />
+           </div>
+         ))}
+diff --git a/client/app/components/TopAlbumsCard.tsx b/client/app/components/TopAlbumsCard.tsx
+index 232d24a..38ee23d 100644
+--- a/client/app/components/TopAlbumsCard.tsx
++++ b/client/app/components/TopAlbumsCard.tsx
+@@ -1,3 +1,4 @@
++import { formatNumber } from "~/utils/utils";
+ import {
+   apiFetch,
+   type PaginatedResponse,
+@@ -107,7 +108,7 @@ export default function TopAlbumsCard({ period }: Props) {
+                 }
+               />
+               <div className="color-fg-secondary">
+-                {data.items[0]?.item.listen_count} plays
++                {formatNumber(data.items[0]?.item.listen_count)} plays
+               </div>
+             </div>
+           </div>
+@@ -125,7 +126,7 @@ export default function TopAlbumsCard({ period }: Props) {
+                 title={i.item.title}
+                 alt={i.item.title}
+                 subtitle={<ArtistLinks artists={[i.item.artists[0]]} />}
+-                meta={`${i.item.listen_count} plays`}
++                meta={`${formatNumber(i.item.listen_count)} plays`}
+               />
+             </div>
+           ))}
+diff --git a/client/app/components/TopArtistsCard.tsx b/client/app/components/TopArtistsCard.tsx
+index fca910e..c9a39a1 100644
+--- a/client/app/components/TopArtistsCard.tsx
++++ b/client/app/components/TopArtistsCard.tsx
+@@ -1,3 +1,4 @@
++import { formatNumber } from "~/utils/utils";
+ import {
+   apiFetch,
+   type PaginatedResponse,
+@@ -98,7 +99,7 @@ export default function TopArtistsCard({ period }: Props) {
+               </h5>
+             </Link>
+             <div className="color-fg-secondary">
+-              {data.items[0]?.item.listen_count} plays
++              {formatNumber(data.items[0]?.item.listen_count)} plays
+             </div>
+           </div>
+         </div>
+@@ -114,7 +115,7 @@ export default function TopArtistsCard({ period }: Props) {
+                 link={`/artist/${i.item.id}`}
+                 alt={i.item.name}
+                 title={i.item.name}
+-                meta={`${i.item.listen_count} plays`}
++                meta={`${formatNumber(i.item.listen_count)} plays`}
+               />
+             </div>
+           ))}
+diff --git a/client/app/components/TopItemList.tsx b/client/app/components/TopItemList.tsx
+index 9d8ceed..9a570b2 100644
+--- a/client/app/components/TopItemList.tsx
++++ b/client/app/components/TopItemList.tsx
+@@ -1,6 +1,7 @@
+ import { Link } from "react-router";
+ import ArtistLinks from "./ArtistLinks";
+ import MediaItem, { MediaItemSkeleton } from "./primitives/MediaItem";
++import { formatNumber } from "~/utils/utils";
+ import {
+   type Album,
+   type Artist,
+@@ -117,7 +118,7 @@ function ItemCard({
+           </td>
+           <td className="w-[75px]">
+             <div className="color-fg-secondary text-end">
+-              {typedItem.listen_count} plays
++              {formatNumber(typedItem.listen_count)} plays
+             </div>
+           </td>
+         </tr>
+diff --git a/client/app/components/rewind/Rewind.tsx b/client/app/components/rewind/Rewind.tsx
+index 946b2c7..5590e5b 100644
+--- a/client/app/components/rewind/Rewind.tsx
++++ b/client/app/components/rewind/Rewind.tsx
+@@ -1,6 +1,7 @@
+ import { type RewindStats } from "api/api";
+ import RewindStatText from "./RewindStatText";
+ import { RewindTopItem } from "./RewindTopItem";
++import { formatNumber } from "~/utils/utils";
+ 
+ interface Props {
+   stats: RewindStats;
+@@ -66,18 +67,18 @@ export default function Rewind(props: Props) {
+ 
+       <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-5">
+         <RewindStatText
+-          figure={`${props.stats.minutes_listened}`}
++          figure={`${formatNumber(props.stats.minutes_listened)}`}
+           text="Minutes"
+         />
+-        <RewindStatText figure={`${props.stats.unique_tracks}`} text="Tracks" />
++        <RewindStatText figure={`${formatNumber(props.stats.unique_tracks)}`} text="Tracks" />
+         <RewindStatText
+-          figure={`${props.stats.new_tracks}`}
++          figure={`${formatNumber(props.stats.new_tracks)}`}
+           text="New tracks"
+         />
+-        <RewindStatText figure={`${props.stats.plays}`} text="Plays" />
+-        <RewindStatText figure={`${props.stats.unique_albums}`} text="Albums" />
++        <RewindStatText figure={`${formatNumber(props.stats.plays)}`} text="Plays" />
++        <RewindStatText figure={`${formatNumber(props.stats.unique_albums)}`} text="Albums" />
+         <RewindStatText
+-          figure={`${props.stats.new_albums}`}
++          figure={`${formatNumber(props.stats.new_albums)}`}
+           text="New albums"
+         />
+         <RewindStatText
+@@ -85,11 +86,11 @@ export default function Rewind(props: Props) {
+           text="Plays / day"
+         />
+         <RewindStatText
+-          figure={`${props.stats.unique_artists}`}
++          figure={`${formatNumber(props.stats.unique_artists)}`}
+           text="Artists"
+         />
+         <RewindStatText
+-          figure={`${props.stats.new_artists}`}
++          figure={`${formatNumber(props.stats.new_artists)}`}
+           text="New artists"
+         />
+       </div>
+diff --git a/client/app/components/rewind/RewindTopItem.tsx b/client/app/components/rewind/RewindTopItem.tsx
+index 258a49d..98923a3 100644
+--- a/client/app/components/rewind/RewindTopItem.tsx
++++ b/client/app/components/rewind/RewindTopItem.tsx
+@@ -1,5 +1,6 @@
+ import type { Ranked } from "api/api";
+ import Image from "../primitives/Image";
++import { formatNumber } from "~/utils/utils";
+ 
+ type TopItemProps<T> = {
+   title: string;
+@@ -44,9 +45,9 @@ export function RewindTopItem<
+               {getLabel(top.item)}
+             </h5>
+             <span className="text-(--color-fg-secondary) -mt-2 text-sm">
+-              {`${top.item.listen_count} plays`}
++              {`${formatNumber(top.item.listen_count)} plays`}
+               {includeTime
+-                ? ` (${Math.floor(top.item.time_listened / 60)} minutes)`
++                ? ` (${formatNumber(Math.floor(top.item.time_listened / 60))} minutes)`
+                 : ``}
+             </span>
+           </div>
+@@ -56,9 +57,9 @@ export function RewindTopItem<
+           <div key={e.item.id} className="text-sm max-w-90 wrap-normal">
+             {getLabel(e.item)}
+             <span className="text-(--color-fg-secondary)">
+-              {` - ${e.item.listen_count} plays`}
++              {` - ${formatNumber(e.item.listen_count)} plays`}
+               {includeTime
+-                ? ` (${Math.floor(e.item.time_listened / 60)} minutes)`
++                ? ` (${formatNumber(Math.floor(e.item.time_listened / 60))} minutes)`
+                 : ``}
+             </span>
+           </div>
+diff --git a/client/app/utils/utils.ts b/client/app/utils/utils.ts
+index 7c625d8..8cace91 100644
+--- a/client/app/utils/utils.ts
++++ b/client/app/utils/utils.ts
+@@ -124,11 +124,15 @@ const hexToHSL = (hex: string): hsl => {
+   };
+ };
+ 
++const formatNumber = (n: number): string => {
++  return new Intl.NumberFormat().format(n);
++};
++
+ const timeListenedString = (seconds: number) => {
+   if (!seconds) return "";
+ 
+   let minutes = Math.floor(seconds / 60);
+-  return `${minutes} minutes listened`;
++  return `${formatNumber(minutes)} minutes listened`;
+ };
+ 
+ function blendColors(hex1: string, hex2: string, t: number): string {
+@@ -150,6 +154,7 @@ function blendColors(hex1: string, hex2: string, t: number): string {
+ 
+ export {
+   hexToHSL,
++  formatNumber,
+   timeListenedString,
+   getRewindYear,
+   getRewindParams,

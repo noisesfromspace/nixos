@@ -1,0 +1,22 @@
+diff --git a/src/scrobbler/listenbrainzscrobbler.cpp b/src/scrobbler/listenbrainzscrobbler.cpp
+index 15af6cc7..e2bf334e 100644
+--- a/src/scrobbler/listenbrainzscrobbler.cpp
++++ b/src/scrobbler/listenbrainzscrobbler.cpp
+@@ -61,7 +61,7 @@ constexpr char kOAuthAuthorizeUrl[] = "https://musicbrainz.org/oauth2/authorize"
+ constexpr char kOAuthAccessTokenUrl[] = "https://musicbrainz.org/oauth2/token";
+ constexpr char kOAuthRedirectUrl[] = "http://localhost";
+ constexpr char kOAuthScope[] = "profile;email;tag;rating;collection;submit_isrc;submit_barcode";
+-constexpr char kApiUrl[] = "https://api.listenbrainz.org";
++constexpr char kApiUrl[] = "https://koito.thuis/apis/listenbrainz";
+ constexpr char kClientIDB64[] = "b2VBVU53cVNRZXIwZXIwOUZpcWkwUQ==";
+ constexpr char kClientSecretB64[] = "Uk9GZ2hrZVEzRjNvUHlFaHFpeVdQQQ==";
+ constexpr char kCacheFile[] = "listenbrainzscrobbler.cache";
+@@ -104,7 +104,7 @@ ListenBrainzScrobbler::ListenBrainzScrobbler(const SharedPtr<ScrobblerSettingsSe
+ 
+ bool ListenBrainzScrobbler::authenticated() const {
+ 
+-  return !oauth_->access_token().isEmpty() && !user_token_.isEmpty();
++  return !user_token_.isEmpty();
+ 
+ }
+ 

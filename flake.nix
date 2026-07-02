@@ -207,11 +207,9 @@
             url = "https://www.citrix.com/downloads/workspace-app/linux/workspace-app-for-linux-latest.html";
           };
         });
-        # strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
-        #   dontStrip = true;
-        #   dontPatchELF = true;
-        #   cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [ "-DCMAKE_BUILD_TYPE=Debug" ];
-        # });
+        strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
+          patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/patches/listenbrainz-koito.patch ];
+        });
       };
 
       packages = forAllSystems (
