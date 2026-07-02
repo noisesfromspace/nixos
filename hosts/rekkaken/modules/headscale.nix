@@ -28,6 +28,7 @@ let
     "sonarr"
     "syncthing"
     "webdav"
+    "koito"
   ];
   shoryukenRecords = [
     "ci"

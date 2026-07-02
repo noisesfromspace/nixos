@@ -116,7 +116,7 @@ in
 
         cursor = {
           hide-when-typing = true;
-          hide-after-inactive-ms = 1000;
+          hide-after-inactive-ms = 2000;
         };
 
         # Screenshot path

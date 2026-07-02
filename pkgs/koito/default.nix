@@ -76,7 +76,8 @@ buildGoModule {
   ];
 
   postPatch = ''
-    cp -r ${frontend}/build/client client/build
+    mkdir -p client/build/client
+    cp -r ${frontend}/build/client/. client/build/client/
   '';
 
   postInstall = ''
