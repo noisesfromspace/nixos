@@ -135,15 +135,15 @@ in
             }
           '';
         };
-        "photos.boers.email" = {
-          extraConfig = ''
-            reverse_proxy https://immich.thuis {
-                header_up X-Forwarded-Host photos.boers.email
-                header_up X-Forwarded-Proto https
-                header_up X-Real-IP {remote_host}
-            }
-          '';
-        };
+        # "photos.boers.email" = {
+        #   extraConfig = ''
+        #     reverse_proxy https://immich.thuis {
+        #         header_up X-Forwarded-Host photos.boers.email
+        #         header_up X-Forwarded-Proto https
+        #         header_up X-Real-IP {remote_host}
+        #     }
+        #   '';
+        # };
         "noisesfrom.space" = {
           extraConfig = # bash
             ''
