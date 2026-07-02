@@ -295,8 +295,8 @@ in
           "Alt+Period".action.expel-window-from-column = [ ];
 
           # Movement (column-based tiling)
-          "Alt+J".action.focus-column-left = [ ];
-          "Alt+L".action.focus-column-right = [ ];
+          "Alt+J".action.focus-column-left-or-last = [ ];
+          "Alt+L".action.focus-column-right-or-first = [ ];
           "Alt+I".action.focus-window-up = [ ];
           "Alt+K".action.focus-window-down = [ ];
 
