@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }:
 with lib;
@@ -483,6 +484,15 @@ in
             function()
               vim.opt_local.linebreak = true
               vim.opt_local.textwidth = 120
+              vim.b.md_list_fold = function()
+                local line = vim.fn.getline(vim.v.lnum)
+                local indent = #line:match("^(%s*)")
+                if line:match("^%s*[-*+]%s") then
+                  return ">" .. (indent + 1)
+                end
+                return "="
+              end
+              vim.wo.foldexpr = "v:lua.vim.b.md_list_fold()"
             end
           '';
         }
@@ -526,11 +536,24 @@ in
         }
       ];
 
+      extraPlugins = [
+        (pkgs.vimUtils.buildVimPlugin {
+          name = "org-bullets";
+          src = pkgs.fetchFromGitHub {
+            owner = "noisesfromspace";
+            repo = "org-bullets.nvim";
+            rev = "fd5569c636d5c6b7423079fe912a0ce8ae1613d3";
+            hash = "sha256-6AOzFph62odKde9ZNLbo+lNR6YTftWonfQuS8wK7BI0=";
+          };
+        })
+      ];
+
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
         vim.cmd.packadd('nvim.undotree'); 
         vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
+        require('org-bullets').setup()
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')

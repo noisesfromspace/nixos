@@ -18,6 +18,21 @@ in
         p.mdformat-wikilink
         p.mdformat-frontmatter
         p.mdformat-gfm
+        (pkgs.python3Packages.buildPythonPackage {
+          pname = "mdformat-space-control";
+          version = "0.4.8";
+          format = "pyproject";
+          src = pkgs.fetchurl {
+            url = "https://files.pythonhosted.org/packages/5c/34/f422535ea87534624fdd7f437ccbe57e610fd5275310f9ab35e8ecf21761/mdformat_space_control-0.4.8.tar.gz";
+            hash = "sha256-VUBt8ukAiwO27jFLMQ1MXt+ke32rDuI7mOs2g6/l4i0=";
+          };
+          propagatedBuildInputs = [
+            pkgs.python3Packages.mdformat
+            pkgs.python3Packages.editorconfig
+          ];
+          nativeBuildInputs = [ pkgs.python3Packages.hatchling ];
+          doCheck = false;
+        })
       ]))
       golangci-lint
       shellharden
@@ -45,7 +60,10 @@ in
             stop_after_first = true;
             formatters = {
               mdformat = {
-                args = [ "--number" "-" ];
+                args = [
+                  "--number"
+                  "-"
+                ];
               };
             };
             formatters_by_ft = {

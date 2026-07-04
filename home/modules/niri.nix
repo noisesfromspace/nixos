@@ -116,7 +116,7 @@ in
 
         cursor = {
           hide-when-typing = true;
-          hide-after-inactive-ms = 2000;
+          hide-after-inactive-ms = 1000;
         };
 
         # Screenshot path
@@ -290,8 +290,8 @@ in
           "Alt+Period".action.expel-window-from-column = [ ];
 
           # Movement (column-based tiling)
-          "Alt+J".action.focus-column-left-or-last = [ ];
-          "Alt+L".action.focus-column-right-or-first = [ ];
+          "Alt+J".action.focus-column-left = [ ];
+          "Alt+L".action.focus-column-right = [ ];
           "Alt+I".action.focus-window-up = [ ];
           "Alt+K".action.focus-window-down = [ ];
 
