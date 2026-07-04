@@ -180,7 +180,48 @@ in
         (lua {
           key = "<BS>";
           desc = "Overview of buffers";
-          code = "MiniPick.builtin.buffers()";
+          code = ''
+            local show_buffers = function(buf_id, items, query)
+              local display_items = {}
+              local has_modified = false
+              for _, item in ipairs(items) do
+                local bufnr = type(item) == 'number' and item
+                  or (type(item) == 'table' and (item.bufnr or item.buf_id or item.buf))
+                  or (type(item) == 'string' and tonumber(item))
+                if bufnr and vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].modified then
+                  has_modified = true
+                  break
+                end
+              end
+              for _, item in ipairs(items) do
+                local bufnr = type(item) == 'number' and item
+                  or (type(item) == 'table' and (item.bufnr or item.buf_id or item.buf))
+                  or (type(item) == 'string' and tonumber(item))
+                local mod = ""
+                if has_modified then
+                  if bufnr and vim.api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].modified then
+                    mod = '[+] '
+                  else
+                    mod = '    '
+                  end
+                end
+                if type(item) == 'table' then
+                  local copy = vim.deepcopy(item)
+                  copy.text = mod .. (copy.text or copy.path or "")
+                  display_items[#display_items + 1] = copy
+                else
+                  display_items[#display_items + 1] = mod .. tostring(item)
+                end
+              end
+              MiniPick.default_show(buf_id, display_items, query)
+            end
+
+            local wipeout_cur = function()
+              vim.api.nvim_buf_delete(MiniPick.get_picker_matches().current.bufnr, {})
+            end
+            local buffer_mappings = { wipeout = { char = '<C-d>', func = wipeout_cur } }
+            MiniPick.builtin.buffers(nil, { mappings = buffer_mappings, source = { show = show_buffers } })
+          '';
         })
         (lua {
           key = "<Leader>h";
