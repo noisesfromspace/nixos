@@ -11,7 +11,6 @@
 
   boot = {
     kernelModules = [
-      "kvm-intel"
       "intel_cvs"
     ];
     loader = {
@@ -22,10 +21,8 @@
       "i915.force_probe=!7d51"
       "xe.force_probe=7d51"
       "xe.enable_psr=0"
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "xe.wedged_mode=0"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
-      "nvidia_drm.modeset=1"
-      "nvidia_drm.fbdev=1"
       # "mem_sleep_default=deep"
       # "resume_offset=112625664"
     ];
@@ -72,10 +69,7 @@
     open = true;
     # https://github.com/NVIDIA/open-gpu-kernel-modules/pull/951
     # package = config.boot.kernelPackages.nvidiaPackages.beta;
-    modesetting.enable = true; # should be on by default
     powerManagement.enable = true; # should fix hybernation
-    powerManagement.finegrained = false;
-    nvidiaPersistenced = true;
     prime = {
       offload.enable = true;
       intelBusId = "PCI:00:02:0";
