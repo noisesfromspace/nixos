@@ -189,6 +189,8 @@ in
               end
 
               local show_buffers = function(buf_id, items, query)
+                local active_win = MiniPick.get_picker_state().windows.target
+                local active_buf = active_win and vim.api.nvim_win_get_buf(active_win)
                 local has_modified = false
                 for _, item in ipairs(items) do
                   local b = bufnr(item)
@@ -197,20 +199,23 @@ in
                 local display_items = {}
                 for _, item in ipairs(items) do
                   local b = bufnr(item)
-                  local mod = ""
-                  if has_modified then
-                    if b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified then
-                      mod = '[+] '
-                    else
-                      mod = '    '
-                    end
+                  local is_active, is_mod = b == active_buf, b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified
+                  local prefix = ""
+                  if not has_modified then
+                    prefix = is_active and "> " or "  "
+                  elseif is_mod then
+                    prefix = "[+] "
+                  elseif is_active then
+                    prefix = " >  "
+                  else
+                    prefix = "    "
                   end
                   if type(item) == 'table' then
                     local copy = vim.deepcopy(item)
-                    copy.text = mod .. (copy.text or copy.path or "")
+                    copy.text = prefix .. (copy.text or copy.path or "")
                     display_items[#display_items + 1] = copy
                   else
-                    display_items[#display_items + 1] = mod .. tostring(item)
+                    display_items[#display_items + 1] = prefix .. tostring(item)
                   end
                 end
                 MiniPick.default_show(buf_id, display_items, query)
@@ -598,8 +603,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "org-bullets.nvim";
-            rev = "fd5569c636d5c6b7423079fe912a0ce8ae1613d3";
-            hash = "sha256-6AOzFph62odKde9ZNLbo+lNR6YTftWonfQuS8wK7BI0=";
+            rev = "bf1d9541871c1b4277e7479832c1c31b7944efd4";
+            hash = "sha256-MD0/zqKNigNSc8MRoE7iAWYf918LPNFgOWIJ8jXjXoE=";
           };
         })
       ];

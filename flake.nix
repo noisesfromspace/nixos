@@ -14,13 +14,12 @@
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     nixos-raspberrypi = {
-      # https://github.com/nvmd/nixos-raspberrypi/pull/131
-      url = "github:nvmd/nixos-raspberrypi?ref=pull/131/head";
+      url = "github:nvmd/nixos-raspberrypi";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # https://github.com/DeterminateSystems/nix-src/releases
-    determinate.url = "github:DeterminateSystems/nix-src/v3.16.0";
+    determinate.url = "github:DeterminateSystems/nix-src/v3.21.2";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -29,7 +28,7 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     lanzaboote = {

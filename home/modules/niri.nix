@@ -260,7 +260,7 @@ in
           "Alt+F4".action.close-window = [ ];
           "Alt+Backslash".action.close-window = [ ];
           "Alt+MouseMiddle".action.close-window = [ ];
-          "Mod+Tab".action.toggle-overview = [ ];
+          "Alt+Semicolon".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
 
           "Alt+O".action.fullscreen-window = [ ];
