@@ -17,19 +17,6 @@ let
     ]
     ++ (lib.splitString " " cmd);
   noctaliaStr = cmd: "noctalia-shell ipc call " + cmd;
-
-  rotateScript =
-    let
-      jq = "${pkgs.jq}/bin/jq";
-    in
-    ''
-      current=$(niri msg --json outputs | ${jq} -r '.[] | select(.name=="eDP-1") | .transform')
-      if [ "$current" = "normal" ] || [ "$current" = "null" ]; then
-        niri msg output eDP-1 transform 90
-      else
-        niri msg output eDP-1 transform normal
-      fi
-    '';
 in
 {
   imports = [
@@ -86,7 +73,6 @@ in
       # We only configure settings here.
       settings = {
         spawn-at-startup = [
-          { argv = [ "fractal" ]; }
           { argv = [ "noctalia" ]; }
           {
             argv = [
@@ -98,7 +84,7 @@ in
           }
         ];
 
-        # Xwayland integration (auto since niri 25.08, needs xwayland-satellite in PATH)
+        # Xwayland integration 
         xwayland-satellite = {
           enable = true;
         };
@@ -152,9 +138,9 @@ in
           ];
         };
 
-        # Window rules: workspace pinning + per-app tweaks
+        # Window rules: per-app tweaks
         window-rules = [
-          # Catch-all: all windows get rounded corners and slight transparency
+          # Catch-all: rounded corners, subtle transparency, background blur
           {
             matches = [ ];
             geometry-corner-radius = {
@@ -164,30 +150,21 @@ in
               bottom-left = 6.0;
             };
             clip-to-geometry = true;
-            opacity = 0.95;
+            opacity = 0.85;
+            background-effect = {
+              blur = true;
+              xray = true;
+            };
           }
           # Wfica (Citrix): fully opaque
           {
             matches = [ { app-id = "Wfica"; } ];
-            open-on-workspace = "2";
             opacity = 1.0;
           }
           # LibreWolf: fully opaque
           {
             matches = [ { app-id = "librewolf"; } ];
             opacity = 1.0;
-          }
-          {
-            matches = [ { app-id = "Fractal"; } ];
-            open-on-workspace = "5";
-          }
-          {
-            matches = [ { app-id = "Signal"; } ];
-            open-on-workspace = "5";
-          }
-          {
-            matches = [ { app-id = "com.mitchellh.ghostty"; } ];
-            opacity = 0.97;
           }
         ];
 
@@ -233,6 +210,7 @@ in
 
           warp-mouse-to-focus.enable = true;
           focus-follows-mouse.enable = false;
+          mod-key = "Alt";
 
           touchpad = lib.mkIf cfg.isLaptop {
             natural-scroll = true;
@@ -271,13 +249,6 @@ in
 
           # Clipboard history
           "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
-
-          # Tablet & Convertible Rotation: Swing eDP-1 monitor by 90 degrees or reset normal!
-          "Mod+R".action.spawn = [
-            "sh"
-            "-c"
-            rotateScript
-          ];
 
           # Lock screen
           "Alt+M".action.spawn = noctalia "lockScreen lock";
@@ -338,11 +309,11 @@ in
           "Alt+Shift+6".action.move-column-to-workspace = 6;
 
           # Mouse wheel: Alt+scroll to move between columns
-          "Mod+WheelScrollUp" = {
+          "Alt+WheelScrollUp" = {
             action.focus-column-left = [ ];
             cooldown-ms = 150;
           };
-          "Mod+WheelScrollDown" = {
+          "Alt+WheelScrollDown" = {
             action.focus-column-right = [ ];
             cooldown-ms = 150;
           };
