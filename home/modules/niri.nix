@@ -257,6 +257,7 @@ in
           "Alt+Print".action.screenshot-window = [ ];
 
           # Window management
+          "Alt+Backslash".action.close-window = [ ];
           "Alt+F4".action.close-window = [ ];
           "Alt+MouseMiddle".action.close-window = [ ];
           "Alt+Semicolon".action.toggle-overview = [ ];

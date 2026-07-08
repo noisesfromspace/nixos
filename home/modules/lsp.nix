@@ -64,6 +64,11 @@ in
                   "--number"
                   "-"
                 ];
+                condition = ''
+                  function(self, ctx)
+                    return not string.match(ctx.filename, "/Documents/Blog/")
+                  end
+                '';
               };
             };
             formatters_by_ft = {

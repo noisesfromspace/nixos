@@ -84,7 +84,14 @@
       node = {
         alias = osConfig.networking.hostName;
         listen = [ "127.0.0.1:8776" ];
-        connect = [ "z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB@seed.boers.email:8776" ];
+        limits = {
+          fetchConcurrency = 5;
+          connection.outbound = 32;
+        };
+        connect = [
+          "z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB@seed.boers.email:8776"
+          "z6MkhfiyTz7qfggGB45kQRpMfQ1CWuN5sqjAmMrhaYmaARYV@cc.radicle.garden:58776"
+        ];
       };
       publicExplorer = "https://git.boers.email/nodes/seed.boers.email/$rid$path";
       preferredSeeds = [ "z6MkhJKKVmjsA2MVrMMqMe2Au7bx8bUVtzWh2A9J3JWTeZAB@seed.boers.email:8776" ];
