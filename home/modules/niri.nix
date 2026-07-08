@@ -258,9 +258,9 @@ in
 
           # Window management
           "Alt+F4".action.close-window = [ ];
-          "Alt+Backslash".action.close-window = [ ];
           "Alt+MouseMiddle".action.close-window = [ ];
           "Alt+Semicolon".action.toggle-overview = [ ];
+          "Alt+A".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
 
           "Alt+O".action.fullscreen-window = [ ];
@@ -292,8 +292,8 @@ in
           # Movement (column-based tiling)
           "Alt+J".action.focus-column-left = [ ];
           "Alt+L".action.focus-column-right = [ ];
-          "Alt+I".action.focus-window-up = [ ];
-          "Alt+K".action.focus-window-down = [ ];
+          "Alt+I".action.focus-window-or-workspace-or-monitor-up = [ ];
+          "Alt+K".action.focus-window-or-workspace-or-monitor-down = [ ];
 
           "Alt+Shift+J".action.move-column-left = [ ];
           "Alt+Shift+L".action.move-column-right = [ ];
@@ -391,6 +391,9 @@ in
         overview = {
           zoom = 0.5;
         };
+
+        # Disable built-in Alt+Tab recent-windows switcher so keys pass through to Citrix
+        recent-windows.enable = false;
       };
     };
   };

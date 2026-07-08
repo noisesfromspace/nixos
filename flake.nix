@@ -66,6 +66,10 @@
     niri = {
       url = "github:noisesfromspace/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.niri-unstable = {
+        url = "github:jarylc/niri";
+        flake = false;
+      };
     };
 
     noctalia = {

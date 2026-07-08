@@ -68,7 +68,12 @@ in
           "python3.12-ecdsa-0.19.1" # electrum
         ];
       };
-      overlays = [ inputs.niri.overlays.niri ];
+      overlays = [
+        inputs.niri.overlays.niri
+        (final: prev: {
+          niri-unstable = prev.niri-unstable.overrideAttrs (_: { doCheck = false; });
+        })
+      ];
     };
     nix = {
       settings = {
@@ -152,7 +157,7 @@ in
       dconf.enable = true; # used for stylix
       niri = {
         enable = true;
-        package = pkgs.niri-stable;
+        package = pkgs.niri-unstable;
       };
       thunar = {
         enable = true;
