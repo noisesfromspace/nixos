@@ -603,8 +603,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "org-bullets.nvim";
-            rev = "bfbaaea72ad8757ef924090add3b6a9a6f4c5f9c";
-            hash = "sha256-RUHqg/54yvbPyH1mUSt5WwCSbTK2GGI1JaQvTBhj8EU=";
+            rev = "9d366708b199c92c8c0fd0e0b5aac5f4bcb8805e";
+            hash = "sha256-wrJxSEKlWhbKSrJXOVgy1Q4CZtqwt3XYyJEpViOn0zE=";
           };
         })
       ];
