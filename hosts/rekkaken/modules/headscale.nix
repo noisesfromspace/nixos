@@ -244,6 +244,7 @@ in
               magic_dns = true;
               base_domain = "machine.thuis";
               nameservers.global = [
+                # Can use DoH https://github.com/juanfont/headscale/issues/1312#issuecomment-3735405184
                 config.global.tailscale_hosts.tatsumaki
                 "9.9.9.9" # quad
               ];
