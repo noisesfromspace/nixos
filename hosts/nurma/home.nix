@@ -1,13 +1,11 @@
-{
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 {
   imports = [
     ../../home
   ];
 
   home.packages = with pkgs; [
+    signal-cli
     stable.sdrpp # sdr
     # electrum
     android-tools
