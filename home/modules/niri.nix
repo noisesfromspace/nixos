@@ -269,8 +269,8 @@ in
 
           "Alt+Shift+J".action.move-column-left = [ ];
           "Alt+Shift+L".action.move-column-right = [ ];
-          "Alt+Shift+I".action.move-window-up = [ ];
-          "Alt+Shift+K".action.move-window-down = [ ];
+          "Alt+Shift+I".action.move-window-to-workspace-up = [ ];
+          "Alt+Shift+K".action.move-window-to-workspace-down = [ ];
 
           # Resize (repeat) - fixed pixels for linear, predictable steps
           "Ctrl+Alt+J" = {
