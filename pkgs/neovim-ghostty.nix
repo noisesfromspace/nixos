@@ -13,6 +13,15 @@
 }:
 
 let
+  # neovim fork with ghostty terminal backend (PR #39773)
+  neovim-src = fetchFromGitHub {
+    owner = "noib3";
+    repo = "neovim";
+    rev = "2873168321aaa8666bd55c7eabdf27151228480b";
+    sha256 = "sha256-ButzMy40dznJ8QVMGvHxaY+3GgaTIlISp/zisj4gN6w=";
+  };
+
+  # ghostty fork pinned by neovim's cmake.deps/deps.txt
   ghostty-src = fetchFromGitHub {
     owner = "noib3";
     repo = "ghostty";
@@ -23,7 +32,7 @@ let
   libghostty-vt = callPackage (ghostty-src + "/nix/libghostty-vt.nix") {
     inherit zig_0_15;
     optimize = "ReleaseSafe";
-    revision = "4522e74";
+    revision = "4522e74b83061ad7b5525a6078389434779e3152";
   };
 in
 
@@ -32,13 +41,15 @@ in
     pname = "neovim-ghostty";
     version = "0.13.0-dev";
 
-    src = fetchFromGitHub {
-      owner = "noib3";
-      repo = "neovim";
-      rev = "b26fad2a6946ab4cb325dc25b8b83a95f57c00a1";
-      sha256 = "1qcbp3xb8z34w1f1ivarsldp30mk2v52p9xvl8j27fsaq7nqcdcf";
-      fetchSubmodules = false;
-    };
+    src = neovim-src;
+
+    patches = [ ];
+
+    postPatch = ''
+      # is_aucmd_win() is referenced but never defined in the PR fork.
+      # Remove the check; it's a minor optimization that skips autocmd windows.
+      sed -i 's/!is_aucmd_win(wp) \&\& //' src/nvim/terminal.c
+    '';
 
     buildInputs =
       builtins.filter (x: x.pname or "" != "libvterm") old.buildInputs
