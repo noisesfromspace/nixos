@@ -223,20 +223,41 @@ in
 
               local wipeout_cur = function()
                 local matches = MiniPick.get_picker_matches()
-                local cur_pos, abs_cur = matches.current_ind, matches.all_inds[matches.current_ind]
-                if not abs_cur then return end
-                vim.api.nvim_buf_delete(matches.current.bufnr, {})
+                local cur_pos = matches.current_ind
+                local target = matches.current
+                if not cur_pos or not target or not target.bufnr then return end
+
+                MiniBufremove.wipeout(target.bufnr)
+
+                -- Find and remove the deleted buffer by bufnr match
                 local items = MiniPick.get_picker_items()
-                table.remove(items, abs_cur)
-                local new_inds = {}
-                for _, idx in ipairs(matches.all_inds) do
-                  if idx < abs_cur then new_inds[#new_inds + 1] = idx
-                  elseif idx > abs_cur then new_inds[#new_inds + 1] = idx - 1 end
+                local removed_idx = nil
+                for i, item in ipairs(items) do
+                  if item.bufnr == target.bufnr then
+                    removed_idx = i
+                    break
+                  end
                 end
+                if not removed_idx then return end
+
+                table.remove(items, removed_idx)
+
+                -- Recalculate match indices, shifting indices after the removed item
+                local new_all = {}
+                for _, idx in ipairs(matches.all_inds) do
+                  if idx < removed_idx then
+                    new_all[#new_all + 1] = idx
+                  elseif idx > removed_idx then
+                    new_all[#new_all + 1] = idx - 1
+                  end
+                end
+
+                -- Update items without re-matching (preserves search query)
                 MiniPick.set_picker_items(items, { do_match = false })
-                MiniPick.set_picker_match_inds(new_inds, "all")
-                if #new_inds > 0 then
-                  MiniPick.set_picker_match_inds({new_inds[math.min(cur_pos, #new_inds)]}, "current")
+                MiniPick.set_picker_match_inds(new_all, "all")
+                if #new_all > 0 then
+                  local new_cur = math.min(math.max(1, cur_pos), #new_all)
+                  MiniPick.set_picker_match_inds({ new_all[new_cur] }, "current")
                 end
               end
               local buffer_mappings = { wipeout = { char = '<C-d>', func = wipeout_cur } }
@@ -485,6 +506,11 @@ in
             notify.enable = true; # vim.notify capture
             surround.enable = true; # surround words with something
 
+            bufremove = {
+              enable = true;
+              silent = true;
+            };
+
             files = {
               enable = true; # file explorer
               options.lsp_timeout = 0;
@@ -599,13 +625,8 @@ in
 
       extraPlugins = [
         (pkgs.vimUtils.buildVimPlugin {
-          name = "org-bullets";
-          src = pkgs.fetchFromGitHub {
-            owner = "noisesfromspace";
-            repo = "org-bullets.nvim";
-            rev = "916d843997aad0a72b958322d9c0fb718792a69d";
-            hash = "sha256-4XVllF4FJ74LSwjxz8BUYc8GEJ+lRrSSQSJPm4/tB6Y=";
-          };
+          name = "touchup";
+          src = /opt/code/touchup.nvim;
         })
       ];
 
@@ -614,7 +635,7 @@ in
         vim.cmd.packadd('nvim.undotree'); 
         vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
-        require('org-bullets').setup()
+        require('touchup').setup()
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')
