@@ -17,6 +17,11 @@ let
     buildInputs = [ pkgs.makeWrapper ];
     paths = [
       (pkgs.writeShellScriptBin "pi" ''
+        if [ -f "${config.age.secrets.pi-api-keys.path}" ]; then
+          set -a
+          . "${config.age.secrets.pi-api-keys.path}"
+          set +a
+        fi
         exec ${pkgs.nodejs_22}/bin/node ${config.home.homeDirectory}/.pi/agent/node_modules/@earendil-works/pi-coding-agent/dist/cli.js "$@"
       '')
       pkgs.nodejs_22
@@ -62,6 +67,11 @@ in
         piWrapped
         piJailed
       ];
+
+      age.secrets.pi-api-keys = {
+        file = "${inputs.secrets}/worker-pi-auth.age";
+        mode = "400";
+      };
     })
 
     (mkIf srv.enable {
@@ -83,7 +93,10 @@ in
         };
         Service = {
           Type = "simple";
-          EnvironmentFile = "/run/user/1000/agenix/pi-signal-env";
+          EnvironmentFile = [
+            config.age.secrets.pi-signal-env.path
+            config.age.secrets.pi-api-keys.path
+          ];
           ExecStart = "${lib.getExe pkgs.signal-cli} -a $PI_SIGNAL_ACCOUNT daemon --http 127.0.0.1:47300";
           Restart = "always";
           RestartSec = 10;
@@ -98,7 +111,10 @@ in
         };
         Service = {
           Type = "simple";
-          EnvironmentFile = "/run/user/1000/agenix/pi-signal-env";
+          EnvironmentFile = [
+            config.age.secrets.pi-signal-env.path
+            config.age.secrets.pi-api-keys.path
+          ];
           ExecStart = "${pkgs.bash}/bin/bash -c 'exec ${piWrapped}/bin/pi --mode rpc < <(${pkgs.coreutils}/bin/sleep infinity)'";
           Restart = "always";
           RestartSec = 10;

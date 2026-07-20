@@ -26,15 +26,7 @@
 
   age.secrets = {
     password.file = lib.mkDefault "${inputs.secrets}/password.age";
-    pi-auth = {
-      file = "${inputs.secrets}/worker-pi-auth.age";
-      owner = "martijn";
-    };
   };
-
-  systemd.tmpfiles.rules = [
-    "L+ /home/martijn/.pi/agent/auth.json - - - - ${config.age.secrets.pi-auth.path}"
-  ];
 
   users = {
     mutableUsers = false;

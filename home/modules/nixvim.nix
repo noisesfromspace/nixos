@@ -571,6 +571,10 @@ in
             function()
               vim.opt_local.linebreak = true
               vim.opt_local.textwidth = 120
+              -- notes use 2-space list nesting; core ftplugin forces 4
+              vim.opt_local.shiftwidth = 2
+              vim.opt_local.tabstop = 2
+              vim.opt_local.softtabstop = 2
               vim.b.md_list_fold = function()
                 local line = vim.fn.getline(vim.v.lnum)
                 local indent = #line:match("^(%s*)")
@@ -629,8 +633,8 @@ in
           src = pkgs.fetchFromRadicle {
             seed = "seed.boers.email";
             repo = "z3idaVuBJSG4LUD3zbP2PoXfry3xX";
-            rev = "b0fe5d467c894431ab083af1a44f90a137e4317f";
-            hash = "sha256-F0rRUd20bn3OQwvEuHSNL+UGjiLn4ktC5wyBrL3L8JE=";
+            rev = "db33d4dab25e97781a10d9ea497be4723c21a509";
+            hash = "sha256-uyD/aUh8p+dwU2t5jxhs2POiZmzs8RqzPbEX/UJm/Q4=";
           };
         })
       ];

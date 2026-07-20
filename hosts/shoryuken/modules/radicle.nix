@@ -152,7 +152,9 @@ in
               "rad:z2r9euHZW161kfQNxdF4apHddD3mm" # mq
               "rad:z2AdUML1AaZmUVidUJ4vwQDJhmvKg" # unaware
               "rad:z24gQBBitUHvTz4y8t4JrCNCPrfpG" # gettit
+              "rad:z3idaVuBJSG4LUD3zbP2PoXfry3xX" # touchup.nvim
               "rad:zb1FuXow3wJemDDPFWGFa49rNA4z" # gpg-poc-T8044
+              "rad:z2dyxUsTyMyQeuBbKPgkLRspWfNpa" # overlap
             ];
           };
         };
