@@ -18,10 +18,7 @@
       efi.canTouchEfiVariables = true;
     };
     kernelParams = [
-      "i915.force_probe=!7d51"
-      "xe.force_probe=7d51"
-      "xe.enable_psr=0"
-      "xe.wedged_mode=0"
+      "i915.force_probe=7d51"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
       # "mem_sleep_default=deep"
       # "resume_offset=112625664"
