@@ -4,7 +4,7 @@
 
   imports = [
     ./modules/adguard.nix
-    ./modules/borg-server.nix
+    ./modules/backup.nix
     ./modules/caddy.nix
   ];
 

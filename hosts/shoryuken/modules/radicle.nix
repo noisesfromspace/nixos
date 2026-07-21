@@ -44,6 +44,8 @@ in
       serviceConfig = {
         EnvironmentFile = config.age.secrets.github-token.path;
         LoadCredential = "pgp-public:${inputs.secrets}/keys/pgp.asc";
+        # nvim in native.yaml tests needs mprotect for LuaJIT mcode alloc
+        MemoryDenyWriteExecute = mkForce false;
       };
       path = with pkgs; [
         git
@@ -51,6 +53,7 @@ in
         coreutils
         curl
         gnupg
+        neovim
       ];
     };
 

@@ -649,8 +649,8 @@ in
           src = pkgs.fetchFromRadicle {
             seed = "seed.boers.email";
             repo = "z3idaVuBJSG4LUD3zbP2PoXfry3xX";
-            rev = "8393cbf4ef7baea8578a195e77b5991dd150560b";
-            hash = "sha256-hjbASa6jjiDohHD7e0MfBqSnczzrrBsOytqRvqrZgF4=";
+            rev = "951f0335136ae44a16d079d7347d874baeab38be";
+            hash = "sha256-RlP0iBzHwv2XUGARjFGaB4QysXO13s428vemEz2UYTQ=";
           };
         })
       ];
