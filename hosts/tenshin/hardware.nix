@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   modulesPath,
   ...
@@ -38,7 +39,7 @@
       IPv6AcceptRA = true;
     };
     address = [
-      "10.10.0.7/24"
+      "${config.global.lan_ips.tenshin}/24"
     ];
     routes = [
       { Gateway = "10.10.0.1"; }

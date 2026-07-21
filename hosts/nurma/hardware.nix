@@ -49,7 +49,7 @@
         IPv6AcceptRA = true;
       };
       address = [
-        "10.30.0.2/24"
+        "${config.global.lan_ips.nurma}/24"
       ];
       routes = [
         { Gateway = "10.30.0.1"; }

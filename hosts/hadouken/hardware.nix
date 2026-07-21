@@ -50,7 +50,7 @@
       IPv6AcceptRA = true;
     };
     address = [
-      "10.10.0.6/24"
+      "${config.global.lan_ips.hadouken}/24"
     ];
     routes = [
       { Gateway = "10.10.0.1"; }

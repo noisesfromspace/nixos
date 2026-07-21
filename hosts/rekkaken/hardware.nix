@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   modulesPath,
   ...
@@ -29,8 +30,8 @@
     matchConfig.Name = "enp1s0";
     networkConfig.DHCP = "no";
     address = [
-      "46.62.135.158/32"
-      "2a01:4f9:c013:98b::1/64"
+      "${config.global.wan_ips.rekkaken}/32"
+      "${config.global.wan_ips.rekkaken_6}/64"
     ];
     routes = [
       {

@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   modulesPath,
   pkgs,
@@ -226,7 +227,7 @@
       IPv6AcceptRA = true;
     };
     address = [
-      "10.10.0.4/24"
+      "${config.global.lan_ips.suzaku}/24"
     ];
     routes = [
       { Gateway = "10.10.0.1"; }

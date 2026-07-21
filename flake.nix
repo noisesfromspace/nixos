@@ -175,6 +175,16 @@
                       shoryuken_6 = "2a01:4f9:c013:c5fa::1";
                     };
                   };
+                  lan_ips = mkOption {
+                    type = with types; attrsOf str;
+                    default = {
+                      nurma = "10.30.0.2";
+                      tatsumaki = "10.10.0.3";
+                      suzaku = "10.10.0.4";
+                      hadouken = "10.10.0.6";
+                      tenshin = "10.10.0.7";
+                    };
+                  };
                   tailscale_hosts = mkOption {
                     type = with types; attrsOf str;
                     default = {

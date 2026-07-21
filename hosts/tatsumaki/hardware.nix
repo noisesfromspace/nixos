@@ -40,7 +40,7 @@
               IPv6AcceptRA = true;
             };
             address = [
-              "10.10.0.${ip}/24"
+              "${ip}/24"
             ];
             routes = [
               { Gateway = "10.10.0.1"; }
@@ -57,7 +57,7 @@
         # }
         {
           adapter = "enp3s0";
-          ip = "3";
+          ip = config.global.lan_ips.tatsumaki;
         }
       ]
     );
