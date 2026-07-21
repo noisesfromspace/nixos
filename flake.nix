@@ -124,37 +124,18 @@
 
               {
                 home-manager = {
-                  useGlobalPkgs = true;
-                  users.martijn = import homeconfig;
+                  users.martijn = {
+                    imports = [ homeconfig ];
+                    nixpkgs = {
+                      config.allowUnfree = true;
+                      overlays = [ outputs.overlays ];
+                    };
+                  };
                   extraSpecialArgs = { inherit inputs system; };
                 };
                 nixpkgs = {
                   config.allowUnfree = true;
-                  overlays = [
-                    outputs.overlays
-                    (final: prev: {
-                      # stable packages through pkgs.stable.gimp
-                      stable = import inputs.nixpkgs-stable {
-                        system = final.stdenv.hostPlatform.system;
-                        config.allowUnfree = true;
-                      };
-                    })
-                    # bring in custom package on pkgs.custom-package
-                    (final: prev: import ./pkgs { pkgs = final; })
-                    (
-                      final: prev:
-                      import ./pkgs/neovim-ghostty.nix {
-                        pkgs = prev;
-                        inherit (prev)
-                          lib
-                          stdenv
-                          fetchFromGitHub
-                          callPackage
-                          zig_0_15
-                          ;
-                      }
-                    )
-                  ];
+                  overlays = [ outputs.overlays ];
                 };
               }
 
@@ -211,19 +192,29 @@
     {
       # prev = unaltered (before overlays)
       # final = after overlay mods, like rec keyword
-      overlays = final: prev: {
-        citrix-workspace = prev.citrix-workspace.overrideAttrs (old: {
-          version = "26.04.0.105";
-          src = prev.requireFile {
-            name = "linuxx64-26.04.0.105.tar.gz";
-            sha256 = "sha256-qPIdL+i9mevCopJj8GfAVQ223zOuw12ZWS812WhYhs4=";
-            url = "https://www.citrix.com/downloads/workspace-app/linux/workspace-app-for-linux-latest.html";
+      overlays =
+        final: prev:
+        {
+          citrix-workspace = prev.citrix-workspace.overrideAttrs (old: {
+            version = "26.04.0.105";
+            src = prev.requireFile {
+              name = "linuxx64-26.04.0.105.tar.gz";
+              sha256 = "sha256-qPIdL+i9mevCopJj8GfAVQ223zOuw12ZWS812WhYhs4=";
+              url = "https://www.citrix.com/downloads/workspace-app/linux/workspace-app-for-linux-latest.html";
+            };
+          });
+          strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/patches/listenbrainz-koito.patch ];
+          });
+
+          # stable packages through pkgs.stable.gimp
+          stable = import inputs.nixpkgs-stable {
+            system = final.stdenv.hostPlatform.system;
+            config.allowUnfree = true;
           };
-        });
-        strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
-          patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/patches/listenbrainz-koito.patch ];
-        });
-      };
+        }
+        # bring in custom packages as pkgs.custom-*
+        // import ./pkgs { pkgs = final; };
 
       packages = forAllSystems (
         system:

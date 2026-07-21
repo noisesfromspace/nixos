@@ -75,7 +75,7 @@ in
 
         # messaging
         signal-desktop
-        fractal # matrix-client
+        stable.fractal # matrix-client
       ];
 
     # DBus secret service

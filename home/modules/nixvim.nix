@@ -70,11 +70,24 @@ in
     programs.nixvim = {
       enable = true;
 
+      package =
+        (import ../../pkgs/neovim-ghostty.nix {
+          inherit pkgs;
+          inherit (pkgs)
+            lib
+            stdenv
+            fetchFromGitHub
+            callPackage
+            zig_0_15
+            ;
+        }).neovim-unwrapped;
+
       globals = {
         mapleader = " ";
         maplocalleader = "\\";
       };
       opts = {
+        termguicolors = true; # 24-bit color
         number = true; # Show line numbers
         relativenumber = true; # Show relative line numbers
         ignorecase = true; # Ignore case in search patterns
@@ -103,14 +116,17 @@ in
         foldexpr = "v:lua.vim.lsp.foldexpr()";
 
         # Completion
-        wildoptions = "pum"; # Popup menu for wildmenu
+        wildoptions = "pum,fuzzy,exacttext"; # Popup wildmenu, fuzzy matching, exact text in search completion
         wildmode = "longest:full,full"; # Complete longest common string, then each full match
+        wildignorecase = true; # Ignore case in cmdline file completion
         winborder = "single";
-        completeopt = "menu,menuone,noinsert"; # Show menu, autoselect first, don't auto-insert
+        completeopt = "menu,menuone,noinsert,popup"; # Manual completion menu, no auto-insert, doc popup
         complete = ".,w"; # Current buffer and windows
         infercase = true; # Infer case for completion
         pumheight = 15; # Max items in completion menu
         pumwidth = 30; # Minimum width of completion menu
+        pummaxwidth = 60; # Maximum width of completion menu
+        pumborder = "single"; # Border around completion menu
       };
 
       userCommands = {
@@ -153,6 +169,7 @@ in
       };
 
       keymaps = with keymaps; [
+
         # Picker / Fuzzy Finding
         (lua {
           key = "<Leader>f";
@@ -502,7 +519,6 @@ in
             icons.enable = true; # icons support for extensions
             git.enable = true; # git log/blame file
             diff.enable = true; # gitsigns replacement
-            completion.enable = true; # autocomplete
             notify.enable = true; # vim.notify capture
             surround.enable = true; # surround words with something
 
@@ -611,7 +627,7 @@ in
           event = "TextYankPost";
           callback = helpers.mkRaw ''
             function()
-              vim.highlight.on_yank({ higroup = "YankHighlight", timeout = 150 })
+              vim.hl.hl_op({ higroup = "YankHighlight", timeout = 150 })
             end
           '';
         }
