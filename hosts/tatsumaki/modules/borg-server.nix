@@ -21,6 +21,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Assumes openssh is enabled. The repos module creates the borg user with
+    # the default shell (required for borg serve); explicitly allow it in from
+    # the tailnet so this does not depend on the host's AllowUsers patterns.
+    services.openssh.settings.AllowUsers = [ "borg@100.64.0.0/10" ];
+
     # One repo per client. Keys are append-only: a compromised client cannot
     # permanently delete backups, space is reclaimed by borg compact below.
     services.borgbackup.repos = genAttrs cfg.clients (name: {

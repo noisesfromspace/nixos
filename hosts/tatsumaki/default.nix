@@ -4,6 +4,7 @@
 
   imports = [
     ./modules/adguard.nix
+    ./modules/borg-server.nix
     ./modules/caddy.nix
   ];
 
@@ -20,14 +21,19 @@
   hosts.openssh = {
     enable = true;
     allowUsers = [
-      "*@100.64.0.0/10"
-      "*@10.30.0.0/24"
+      "martijn@100.64.0.0/10"
+      "martijn@10.30.0.0/24"
     ];
   };
 
   hosts.borg = {
     enable = true;
     repository = "ssh://jym6959y@jym6959y.repo.borgbase.com/./repo";
+  };
+
+  hosts.borg-server = {
+    enable = true;
+    clients = [ "nurma" ];
   };
 
   nix.settings.trusted-users = [ "martijn" ]; # allows remote push
