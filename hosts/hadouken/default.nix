@@ -67,8 +67,8 @@
   hosts.openssh = {
     enable = true;
     allowUsers = [
-      "*@100.64.0.0/10"
-      "*@10.30.0.0/24"
+      "martijn@100.64.0.0/10"
+      "martijn@10.30.0.0/24"
     ];
   };
 

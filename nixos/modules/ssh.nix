@@ -12,7 +12,7 @@ in
     enable = mkEnableOption "Enable OpenSSH server";
     allowUsers = mkOption {
       type = types.listOf types.str;
-      default = [ "*@100.64.0.0/10" ];
+      default = [ "martijn@100.64.0.0/10" ];
       description = "Set IP restrictions";
     };
   };

@@ -37,6 +37,7 @@
   hosts.borg = {
     enable = true;
     repository = "ssh://nads486h@nads486h.repo.borgbase.com/./repo";
+    tatsumaki = true;
     paths = [ "/home/martijn" ];
     identityPath = "/home/martijn/.ssh/id_ed25519_age";
     exclude = [
@@ -100,8 +101,8 @@
   hosts.openssh = {
     enable = false;
     allowUsers = [
-      "*@100.64.0.0/10"
-      "*@10.30.0.0/24"
+      "martijn@100.64.0.0/10"
+      "martijn@10.30.0.0/24"
     ];
   };
 
