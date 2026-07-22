@@ -103,6 +103,7 @@ in
         tabstop = 2; # Number of spaces tabs count for
         softtabstop = 2; # Number of spaces a <Tab> inserts in insert mode
         scrolloff = 2; # always have 2 lines margin
+        updatetime = 30; # CursorHold fires after x-ms
 
         # Spelling
         spell = false;
@@ -115,18 +116,28 @@ in
         foldmethod = "expr";
         foldexpr = "v:lua.vim.lsp.foldexpr()";
 
-        # Completion
-        wildoptions = "pum,fuzzy,exacttext"; # Popup wildmenu, fuzzy matching, exact text in search completion
-        wildmode = "longest:full,full"; # Complete longest common string, then each full match
+        # Cmdline completion (:e, :find, /search)
+        wildoptions = "pum,fuzzy,exacttext"; # Popup menu, fuzzy match, exact text in / search
+        wildmode = "longest:full,full"; # <Tab>: first inserts longest prefix+menu, then cycles full matches
         wildignorecase = true; # Ignore case in cmdline file completion
+
+        # Insert-mode completion
+        completeopt = "menu,noinsert,menuone,popup,fuzzy";
+        # menu     = show popup menu
+        # noinsert = don't auto-insert first match; always <C-y> to accept
+        # menuone  = show popup even if only 1 match
+        # popup    = floating doc window for selected item
+        # fuzzy    = type to filter by skipping chars (no need for exact prefix)
+        complete = ".,w"; # <C-n>/<C-p> sources: . = buffer, w = other windows
+        infercase = true; # Match case of typed prefix when inserting completion
+        pumwidth = 20; # Minimum popup menu width
+        pummaxwidth = 65; # Maximum popup menu width (truncated text shows fillchars.trunc "…")
+        pumheight = 15; # Max items in popup menu
+        pumborder = "single"; # Border around popup menu
+        fillchars = {
+          trunc = "…"; # Shown when menu text is truncated
+        };
         winborder = "single";
-        completeopt = "menu,menuone,noinsert,popup"; # Manual completion menu, no auto-insert, doc popup
-        complete = ".,w"; # Current buffer and windows
-        infercase = true; # Infer case for completion
-        pumheight = 15; # Max items in completion menu
-        pumwidth = 30; # Minimum width of completion menu
-        pummaxwidth = 60; # Maximum width of completion menu
-        pumborder = "single"; # Border around completion menu
       };
 
       userCommands = {
@@ -661,6 +672,7 @@ in
         vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
         require('touchup').setup()
+
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')

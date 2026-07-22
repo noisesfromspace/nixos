@@ -15,6 +15,7 @@ in
       (pkgs.mdformat.withPlugins (p: [
         p.mdformat-beautysh
         p.mdformat-footnote
+        p.mdformat-wikilink
         p.mdformat-frontmatter
         p.mdformat-gfm
         (pkgs.python3Packages.buildPythonPackage {
@@ -24,8 +25,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "mdformat-consistent-lists";
-            rev = "f7d73f4587cecdb7817f684a9739eac878677777";
-            hash = "sha256-+Ja+srTXSmGlQDDJHVhahzB+ZYuhKA2TVBdw0B41sWE=";
+            rev = "ed2dbfa27cc278f1ec8ec5d0fb3aeef5a22d368d";
+            hash = "sha256-PsYvA121ykSRZUWzrZqR0aV9rxEKfALJZCVtjCbecp8=";
           };
           propagatedBuildInputs = [
             pkgs.python3Packages.mdformat
