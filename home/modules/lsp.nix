@@ -15,16 +15,17 @@ in
       (pkgs.mdformat.withPlugins (p: [
         p.mdformat-beautysh
         p.mdformat-footnote
-        p.mdformat-wikilink
         p.mdformat-frontmatter
         p.mdformat-gfm
         (pkgs.python3Packages.buildPythonPackage {
-          pname = "mdformat-space-control";
-          version = "0.4.8";
+          pname = "mdformat-consistent-lists";
+          version = "0.1.0";
           format = "pyproject";
-          src = pkgs.fetchurl {
-            url = "https://files.pythonhosted.org/packages/5c/34/f422535ea87534624fdd7f437ccbe57e610fd5275310f9ab35e8ecf21761/mdformat_space_control-0.4.8.tar.gz";
-            hash = "sha256-VUBt8ukAiwO27jFLMQ1MXt+ke32rDuI7mOs2g6/l4i0=";
+          src = pkgs.fetchFromGitHub {
+            owner = "noisesfromspace";
+            repo = "mdformat-consistent-lists";
+            rev = "f7d73f4587cecdb7817f684a9739eac878677777";
+            hash = "sha256-+Ja+srTXSmGlQDDJHVhahzB+ZYuhKA2TVBdw0B41sWE=";
           };
           propagatedBuildInputs = [
             pkgs.python3Packages.mdformat
@@ -62,6 +63,7 @@ in
               mdformat = {
                 args = [
                   "--number"
+                  "--no-validate"
                   "-"
                 ];
               };
@@ -180,7 +182,7 @@ in
             function() require("conform").format({ 
               lsp_fallback = true,
               async = false,
-              timeout_ms = 800, 
+              timeout_ms = 1200, 
             }) end '';
           mode = [
             "v"
