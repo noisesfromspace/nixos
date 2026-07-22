@@ -63,7 +63,6 @@ in
   imports = [
     ./dap.nix
     ./lsp.nix
-    ./snip.nix
   ];
 
   config = mkIf cfg.enable {

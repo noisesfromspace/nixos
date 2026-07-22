@@ -25,8 +25,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "mdformat-consistent-lists";
-            rev = "ed2dbfa27cc278f1ec8ec5d0fb3aeef5a22d368d";
-            hash = "sha256-PsYvA121ykSRZUWzrZqR0aV9rxEKfALJZCVtjCbecp8=";
+            rev = "56f9d6496fdfba05e6519410c6a15d111e34a87c";
+            hash = "sha256-aIYV+Dltyg8h/7/H431/z1LBrfxv9bHl/3m1FrnpHKM=";
           };
           propagatedBuildInputs = [
             pkgs.python3Packages.mdformat
