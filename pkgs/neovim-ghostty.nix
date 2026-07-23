@@ -17,8 +17,8 @@ let
   neovim-src = fetchFromGitHub {
     owner = "noib3";
     repo = "neovim";
-    rev = "2873168321aaa8666bd55c7eabdf27151228480b";
-    sha256 = "sha256-ButzMy40dznJ8QVMGvHxaY+3GgaTIlISp/zisj4gN6w=";
+    rev = "e3c8bcad52986d8d85b21a0518a314d15c38d992";
+    sha256 = "sha256-gbSWDqvMdNmsM1+snOpV5uk6u/Ykvwz72fEgT5BfXQ0=";
   };
 
   # ghostty fork pinned by neovim's cmake.deps/deps.txt
@@ -44,12 +44,6 @@ in
     src = neovim-src;
 
     patches = [ ];
-
-    postPatch = ''
-      # is_aucmd_win() is referenced but never defined in the PR fork.
-      # Remove the check; it's a minor optimization that skips autocmd windows.
-      sed -i 's/!is_aucmd_win(wp) \&\& //' src/nvim/terminal.c
-    '';
 
     buildInputs =
       builtins.filter (x: x.pname or "" != "libvterm") old.buildInputs
