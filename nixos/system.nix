@@ -22,6 +22,7 @@
     ./modules/nym.nix
     ./modules/ssh.nix
     ./modules/stalwart.nix
+    ./modules/netns.nix
   ];
 
   age.secrets = {

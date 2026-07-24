@@ -582,6 +582,8 @@ in
                 vim.opt_local.number = true
                 vim.opt_local.relativenumber = true
                 vim.opt_local.scrollback = 100000
+                vim.opt_local.scrolloff = 0
+                vim.opt_local.sidescrolloff = 0
               end
             end
           '';
