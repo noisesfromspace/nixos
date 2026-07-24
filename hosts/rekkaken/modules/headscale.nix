@@ -38,7 +38,6 @@ let
   ];
   rekkakenRecords = [
     "notifications"
-    "ladder"
     "vpn"
     "uptime"
     "admin-2-mail"
@@ -51,6 +50,7 @@ let
   tatsumakiRecords = [
     "dns"
     "mempool"
+    "ladder"
   ];
   dosukoiRecords = [
     "acme"

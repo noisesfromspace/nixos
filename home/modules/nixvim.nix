@@ -655,13 +655,13 @@ in
 
       extraPlugins = [
         (pkgs.vimUtils.buildVimPlugin {
-          name = "touchup";
-          src = pkgs.fetchFromRadicle {
-            seed = "seed.boers.email";
-            repo = "z3idaVuBJSG4LUD3zbP2PoXfry3xX";
-            rev = "ffd9365ae3e6af6b55d882f0b5760f543882bba8";
-            hash = "sha256-mDpM1KL8gF4ilry9wDFKjagdydhUfjcqC4lHx8uKMP4=";
-          };
+          # src = pkgs.fetchFromRadicle {
+          #   seed = "seed.boers.email";
+          #   repo = "z3idaVuBJSG4LUD3zbP2PoXfry3xX";
+          #   rev = "59756a607711a13cd0f822ca70f9f4965077d2e3";
+          #   hash = "sha256-47Ix7O9vLnDDygcYYsELxk0VlQx5Y5ltpTr6rTqH+u0=";
+          # };
+          src = /opt/code/touchup.nvim;
         })
       ];
 
