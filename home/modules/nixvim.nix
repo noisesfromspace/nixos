@@ -215,28 +215,38 @@ in
                   or (type(item) == 'string' and tonumber(item))
               end
 
+              local get_items = function()
+                local items = {}
+                for _, b in ipairs(vim.api.nvim_list_bufs()) do
+                  if vim.bo[b].buflisted then
+                    local name = vim.api.nvim_buf_get_name(b)
+                    local text = name == "" and "[No Name]" or name
+                    table.insert(items, { bufnr = b, text = text, path = name })
+                  end
+                end
+                table.sort(items, function(a, b)
+                  local pa = vim.api.nvim_buf_is_valid(a.bufnr) and vim.b[a.bufnr].pinned
+                  local pb = vim.api.nvim_buf_is_valid(b.bufnr) and vim.b[b.bufnr].pinned
+                  if pa ~= pb then return pa end
+                  return a.bufnr < b.bufnr
+                end)
+                return items
+              end
+
               local show_buffers = function(buf_id, items, query)
                 local active_win = MiniPick.get_picker_state().windows.target
                 local active_buf = active_win and vim.api.nvim_win_get_buf(active_win)
-                local has_modified = false
-                for _, item in ipairs(items) do
-                  local b = bufnr(item)
-                  if b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified then has_modified = true; break end
-                end
                 local display_items = {}
                 for _, item in ipairs(items) do
                   local b = bufnr(item)
-                  local is_active, is_mod = b == active_buf, b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified
+                  local is_mod = b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified
+                  local is_pinned = b and vim.api.nvim_buf_is_valid(b) and vim.b[b].pinned
+                  local is_active = b == active_buf
                   local prefix = ""
-                  if not has_modified then
-                    prefix = is_active and "> " or "  "
-                  elseif is_mod then
-                    prefix = "[+] "
-                  elseif is_active then
-                    prefix = " >  "
-                  else
-                    prefix = "    "
-                  end
+                  if is_mod then prefix = "+ "
+                  elseif is_pinned then prefix = "\226\152\133 "
+                  elseif is_active then prefix = "> "
+                  else prefix = "  " end
                   if type(item) == 'table' then
                     local copy = vim.deepcopy(item)
                     copy.text = prefix .. (copy.text or copy.path or "")
@@ -287,8 +297,29 @@ in
                   MiniPick.set_picker_match_inds({ new_all[new_cur] }, "current")
                 end
               end
-              local buffer_mappings = { wipeout = { char = '<C-d>', func = wipeout_cur } }
-              MiniPick.builtin.buffers(nil, { mappings = buffer_mappings, source = { show = show_buffers } })
+
+              local toggle_pin = function()
+                local item = MiniPick.get_picker_matches().current
+                if not item or not item.bufnr then return end
+                vim.b[item.bufnr].pinned = not vim.b[item.bufnr].pinned
+                MiniPick.set_picker_items(get_items())
+              end
+
+              local buffer_mappings = {
+                wipeout = { char = '<C-d>', func = wipeout_cur },
+                toggle_pin = { char = '<C-g>', func = toggle_pin },
+                move_start = '<nop>',
+              }
+              MiniPick.start({
+                source = {
+                  items = get_items,
+                  name = 'Buffers',
+                  show = show_buffers,
+                  choose = MiniPick.default_choose,
+                  preview = MiniPick.default_preview,
+                },
+                mappings = buffer_mappings,
+              })
             '';
         })
         (lua {
@@ -602,6 +633,7 @@ in
               -- notes use 2-space list nesting; core ftplugin forces 4
               vim.opt_local.shiftwidth = 2
               vim.opt_local.tabstop = 2
+              vim.opt_local.conceallevel = 0
               vim.opt_local.softtabstop = 2
               vim.b.md_list_fold = function()
                 local line = vim.fn.getline(vim.v.lnum)
@@ -657,13 +689,14 @@ in
 
       extraPlugins = [
         (pkgs.vimUtils.buildVimPlugin {
-          # src = pkgs.fetchFromRadicle {
-          #   seed = "seed.boers.email";
-          #   repo = "z3idaVuBJSG4LUD3zbP2PoXfry3xX";
-          #   rev = "59756a607711a13cd0f822ca70f9f4965077d2e3";
-          #   hash = "sha256-47Ix7O9vLnDDygcYYsELxk0VlQx5Y5ltpTr6rTqH+u0=";
-          # };
-          src = /opt/code/touchup.nvim;
+          pname = "touchup";
+          version = "0.1";
+          src = pkgs.fetchFromGitHub {
+            owner = "noisesfromspace";
+            repo = "touchup.nvim";
+            rev = "9410a8640262f9b43ce04b0779d2c66134ae311b";
+            hash = "sha256-DTXo3CqhECJwYRm/e7scw03VP8SpxA9G2fBcRt4RTTA=";
+          };
         })
       ];
 
