@@ -23,6 +23,36 @@ let
   vethHost = "veth-${nsName}";
   vethNs = "veth-ns";
   fwMark = "42";
+
+  # setns wrapper enters the tunnel namespace then drops privileges.
+  # security.wrappers gives it CAP_SYS_ADMIN so any user can use it without sudo.
+  tunnel-exe =
+    pkgs.runCommandCC "tunnel-nsenter"
+      {
+        src = pkgs.writeText "tunnel.c" /* c */ ''
+          #define _GNU_SOURCE
+          #include <fcntl.h>
+          #include <sched.h>
+          #include <sys/types.h>
+          #include <unistd.h>
+          int main(int argc, char **argv) {
+              if (argc < 2) return 1;
+              int fd = open("/var/run/netns/${nsName}", O_RDONLY | O_CLOEXEC);
+              if (fd < 0) return 1;
+              if (setns(fd, CLONE_NEWNET)) { close(fd); return 2; }
+              close(fd);
+              gid_t g = getgid();
+              uid_t u = getuid();
+              if (setresgid(g, g, g) || setresuid(u, u, u)) return 3;
+              execvp(argv[1], argv + 1);
+              return 4;
+          }
+        '';
+      }
+      ''
+        mkdir -p $out/bin
+        $CC -O2 -o $out/bin/tunnel $src
+      '';
 in
 {
   options.hosts.netns = {
@@ -30,6 +60,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.systemPackages = [ tunnel-exe ];
+
+    security.wrappers.tunnel = {
+      source = "${tunnel-exe}/bin/tunnel";
+      capabilities = "cap_sys_admin+ep";
+      owner = "root";
+      group = "root";
+    };
+
     age.secrets."mullvad-wg" = {
       file = "${inputs.secrets}/mullvad-wg.age";
       owner = "root";
@@ -166,7 +205,11 @@ in
       restartIfChanged = false;
       bindsTo = [ "netns@${nsName}.service" ];
       after = [ "netns@${nsName}.service" ];
-      path = with pkgs; [ nftables iproute2 gawk ];
+      path = with pkgs; [
+        nftables
+        iproute2
+        gawk
+      ];
     };
 
     # The NixOS wireguard module creates a peer-helper service per peer.

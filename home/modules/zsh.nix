@@ -177,8 +177,7 @@ in
                 }
 
                 notes() {
-                  cd ~/Notes
-                  nvim 
+                  nvim -c 'cd ~/Notes' 
                 }
 
                 if [ -n "$NVIM" ]; then
