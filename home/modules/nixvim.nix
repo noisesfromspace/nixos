@@ -219,7 +219,7 @@ in
                 local items = {}
                 for _, b in ipairs(vim.api.nvim_list_bufs()) do
                   if vim.bo[b].buflisted then
-                    local name = vim.api.nvim_buf_get_name(b)
+                    local name = vim.fn.bufname(b)
                     local text = name == "" and "[No Name]" or name
                     table.insert(items, { bufnr = b, text = text, path = name })
                   end
@@ -455,7 +455,7 @@ in
           modes = [ "n" ];
         })
         (cmd {
-          key = "<C-t>q";
+          key = "<C-t>c";
           desc = "Close tab";
           command = "tabclose";
           modes = [ "n" ];
