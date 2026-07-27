@@ -39,7 +39,7 @@ in
 
   config = lib.mkIf cfg.enable {
     services.caddy.virtualHosts = {
-      "admin-${toString cfg.nodeId}-mail.thuis" = {
+      "mx${toString cfg.nodeId}.thuis" = {
         extraConfig = ''
           import headscale
           reverse_proxy http://127.0.0.1:8629
@@ -86,6 +86,9 @@ in
           node-id = cfg.nodeId;
           coordinator = "p2p";
         };
+
+        # Use public-facing URL for JMAP discovery
+        http.url = "'https://mx${toString cfg.nodeId}.thuis'";
 
         # Stores configuration - use mkForce to override defaults completely
         store = lib.mkForce {
@@ -301,6 +304,7 @@ in
       ];
       requires = [ "tailscaled.service" ];
       wants = [ "stalwart-certs.service" ];
+      environment.STALWART_PUBLIC_URL = "https://mx${toString cfg.nodeId}.thuis";
     };
 
     # Copy Caddy certificates to Stalwart directory with proper permissions

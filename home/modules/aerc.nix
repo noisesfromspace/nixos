@@ -36,20 +36,19 @@ in
     programs.mbsync.enable = true;
     services.mbsync = {
       enable = true;
-      frequency = "*:0/2";
+      frequency = "*:0/1";
       postExec = "${lib.getExe pkgs.notmuch} new";
     };
-
     programs.aerc = {
       enable = true;
       extraConfig = {
         general.unsafe-accounts-conf = true;
+        compose.address-book-cmd = "${lib.getExe pkgs.notmuch-addrlookup} --format=aerc %s";
         ui = {
           sort = "-r date";
           timestamp-format = "2006-01-02 15:04";
           threading-enabled = true;
         };
-        compose.address-book-cmd = "${lib.getExe pkgs.notmuch-addrlookup} --format=aerc %s";
 
         filters = {
           "text/plain" = "${lib.getExe pkgs.bat} -fP --style=plain";
@@ -89,7 +88,7 @@ in
       C = :compose<Enter>
 
       <Enter> = :view<Enter>
-      D = :delete<Enter>
+      D = :move Trash<Enter>
       A = :archive flat<Enter>
 
       rr = :reply -a<Enter>
@@ -109,7 +108,7 @@ in
       x = :close<Enter>
       o = :open<Enter>
       S = :save<space>
-      D = :delete<Enter>
+      D = :move Trash<Enter>
       A = :archive flat<Enter>
 
       <C-y> = :copy-link <space>
@@ -188,9 +187,11 @@ in
             extraAccounts = rec {
               from = address;
               source = "maildir://~/Maildir/Stalwart";
-              folders = "Inbox,Sent Items,Signups,Shipping,Bewaren,Werk,Archive,Deleted Items,Junk Mail";
-              folders-sort = folders;
+              default = "Inbox";
               copy-to = "Sent Items";
+              archive = "Archive";
+              folders = "Inbox,Sent Items,Signups,Shipping,Bewaren,Werk,Archive,Drafts,Trash,Junk Mail";
+              folders-sort = folders;
             };
           };
 

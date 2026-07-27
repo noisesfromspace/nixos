@@ -32,16 +32,16 @@ let
   ];
   shoryukenRecords = [
     "ci"
-    "admin-1-mail"
     "analytics"
     "sieve-1"
+    "mx1"
   ];
   rekkakenRecords = [
     "notifications"
     "vpn"
     "uptime"
-    "admin-2-mail"
     "sieve-2"
+    "mx2"
   ];
   tenshinRecords = [
     "chef"
@@ -153,6 +153,7 @@ in
                     "hadouken:80,443" # everyone access to hadouken web-services
                     "tatsumaki:80,443,53" # everyone access to dns (over TLS)
                     "rekkaken:80,443,8025" # send/receive notifications + internal email
+                    "shoryuken:80,443" # JMAP / internal email
                     "tenshin:123,4460" # timeserver
                   ];
                 }
