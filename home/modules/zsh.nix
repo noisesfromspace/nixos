@@ -282,6 +282,7 @@ in
       fzf = {
         enable = true; # A command-line fuzzy finder
         enableZshIntegration = true;
+        historyWidget.command = "";
       };
       direnv = {
         enable = true; # Execute commands when stepping into directory

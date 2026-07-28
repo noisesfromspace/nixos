@@ -14,6 +14,15 @@ let
     cat ${gpg-key} | gpg --dearmor > $out/hu/nnzg8pw4hsizdcd9u31yy1ony94u94tw
     touch $out/policy
   '';
+  blocked-ja4s = pkgs.writeText "blocked_ja4s.txt" ''
+    # Blocked JA4 TLS fingerprints — one per line, # for comments
+    # Sliver C2
+    t13d190900_9dc949149365_97f8aa674fd9
+    # Cobalt Strike (HTTPS beacon)
+    # t13d1517h2_8daaf6152771_b0da82dd1658
+    # Evilginx
+    # t13d191000_9dc949149365_e7c285222651
+  '';
 in
 {
   options.hosts.caddy = {
@@ -29,10 +38,15 @@ in
     services.caddy = {
       enable = true;
       package = pkgs.caddy.withPlugins {
-        plugins = [ "github.com/darkweak/souin/plugins/caddy@v1.7.8" ];
-        hash = "sha256-fvoL28WQfmtQezzm+LCa5uVkxvc5K18FMcqfSifjriI=";
+        plugins = [
+          "github.com/darkweak/souin/plugins/caddy@v1.7.8"
+          "github.com/noisesfromspace/caddy-ja3ja4@v0.0.0-20260728150355-31c3a6057526"
+          "github.com/mholt/caddy-ratelimit@v0.1.0"
+        ];
+        hash = "sha256-KVs7Op0PI5/4TPL2iI/DVRhICv1h+sPpwrOnOE+rnoY=";
       };
       globalConfig = ''
+        auto_https disable_redirects
         metrics {
             per_host
         }
@@ -58,13 +72,36 @@ in
             }
           }
         }
+        (ratelimit) {
+          rate_limit {
+            zone default {
+              key {remote_host}
+              events 60
+              window 1m
+            }
+          }
+        }
+        (ratelimit_loose) {
+          rate_limit {
+            zone api {
+              key {remote_host}
+              events 300
+              window 1m
+            }
+          }
+        }
       '';
       virtualHosts = {
         "boers.email" = {
           serverAliases = [ "plebian.nl" ];
           extraConfig = ''
+            import ratelimit
             cache {
                 ttl 1h
+            }
+            ja3_ja4 {
+                block_file ${blocked-ja4s}
+                watch_block_file
             }
             root * ${pkgs.info}/
             encode zstd gzip
@@ -99,6 +136,7 @@ in
         };
         "resume.boers.email" = {
           extraConfig = ''
+            import ratelimit
             header X-Robots-Tag "noindex"
             cache { ttl 1h }
             root * ${pkgs.resume}
@@ -108,6 +146,7 @@ in
         };
         "blog.boers.email" = {
           extraConfig = ''
+            import ratelimit
             cache { ttl 1h }
             root * ${pkgs.blog}/
             encode zstd gzip
@@ -147,6 +186,12 @@ in
         "noisesfrom.space" = {
           extraConfig = # bash
             ''
+              import ratelimit_loose
+              ja3_ja4 {
+                  block_file ${blocked-ja4s}
+                  watch_block_file
+              }
+
               # Encode responses with Gzip
               encode gzip
 
@@ -194,6 +239,13 @@ in
                   file_server
               }
             '';
+        };
+        "ja4.boers.email" = {
+          extraConfig = ''
+            ja3_ja4 {
+            }
+            respond "{tls.ja4}" 200
+          '';
         };
         # Dummy endpoint to get certificates for mail server
         "mx1.plebian.nl" = {
