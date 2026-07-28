@@ -89,10 +89,6 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
-          port-monitor = {
-            enabled = true;
-            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-          };
           privacy-indicator = {
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
@@ -247,14 +243,6 @@ with lib;
                   loadingIcon = "loader";
                   refreshInterval = 300;
                   successIcon = "network";
-                };
-              }
-              {
-                id = "plugin:port-monitor";
-                defaultSettings = {
-                  hideSystemPorts = false;
-                  hideWhenEmpty = false;
-                  refreshInterval = 5;
                 };
               }
               {

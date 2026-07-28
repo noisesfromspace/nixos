@@ -9,7 +9,7 @@
   fetchFromGitHub,
   pkgs,
   callPackage,
-  zig_0_15,
+  zig_0_16,
 }:
 
 let
@@ -25,14 +25,14 @@ let
   ghostty-src = fetchFromGitHub {
     owner = "noib3";
     repo = "ghostty";
-    rev = "4522e74b83061ad7b5525a6078389434779e3152";
-    sha256 = "03d60m8yilh03xym26m7l5m4f7zkij3g0q6n9ssgq5h4n874dzhh";
+    rev = "4c725242b7dbe8c77c6e227ef1f9540c5ef17921";
+    sha256 = "sha256-DvPf4hVaD8iEeSfqhPCfAtD9kWkBAODqvxp9rmEBgPo=";
   };
 
   libghostty-vt = callPackage (ghostty-src + "/nix/libghostty-vt.nix") {
-    inherit zig_0_15;
+    inherit zig_0_16;
     optimize = "ReleaseSafe";
-    revision = "4522e74b83061ad7b5525a6078389434779e3152";
+    revision = "4c725242b7dbe8c77c6e227ef1f9540c5ef17921";
   };
 in
 

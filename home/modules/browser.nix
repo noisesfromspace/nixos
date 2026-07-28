@@ -63,7 +63,7 @@ in
       ]);
     programs.librewolf = {
       enable = true;
-      package = pkgs.stable.librewolf;
+      # package = pkgs.stable.librewolf;
       policies =
         let
           mkExtension =
@@ -164,7 +164,7 @@ in
             "full-screen-api.transition-duration.enter" = "0 0";
             "full-screen-api.transition-duration.leave" = "0 0";
             "accessibility.force_disabled" = true;
-            "browser.uidensity" = 1; # compact
+            # "browser.uidensity" = 1; # compact
             "browser.backspace_action" = 0; # enable backspace back history
             "sidebar.verticalTabs" = true; # we zen browser now
             "sidebar.animation.enabled" = false;

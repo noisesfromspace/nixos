@@ -81,23 +81,22 @@ in
       DynamicUser = lib.mkForce false;
     };
 
-    environment.systemPackages = [ pkgs.garage-webui ];
-
-    systemd.services.garage-webui = {
-      enable = true;
-      description = "Garage Web UI";
-      after = [ "garage.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "simple";
-        User = "garage";
-        Group = "garage";
-        ExecStart = "${pkgs.garage-webui}/bin/garage-webui";
-        Restart = "on-failure";
-        Environment = [ "CONFIG_PATH=/etc/garage.toml" ];
-        EnvironmentFile = config.age.secrets.garage.path;
-      };
-    };
+    # TODO: https://git.deuxfleurs.fr/Deuxfleurs/garage-webadmin
+    # systemd.services.garage-webui = {
+    #   enable = true;
+    #   description = "Garage Web UI";
+    #   after = [ "garage.service" ];
+    #   wantedBy = [ "multi-user.target" ];
+    #   serviceConfig = {
+    #     Type = "simple";
+    #     User = "garage";
+    #     Group = "garage";
+    #     ExecStart = "${pkgs.garage-webui}/bin/garage-webui";
+    #     Restart = "on-failure";
+    #     Environment = [ "CONFIG_PATH=/etc/garage.toml" ];
+    #     EnvironmentFile = config.age.secrets.garage.path;
+    #   };
+    # };
 
     age.secrets.garage = {
       file = "${inputs.secrets}/garage.age";

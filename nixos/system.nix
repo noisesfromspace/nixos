@@ -68,8 +68,7 @@
     neovim
 
     # admin
-    htop # the og
-    btop # fancy htop
+    rustnet # networking
     exfatprogs # fat support
     e2fsprogs # mkfs.ext4 etc
 
@@ -87,7 +86,6 @@
     # diagnostic
     dust # better du
     unaware # mask PII-data
-    rlwrap # improve editing
 
     # system tools
     lm_sensors # for `sensors` command
