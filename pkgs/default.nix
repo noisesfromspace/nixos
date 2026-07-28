@@ -31,6 +31,7 @@ in
   rustfs = pkgs.callPackage ./rustfs.nix { };
   blog = pkgs.callPackage ./blog.nix { };
   info = pkgs.callPackage ./info.nix { };
+  ipatool-rs = pkgs.callPackage ./ipatool-rs.nix { };
   resume = pkgs.callPackage ./resume.nix { };
   stalwart-custom = pkgs.callPackage ./stalwart.nix { };
   glitch-soc = pkgs.callPackage "${glitch-soc-src}/packages/mastodon" { };

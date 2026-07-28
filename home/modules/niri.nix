@@ -30,11 +30,6 @@ in
       default = false;
       description = "Whether this host is a laptop.";
     };
-    laptopMonitorName = mkOption {
-      type = types.str;
-      default = "eDP-1";
-      description = "Name of the laptop monitor output.";
-    };
     laptopScalingFactor = mkOption {
       type = types.float;
       default = 1.0;
@@ -84,7 +79,7 @@ in
           }
         ];
 
-        # Xwayland integration 
+        # Xwayland integration
         xwayland-satellite = {
           enable = true;
         };
@@ -110,7 +105,7 @@ in
 
         # Output configuration
         outputs = mkIf cfg.isLaptop {
-          "${cfg.laptopMonitorName}" = {
+          "eDP-1" = {
             scale = cfg.laptopScalingFactor;
           };
         };
