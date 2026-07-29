@@ -88,7 +88,6 @@
 
   hosts.tailscale.enable = true;
   hosts.prometheus.enable = true;
-  hosts.netns.enable = true;
 
   programs = {
     steam.enable = true;

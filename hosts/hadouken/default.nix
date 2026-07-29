@@ -29,6 +29,7 @@
   hosts.shares.enable = true;
   hosts.caddy.enable = true;
   hosts.media.enable = true;
+  hosts.netns.enable = true;
   hosts.tailscale.enable = true;
   hosts.monitoring.enable = true;
   hosts.matrix.enable = true;

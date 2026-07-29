@@ -21,7 +21,7 @@ in
       enable = false;
       autoConnect = false;
     };
-
+    hosts.netns.enable = true;
     services.mullvad-vpn.enable = true;
 
     environment.sessionVariables = {
@@ -71,7 +71,9 @@ in
       overlays = [
         inputs.niri.overlays.niri
         (final: prev: {
-          niri-unstable = prev.niri-unstable.overrideAttrs (_: { doCheck = false; });
+          niri-unstable = prev.niri-unstable.overrideAttrs (_: {
+            doCheck = false;
+          });
         })
       ];
     };

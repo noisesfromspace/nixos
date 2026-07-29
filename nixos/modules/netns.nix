@@ -57,6 +57,15 @@ in
 {
   options.hosts.netns = {
     enable = mkEnableOption "Mullvad VPN network namespace — isolates traffic through Mullvad WireGuard";
+    allowedIngressPorts = mkOption {
+      type = types.listOf types.port;
+      default = [ ];
+      description = ''
+        TCP ports to accept from the host bridge into the tunnel namespace.
+        Use this to expose service ports (e.g. 9091 for transmission RPC)
+        that run inside the namespace via NetworkNamespacePath=.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -191,6 +200,7 @@ in
         # Catch any DNS that somehow tries to bypass the tunnel
         $NS nft add rule inet tunnel-fw output \
           oif ${vethNs} meta l4proto { tcp, udp } th dport 53 drop
+        ${lib.concatMapStringsSep "\n        " (port: "$NS nft add rule inet tunnel-fw input iif ${vethNs} tcp dport ${toString port} accept") cfg.allowedIngressPorts}
       '';
 
       preShutdown = ''

@@ -41,50 +41,5 @@ in
       HibernateDelaySec = "30m";
       SuspendState = "mem";
     };
-
-    # ── rclone sync before sleep — non-blocking, quick timeout ──
-    # If network is unreachable, rclone bails in ~20s via --contimeout/--low-level-retries.
-    # TimeoutStartSec=25s ensures sleep proceeds no matter what.
-    systemd.services.rclone-sync-before-sleep = {
-      description = "Final rclone bisync before sleep";
-      before = [ "sleep.target" ];
-      wantedBy = [ "sleep.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "martijn";
-        Environment = "RCLONE_CONFIG=/run/agenix/sync-rclone-conf";
-        TimeoutStartSec = 25;
-        IOSchedulingClass = "idle";
-        Nice = 19;
-      };
-      script = ''
-        set -e
-
-        # Restore stale listing files from prior crashes
-        cache="$HOME/.cache/rclone/bisync"
-        for f in "$cache"/*.lst-old; do
-          [ -f "$f" ] || continue
-          lst="''${f%-old}"
-          [ -f "$lst" ] || cp "$f" "$lst"
-        done
-
-        mkBsync() {
-          [ -d "$1" ] || return 0
-          ${pkgs.rclone}/bin/rclone bisync "$1" "$2" \
-            --conflict-resolve newer \
-            --create-empty-src-dirs \
-            --resilient \
-            --max-lock 2m \
-            --contimeout 10s \
-            --low-level-retries 2 \
-            --timeout 60s \
-            --log-level ERROR \
-            || true  # never block sleep on sync failure
-        }
-
-        mkBsync "$HOME/Notes" "notes-crypt:"
-        mkBsync "$HOME/.pi/agent/sessions" "sessions-crypt:"
-      '';
-    };
   };
 }

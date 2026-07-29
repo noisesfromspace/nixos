@@ -26,11 +26,12 @@ in
     users.groups = {
       render.members = [ "jellyfin" ];
       multimedia.members = [
-        "syncthing"
         "jellyfin"
         "martijn"
         "radarr"
         "sonarr"
+        "transmission"
+        "lidarr"
       ];
     };
 
@@ -70,7 +71,7 @@ in
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           Type = "simple";
-          User = "syncthing";
+          User = "transmission";
           Group = "multimedia";
           UMask = "0002";
           EnvironmentFile = config.age.secrets.unpackerr.path;
@@ -79,10 +80,8 @@ in
               config = pkgs.writeText "unpackerr.conf" ''
                 [[sonarr]]
                 url = "https://sonarr.thuis"
-                syncthing = true
                 [[radarr]]
                 url = "https://radarr.thuis"
-                syncthing = true
               '';
             in
             "${lib.getExe pkgs.unpackerr} -c ${config}";
@@ -98,24 +97,33 @@ in
       LIBVA_DRIVER_NAME = "iHD";
     };
 
+    hosts.netns.allowedIngressPorts = [ 9091 ];
+
     services = {
       jellyfin.enable = true;
       seerr.enable = true;
 
-      caddy.virtualHosts."syncthing.thuis".extraConfig = ''
-        import headscale
-        handle @internal {
-          reverse_proxy http://${config.services.syncthing.guiAddress}
-        }
-        respond 403
-      '';
+      transmission = {
+        enable = true;
+        package = pkgs.transmission_4;
+        group = "multimedia";
+        settings = {
+          rpc-bind-address = "10.98.0.2";
+          download-dir = "/mnt/zwembad/hot/Downloads";
+          incomplete-dir-enabled = false;
+          port-forwarding-enabled = false;
+          rpc-whitelist = "127.0.0.1,10.98.0.1";
+          rpc-host-whitelist-enabled = false;
+          message-level = 1;
+        };
+      };
 
       borgbackup.jobs.default.paths = [
         config.services.prowlarr.dataDir
         config.services.radarr.dataDir
         config.services.sonarr.dataDir
+        config.services.lidarr.dataDir
         config.services.jellyfin.dataDir
-        config.services.seerr.configDir
       ];
 
       prowlarr = {
@@ -123,55 +131,9 @@ in
         settings.server.bindaddress = "127.0.0.1";
       };
 
-      syncthing = {
-        enable = true;
-        openDefaultPorts = true;
-        dataDir = "/mnt/zwembad/app/syncthing";
-        configDir = "/mnt/zwembad/app/syncthing/.config/syncthing";
-        overrideDevices = true;
-        group = "multimedia";
-        overrideFolders = true;
-        guiAddress = "127.0.0.1:8384";
-        settings = {
-          options = {
-            urAccepted = 1;
-            relaysEnabled = false;
-            localAnnounceEnabled = false;
-            globalAnnounceEnabled = false;
-            crashReportingEnabled = false;
-          };
-          gui.insecureSkipHostcheck = true; # reverse proxy
-          devices = {
-            "seed".id = "C3CPMI7-DKDUEYC-ALWM3HN-X37N7S7-DNECILF-UUAX4TY-6F7QLEZ-Q7HSTQV";
-            "hadouken".id = "AVHC54J-6NTZ6SS-Y5UUYLZ-LE4QIZ5-AGZAUON-2VWB4XW-2O7W3HV-6MIGTQK";
-          };
-          folders = {
-            "hot" = {
-              path = "/mnt/zwembad/hot/Downloads";
-              ignorePerms = true;
-              devices = [
-                "seed"
-                "hadouken"
-              ];
-            };
-            "music" = {
-              path = "/mnt/zwembad/music";
-              ignorePerms = true;
-              devices = [
-                "seed"
-                "hadouken"
-              ];
-            };
-          };
-        };
-      };
-
       caddy.virtualHosts = {
         "media.thuis" = {
           extraConfig = mkProxy 8096;
-        };
-        "jelly.thuis" = {
-          extraConfig = mkProxy config.services.seerr.port;
         };
         "radarr.thuis" = {
           extraConfig = mkProxy config.services.radarr.settings.server.port;
@@ -182,12 +144,41 @@ in
         "prowlarr.thuis" = {
           extraConfig = mkProxy config.services.prowlarr.settings.server.port;
         };
+        "lidarr.thuis" = {
+          extraConfig = mkProxy config.services.lidarr.settings.server.port;
+        };
+        "transmission.thuis" = {
+          extraConfig = ''
+            import headscale
+            handle @internal {
+              reverse_proxy http://10.98.0.2:9091
+            }
+            respond 403
+          '';
+        };
       };
     }
-    // (genAttrs [ "radarr" "sonarr" ] (name: {
+    // (genAttrs [ "radarr" "sonarr" "lidarr" ] (name: {
       enable = true;
       group = "multimedia";
       settings.server.bindaddress = "127.0.0.1";
     }));
+
+    systemd.services.transmission = {
+      bindsTo = [ "netns@tunnel.service" ];
+      after = [
+        "netns@tunnel.service"
+        "wireguard-tun0.service"
+      ];
+      serviceConfig = {
+        NetworkNamespacePath = "/var/run/netns/tunnel";
+        BindPaths = lib.mkAfter [
+          "/mnt/zwembad/music"
+        ];
+        BindReadOnlyPaths = lib.mkAfter [
+          "${pkgs.writeText "tunnel-resolv.conf" "nameserver 10.64.0.1"}:/etc/resolv.conf"
+        ];
+      };
+    };
   };
 }

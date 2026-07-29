@@ -17,7 +17,6 @@ let
     "garage-admin"
     "immich"
     "kasm"
-    "jelly"
     "media"
     "ollama"
     "monitoring"
@@ -26,9 +25,10 @@ let
     "prowlarr"
     "radarr"
     "sonarr"
-    "syncthing"
+    "lidarr"
     "webdav"
     "koito"
+    "transmission"
   ];
   shoryukenRecords = [
     "ci"
@@ -116,6 +116,7 @@ in
         port = 7092;
         settings = {
           server_url = "https://headscale.boers.email";
+          node.expiry = 0;
           derp.urls = [
             "https://derp-map.boers.email/regions"
             "https://controlplane.tailscale.com/derpmap/default"
@@ -128,7 +129,6 @@ in
               "headscale-server@boers.email"
               "headscale-user@boers.email"
             ];
-            expiry = 0; # disable
           };
           policy.path = pkgs.writeText "acl.json" (
             builtins.toJSON {

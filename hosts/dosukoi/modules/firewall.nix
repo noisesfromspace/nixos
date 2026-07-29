@@ -66,9 +66,6 @@ in
                 iifname "peepee" ip saddr @blocklist_v4 drop comment "Drop forwarded traffic from WAN matching dynamic IPv4 blocklist";
                 oifname "peepee" tcp flags syn tcp option maxseg size set rt mtu;
 
-                # --- INBOUND PORT FORWARDING RULES ---
-                iifname "peepee" oifname "lan" ip daddr ${hadouken} meta l4proto { tcp, udp } th dport 22000 ct state new accept comment "Syncthing IPv4";
-
                 # --- GRANULAR INTER-LAN FORWARDING ---
                 iifname { "opt1" } oifname { "lan", "opt1", "wifi" } accept comment "opt1 free to do anything";
                 iifname { "lan", "wifi", "opt1" } oifname { "lan", "wifi", "opt1" } udp dport 41641 accept comment "Allow Tailscale";

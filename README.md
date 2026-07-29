@@ -32,7 +32,6 @@ You could directly use this but it's better to extract the pieces you want in yo
 | Immich                | Self-hosted photo and video backup solution.       | [immich.nix](hosts/hadouken/modules/immich.nix)         |
 | Mastodon (glitch-soc) | Federated social media server.                     | [mastodon.nix](hosts/hadouken/modules/mastodon.nix)     |
 | Matrix Synapse        | Secure, decentralized communication server.        | [matrix.nix](hosts/hadouken/modules/matrix.nix)         |
-| Media stack           | Jellyfin, Jellyseerr and Syncthing.                | [media.nix](hosts/hadouken/modules/media.nix)           |
 | Microbin              | Self-hosted pastebin.                              | [microbin.nix](hosts/hadouken/modules/microbin.nix)     |
 | Monitoring            | Grafana, Loki, Promtail, Prometheus, InfluxDB.     | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
 | Paperless-NGX         | Document management system.                        | [paperless.nix](hosts/hadouken/modules/paperless.nix)   |
