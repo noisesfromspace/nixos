@@ -25,7 +25,8 @@ let
   fwMark = "42";
 
   # setns wrapper enters the tunnel namespace then drops privileges.
-  # security.wrappers gives it CAP_SYS_ADMIN so any user can use it without sudo.
+  # security.wrappers gives it CAP_SYS_ADMIN (the specific capability
+  # required by setns(CLONE_NEWNET) — there is no narrower one).
   tunnel-exe =
     pkgs.runCommandCC "tunnel-nsenter"
       {
@@ -116,9 +117,10 @@ in
         }
       ];
 
-      # Runs before the WG interface is created — sets up the veth pair
-      # and a temporary default route so the WG-encrypted packets can
-      # reach Mullvad's endpoint through the host's internet.
+      # Runs before the WG interface is created — sets up the veth pair,
+      # installs the kill-switch firewall in the namespace, then adds a
+      # temporary default route so WG-encrypted packets can reach
+      # Mullvad's endpoint through the host's internet.
       preSetup = ''
         # Idempotent: if the WG interface already exists inside the
         # namespace, everything is already set up — skip.
@@ -134,12 +136,36 @@ in
         ip -n ${nsName} addr add ${vethNsAddr}/30 dev ${vethNs}
         ip -n ${nsName} link set ${vethNs} up
         ip -n ${nsName} link set lo up
+
+        # ── Kill-switch: install before the default route exists ──
+        # From this point on, the namespace can only send WG-encrypted
+        # packets (fwmark ${fwMark}) to Mullvad's endpoint via the veth.
+        # Everything else is blocked until tun0 comes up in postSetup.
+        NS="ip netns exec ${nsName}"
+        $NS nft add table inet tunnel-fw 2>/dev/null || true
+        $NS nft 'add chain inet tunnel-fw input  { type filter hook input  priority 0; policy drop; }'
+        $NS nft 'add chain inet tunnel-fw forward { type filter hook forward priority 0; policy drop; }'
+        $NS nft 'add chain inet tunnel-fw output { type filter hook output priority 0; policy drop; }'
+
+        $NS nft add rule inet tunnel-fw input  iif lo accept
+        $NS nft add rule inet tunnel-fw output oif lo accept
+        $NS nft add rule inet tunnel-fw input  ct state established,related accept
+        $NS nft add rule inet tunnel-fw output ct state established,related accept
+
+        # WG-encrypted packets — identified by kernel fwmark — reach the endpoint via veth
+        $NS nft add rule inet tunnel-fw output \
+          oif ${vethNs} meta mark ${fwMark} accept
+
+        # Catch any DNS that somehow tries to bypass the tunnel
+        $NS nft add rule inet tunnel-fw output \
+          oif ${vethNs} meta l4proto { tcp, udp } th dport 53 drop
+
         ip -n ${nsName} route add default via ${vethHostAddr}
       '';
 
       # Runs after the WG interface is created. Configures the peer,
-      # waits for the handshake, fixes routing, and applies NAT +
-      # kill-switch firewall rules.
+      # waits for the handshake, fixes routing, opens the tunnel in
+      # the kill-switch, and applies NAT + host-side bridge firewall.
       postSetup = ''
         NS="ip netns exec ${nsName}"
 
@@ -166,6 +192,16 @@ in
         ip -n ${nsName} route add ${mullvadEndpointIP} via ${vethHostAddr}
         ip -n ${nsName} route add default dev tun0
 
+        # Opening: allow all outbound traffic through the now-ready WG tunnel.
+        # The rest of the kill-switch (default-drop, lo, ct, wg-mark, dns-drop)
+        # was already installed in preSetup.
+        $NS nft add rule inet tunnel-fw output oif tun0 accept
+
+        # Allowed ingress ports from host into the namespace
+        ${lib.concatMapStringsSep "\n        " (
+          port: "$NS nft add rule inet tunnel-fw input iif ${vethNs} tcp dport ${toString port} accept"
+        ) cfg.allowedIngressPorts}
+
         # NAT — masquerade namespace traffic to the internet
         nft delete table ip tunnel-nat 2>/dev/null || true
         nft add table ip tunnel-nat
@@ -175,38 +211,26 @@ in
         nft add rule ip tunnel-nat forward iifname ${bridgeName} accept
         nft add rule ip tunnel-nat forward oifname ${bridgeName} accept
 
-        # Kill switch inside the namespace — default deny, only allow
-        # WG-marked encrypted packets through the veth and all traffic
-        # through the WG tunnel interface.
-        $NS nft delete table inet tunnel-fw 2>/dev/null || true
-        $NS nft add table inet tunnel-fw
-
-        $NS nft 'add chain inet tunnel-fw input  { type filter hook input  priority 0; policy drop; }'
-        $NS nft 'add chain inet tunnel-fw forward { type filter hook forward priority 0; policy drop; }'
-        $NS nft 'add chain inet tunnel-fw output { type filter hook output priority 0; policy drop; }'
-
-        $NS nft add rule inet tunnel-fw input  iif lo accept
-        $NS nft add rule inet tunnel-fw output oif lo accept
-        $NS nft add rule inet tunnel-fw input  ct state established,related accept
-        $NS nft add rule inet tunnel-fw output ct state established,related accept
-
-        # WG-encrypted packets — identified by kernel fwmark — reach the endpoint via veth
-        $NS nft add rule inet tunnel-fw output \
-          oif ${vethNs} meta mark ${fwMark} accept
-
-        # All other outbound traffic must go through the WG tunnel
-        $NS nft add rule inet tunnel-fw output oif tun0 accept
-
-        # Catch any DNS that somehow tries to bypass the tunnel
-        $NS nft add rule inet tunnel-fw output \
-          oif ${vethNs} meta l4proto { tcp, udp } th dport 53 drop
-        ${lib.concatMapStringsSep "\n        " (port: "$NS nft add rule inet tunnel-fw input iif ${vethNs} tcp dport ${toString port} accept") cfg.allowedIngressPorts}
+        # Host-side bridge access control — restrict which host
+        # processes can reach services inside the tunnel namespace.
+        nft delete table inet tunnel-host-fw 2>/dev/null || true
+        nft add table inet tunnel-host-fw
+        nft 'add chain inet tunnel-host-fw output { type filter hook output priority 0; policy accept; }'
+        nft add rule inet tunnel-host-fw output \
+          oif ${bridgeName} ip daddr ${vethNsAddr} ct state established,related accept
+        ${lib.concatMapStringsSep "\n        " (
+          port:
+          "nft add rule inet tunnel-host-fw output oif ${bridgeName} ip daddr ${vethNsAddr} tcp dport ${toString port} accept"
+        ) cfg.allowedIngressPorts}
+        nft add rule inet tunnel-host-fw output \
+          oif ${bridgeName} ip daddr ${vethNsAddr} counter drop
       '';
 
       preShutdown = ''
-        # Clean up host-side NAT table. The in-namespace tunnel-fw
+        # Clean up host-side tables. The in-namespace tunnel-fw
         # table dies automatically when the namespace is deleted.
         nft delete table ip tunnel-nat 2>/dev/null || true
+        nft delete table inet tunnel-host-fw 2>/dev/null || true
       '';
     };
 
