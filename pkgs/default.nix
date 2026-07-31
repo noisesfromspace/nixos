@@ -38,4 +38,5 @@ in
   nym-vpnd = pkgs.callPackage ./nym-vpnd.nix { inherit nym-libwg; };
   durdraw = pkgs.callPackage ./durdraw.nix { };
   deceive = pkgs.callPackage ./deceive.nix { };
+  kurczak = pkgs.callPackage ./kurczak.nix { };
 }

@@ -13,22 +13,24 @@ let
     "bincache"
     "cal"
     "cal-http"
+    "chat"
     "garage"
     "garage-admin"
     "immich"
     "kasm"
+    "koito"
+    "lidarr"
     "media"
-    "ollama"
     "monitoring"
+    "ollama"
+    "ollama"
     "paper"
     "pgadmin"
     "prowlarr"
     "radarr"
     "sonarr"
-    "lidarr"
-    "webdav"
-    "koito"
     "transmission"
+    "webdav"
   ];
   shoryukenRecords = [
     "ci"
@@ -185,6 +187,7 @@ in
                   dst = [
                     "shoryuken:17447" # stalwart zenoh p2p
                     "rekkaken:17447" # stalwart zenoh p2p
+                    "hadouken:11332" # rspamd
                   ];
                 }
                 {

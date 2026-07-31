@@ -24,6 +24,8 @@
     ./modules/koito.nix
     ./modules/atuin.nix
     ./modules/media.nix
+    ./modules/ollama.nix
+    ./modules/rspamd.nix
   ];
 
   hosts.shares.enable = true;
@@ -41,7 +43,8 @@
   hosts.database.enable = true;
   hosts.garage.enable = true;
   hosts.koito.enable = true;
-  hosts.atuin.enable = true;
+  hosts.ollama.enable = true;
+  hosts.rspamd.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
 

@@ -15,6 +15,28 @@ let
 
   # Certificate paths (copied from Caddy to Stalwart directory)
   certDir = "/var/lib/stalwart/certs";
+
+  # Sieve script that files Rspamd-tagged spam into Junk folder
+  spamToJunkSieve = pkgs.writeText "spam-to-junk.sieve" ''
+    require ["fileinto"];
+    if header :contains "X-Spam" "Yes" {
+        fileinto "Junk";
+        stop;
+    }
+  '';
+
+  # Milter config as raw TOML - Nix's TOML generator can't handle dotted keys
+  # in deeply nested tables, so we write this manually and append at startup.
+  milterToml = pkgs.writeText "stalwart-milter.toml" ''
+    [session.milter.rspamd]
+    enable = true
+    hostname = 'hadouken.machine.thuis'
+    port = 11332
+    stages = ["connect", "ehlo", "mail", "rcpt", "data"]
+
+    [session.milter.rspamd.options]
+    tempfail-on-error = false
+  '';
 in
 {
   options.hosts.stalwart = {
@@ -222,7 +244,15 @@ in
               action = "reject"; # Reject mail from blacklisted IPs
             };
           };
+
+          # Global Sieve script invocation at DATA stage
+          data.script = "'spam_to_junk'";
         };
+
+        # Rspamd milter - config written as raw TOML below (Nix TOML generator
+        # mangles dotted keys, so we inject it at startup instead)
+        # NOTE: milter config is in milterToml variable, appended in ExecStart
+
 
         certificate."${mxHost}-plebian" = {
           cert = "%{file:${certDir}/${mxHost}.plebian.nl.crt}%";
@@ -283,9 +313,16 @@ in
           public-suffix = [ "file://${pkgs.publicsuffix-list}/share/publicsuffix/public_suffix_list.dat" ];
         };
 
-        # Use pkgs because not built with overrideAttrs
+        # Disable Stalwart's built-in spam filter (Rspamd handles everything)
         spam-filter.resource = "file://${pkgs.stalwart-spam-filter}/spam-filter.toml";
-        spam-filter.threshold = 9.0;
+        spam-filter.threshold = 999.0;
+
+        # Trusted Sieve interpreter for system-wide scripts
+        "sieve.trusted.from-name" = "'Spam Filter'";
+        "sieve.trusted.from-addr" = "'filter@mx${toString cfg.nodeId}.thuis'";
+
+        # Global Sieve script: file Rspamd-tagged spam into Junk
+        "sieve.trusted.scripts.spam_to_junk.contents" = "%{file:${spamToJunkSieve}}%";
 
         webadmin = {
           resource = "file://${pkgs.stalwart-webadmin}/webadmin.zip";
@@ -305,6 +342,17 @@ in
       requires = [ "tailscaled.service" ];
       wants = [ "stalwart-certs.service" ];
       environment.STALWART_PUBLIC_URL = "https://mx${toString cfg.nodeId}.thuis";
+
+      # Inject proper milter TOML (Nix TOML generator mangles dotted keys)
+      serviceConfig.ExecStart = lib.mkForce [
+        ""
+        (let
+          mainConfig = (pkgs.formats.toml {}).generate "stalwart.toml" config.services.stalwart.settings;
+          mergedConfig = pkgs.runCommand "stalwart-merged.toml" {} ''
+            cat ${mainConfig} ${milterToml} > $out
+          '';
+        in "${lib.getExe stalwartPkg} --config=${mergedConfig}")
+      ];
     };
 
     # Copy Caddy certificates to Stalwart directory with proper permissions

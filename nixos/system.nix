@@ -85,6 +85,7 @@
 
     # diagnostic
     dust # better du
+    diskwatch # storage
     unaware # mask PII-data
 
     # system tools
