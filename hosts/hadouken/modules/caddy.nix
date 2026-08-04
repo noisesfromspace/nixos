@@ -45,9 +45,6 @@ in
       '';
 
       globalConfig = ''
-        metrics {
-          per_host
-        }
         servers {
           trusted_proxies static 100.64.0.0/10
           enable_full_duplex

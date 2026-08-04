@@ -16,7 +16,6 @@
 
   hosts.caddy.enable = true;
   hosts.umami.enable = true;
-  hosts.prometheus.enable = true;
   hosts.endlessh.enable = true;
   hosts.radicle.enable = true;
   hosts.authdns.enable = true;

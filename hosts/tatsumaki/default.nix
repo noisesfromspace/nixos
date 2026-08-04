@@ -10,7 +10,6 @@
   ];
 
   hosts.tailscale.enable = true;
-  hosts.prometheus.enable = true;
   hosts.caddy.enable = true;
   hosts.adguard.enable = true;
   hosts.ladder.enable = true;

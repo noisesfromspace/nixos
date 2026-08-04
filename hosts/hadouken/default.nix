@@ -38,7 +38,6 @@
   hosts.mastodon.enable = true;
   hosts.microbin.enable = true;
   hosts.immich.enable = true;
-  hosts.prometheus.enable = true;
   hosts.calendar.enable = true;
   hosts.database.enable = true;
   hosts.garage.enable = true;
@@ -47,12 +46,6 @@
   hosts.rspamd.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
-
-  systemd.services.loki = {
-    after = [ "tailscaled.service" ];
-    requires = [ "tailscaled.service" ];
-    serviceConfig.RestartSec = 10;
-  };
 
   hosts.borg = {
     enable = true;

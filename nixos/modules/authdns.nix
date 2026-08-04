@@ -174,6 +174,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    services.prometheus.exporters.knot.enable = true;
+
     networking = {
       firewall = {
         allowedTCPPorts = [ 53 ];

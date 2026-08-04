@@ -38,30 +38,12 @@
     enable = true;
     repository = "ssh://nads486h@nads486h.repo.borgbase.com/./repo";
     tatsumaki = true;
-    paths = [ "/home/martijn" ];
-    identityPath = "/home/martijn/.ssh/id_ed25519_age";
-    exclude = [
-      ".cache"
-      "*/cache2" # librewolf
-      "*/Cache"
-      ".wine"
-      ".config/Slack/logs"
-      ".config/Code/CachedData"
-      ".container-diff"
-      ".npm/_cacache"
-      ".ollama"
-      "Models"
-      "Sync"
-      "*/node_modules"
-      "*/_build"
-      "*/venv"
-      "*/.venv"
-      "/home/*/.local"
-      "/home/*/Downloads"
-      "/home/*/Machines"
-      "/home/*/Data"
-      "/home/*/.ssh"
+    paths = [
+      "/home/martijn/Pictures"
+      "/home/martijn/Documents"
+      "/home/martijn/Videos"
     ];
+    identityPath = "/home/martijn/.ssh/id_ed25519_age";
   };
 
   environment.systemPackages = with pkgs; [
@@ -88,7 +70,6 @@
   services.spice-vdagentd.enable = true; # copy&paste
 
   hosts.tailscale.enable = true;
-  hosts.prometheus.enable = true;
 
   programs = {
     steam.enable = true;

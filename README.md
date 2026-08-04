@@ -18,7 +18,6 @@ You could directly use this but it's better to extract the pieces you want in yo
 | Interfaces  | Configures network interfaces and PPPoE.      | [interfaces.nix](hosts/dosukoi/modules/interfaces.nix)   |
 | ntopng      | Network traffic monitoring tool.              | [ntopng.nix](hosts/dosukoi/modules/ntopng.nix)           |
 | Vaultwarden | Password manager (Bitwarden compatible).      | [vaultwarden.nix](hosts/dosukoi/modules/vaultwarden.nix) |
-| WireGuard   | VPN tunnel.                                   | [wireguard.nix](hosts/dosukoi/modules/wireguard.nix)     |
 
 #### Main file server
 
@@ -30,11 +29,14 @@ You could directly use this but it's better to extract the pieces you want in yo
 | Calendar (Radicale)   | CalDAV and CardDAV server.                         | [calendar.nix](hosts/hadouken/modules/calendar.nix)     |
 | Database stack        | PostgreSQL, MinIO buckets, pgAdmin UI.             | [database.nix](hosts/hadouken/modules/database.nix)     |
 | Immich                | Self-hosted photo and video backup solution.       | [immich.nix](hosts/hadouken/modules/immich.nix)         |
+| Koito                 | Music scrobbler for Last.fm / ListenBrainz.        | [koito.nix](hosts/hadouken/modules/koito.nix)           |
 | Mastodon (glitch-soc) | Federated social media server.                     | [mastodon.nix](hosts/hadouken/modules/mastodon.nix)     |
 | Matrix Synapse        | Secure, decentralized communication server.        | [matrix.nix](hosts/hadouken/modules/matrix.nix)         |
 | Microbin              | Self-hosted pastebin.                              | [microbin.nix](hosts/hadouken/modules/microbin.nix)     |
-| Monitoring            | Grafana, Loki, Promtail, Prometheus, InfluxDB.     | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
+| Monitoring            | Grafana, Promtail, Prometheus, InfluxDB.           | [monitoring.nix](hosts/hadouken/modules/monitoring.nix) |
+| Ollama                | LLM server for AI-powered spam filtering.          | [ollama.nix](hosts/hadouken/modules/ollama.nix)         |
 | Paperless-NGX         | Document management system.                        | [paperless.nix](hosts/hadouken/modules/paperless.nix)   |
+| Rspamd                | Spam filter with AI-powered GPT plugin.            | [rspamd.nix](hosts/hadouken/modules/rspamd.nix)         |
 | Shares                | NFS exports for internal hosts.                    | [shares.nix](hosts/hadouken/modules/shares.nix)         |
 | Storage               | ZFS datasets, syncoid replication.                 | [storage.nix](hosts/hadouken/modules/storage.nix)       |
 
@@ -45,7 +47,6 @@ You could directly use this but it's better to extract the pieces you want in yo
 | Authoritative DNS | Authoritative DNS server.             | [authdns.nix](nixos/modules/authdns.nix)              |
 | Derper            | Tailscale DERP server.                | [derper.nix](nixos/modules/derper.nix)                |
 | Headscale         | Self-hosted Tailscale control server. | [headscale.nix](hosts/rekkaken/modules/headscale.nix) |
-| Ladder            | Self-hosted 12ft.io alternative.      | [ladder.nix](hosts/rekkaken/modules/ladder.nix)       |
 | Notifications     | Gotify and SMTP gateway bridge.       | [notifs.nix](hosts/rekkaken/modules/notifs.nix)       |
 | Uptime Kuma       | Service monitoring tool.              | [uptime.nix](hosts/rekkaken/modules/uptime.nix)       |
 
@@ -60,11 +61,13 @@ You could directly use this but it's better to extract the pieces you want in yo
 | Radicle           | Radicle seed node + explorer.                 | [radicle.nix](hosts/shoryuken/modules/radicle.nix)   |
 | Umami             | Self-hosted web analytics.                    | [umami.nix](hosts/shoryuken/modules/umami.nix)       |
 
-#### Bitcoin Node
+#### Backups
 
-| Service      | Description                                        | Configuration                                      |
-| ------------ | -------------------------------------------------- | -------------------------------------------------- |
-| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/tatsumaki/modules/adguard.nix) |
+| Service      | Description                                        | Configuration                                           |
+| ------------ | -------------------------------------------------- | ------------------------------------------------------- |
+| AdGuard Home | Network-wide ad and tracker blocking DNS sinkhole. | [adguard.nix](hosts/tatsumaki/modules/adguard.nix)      |
+| Backup       | Borg backup repositories for all hosts.            | [backup.nix](hosts/tatsumaki/modules/backup.nix)        |
+| Ladder       | Self-hosted 12ft.io alternative.                   | [ladder.nix](hosts/tatsumaki/modules/ladder.nix)        |
 
 #### WiFi AP
 

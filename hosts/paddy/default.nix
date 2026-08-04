@@ -21,27 +21,13 @@
 
   hosts.borg = {
     enable = true;
-    repository = "ssh://nkhm1dhr@nkhm1dhr.repo.borgbase.com/./repo";
+    repository = "ssh://zzhbsr2v@zzhbsr2v.repo.borgbase.com/./repo";
     identityPath = "/home/martijn/.ssh/id_ed25519";
     tatsumaki = true;
-    paths = [ "/home/martijn" ];
-    exclude = [
-      ".cache"
-      "*/cache2" # librewolf
-      "*/Cache"
-      ".wine"
-      ".config/Slack/logs"
-      ".config/Code/CachedData"
-      ".container-diff"
-      ".npm/_cacache"
-      "*/node_modules"
-      "*/_build"
-      "*/venv"
-      "*/.venv"
-      "/home/*/.local"
-      "/home/*/Downloads"
-      "/home/*/Data"
-      "/home/*/.ssh"
+    paths = [
+      "/home/martijn/Pictures"
+      "/home/martijn/Documents"
+      "/home/martijn/Videos"
     ];
   };
 

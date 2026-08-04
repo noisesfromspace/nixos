@@ -23,6 +23,22 @@ in
       respond 403
     '';
 
+    services.caddy.virtualHosts."prometheus.thuis".extraConfig = ''
+      import headscale
+      handle @internal {
+        reverse_proxy http://127.0.0.1:${toString config.services.prometheus.port}
+      }
+      respond 403
+    '';
+
+    services.caddy.virtualHosts."loki.thuis".extraConfig = ''
+      import headscale
+      handle @internal {
+        reverse_proxy http://127.0.0.1:${toString config.services.loki.configuration.server.http_listen_port}
+      }
+      respond 403
+    '';
+
     age.secrets.grafana = {
       file = "${inputs.secrets}/grafana.age";
       owner = "grafana";
@@ -67,7 +83,6 @@ in
         server.http_listen_port = 3030;
         auth_enabled = false;
         analytics.reporting_enabled = false;
-
         common = {
           ring = {
             instance_addr = "127.0.0.1";
@@ -76,7 +91,6 @@ in
           replication_factor = 1;
           path_prefix = "/tmp/loki";
         };
-
         schema_config = {
           configs = [
             {
@@ -91,6 +105,7 @@ in
             }
           ];
         };
+        limits_config.allow_structured_metadata = true;
         storage_config.filesystem.directory = "/mnt/zwembad/games/loki/chunk";
       };
     };
@@ -111,22 +126,10 @@ in
                     "rekkaken"
                     "nurma"
                     "dosukoi"
+                    "suzaku"
+                    "donk"
+                    "paddy"
                   ];
-            }
-          ];
-        }
-        {
-          job_name = "caddy";
-          static_configs = [
-            {
-              targets = map (host: "${host}.machine.thuis:2019") [
-                "dosukoi"
-                "hadouken"
-                "tatsumaki"
-                "tenshin"
-                "rekkaken"
-                "shoryuken"
-              ];
             }
           ];
         }
@@ -135,6 +138,62 @@ in
           static_configs = [
             {
               targets = [ "shoryuken.machine.thuis:${toString config.services.endlessh-go.prometheus.port}" ];
+            }
+          ];
+        }
+        {
+          job_name = "tetragon";
+          static_configs = [
+            {
+              targets =
+                map (host: "${host}.machine.thuis:${toString config.hosts.metrics.tetragon.metricsPort}")
+                  [
+                    "hadouken"
+                    "shoryuken"
+                    "tatsumaki"
+                    "tenshin"
+                    "rekkaken"
+                    "nurma"
+                    "dosukoi"
+                    "suzaku"
+                    "donk"
+                    "paddy"
+                  ];
+            }
+          ];
+        }
+        {
+          job_name = "postgres";
+          static_configs = [
+            {
+              targets = [ "hadouken.machine.thuis:${toString config.services.prometheus.exporters.postgres.port}" ];
+            }
+          ];
+        }
+        {
+          job_name = "rspamd";
+          static_configs = [
+            {
+              targets = [ "localhost:11334" ];
+            }
+          ];
+        }
+        {
+          job_name = "knot";
+          static_configs = [
+            {
+              targets = [
+                "shoryuken.machine.thuis:${toString config.services.prometheus.exporters.knot.port}"
+                "rekkaken.machine.thuis:${toString config.services.prometheus.exporters.knot.port}"
+              ];
+            }
+          ];
+        }
+        {
+          job_name = "headscale";
+          static_configs = [
+            {
+              targets = [ "rekkaken.machine.thuis:9190" ];
             }
           ];
         }

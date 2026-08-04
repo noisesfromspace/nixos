@@ -14,6 +14,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    services.prometheus.exporters.postgres.enable = true;
+
     services.caddy.virtualHosts = {
       "pgadmin.thuis".extraConfig = ''
         import headscale

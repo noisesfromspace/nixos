@@ -12,7 +12,6 @@
   hosts.caddy.enable = true;
   hosts.cyberchef.enable = true;
   hosts.it-tools.enable = true;
-  hosts.prometheus.enable = true;
   hosts.ntp.enable = true;
 
   hosts.auditd.enable = false;

@@ -32,26 +32,12 @@
   hosts.borg = {
     enable = true;
     repository = "ssh://iuyrg38x@iuyrg38x.repo.borgbase.com/./repo";
-    identityPath = "/home/martijn/.ssh/id_ed25519";
+    identityPath = "/home/martijn/.ssh/id_ed25519_age";
     tatsumaki = true;
-    paths = [ "/home/martijn" ];
-    exclude = [
-      ".cache"
-      "*/cache2" # librewolf
-      "*/Cache"
-      ".wine"
-      ".config/Slack/logs"
-      ".config/Code/CachedData"
-      ".container-diff"
-      ".npm/_cacache"
-      "*/node_modules"
-      "*/_build"
-      "*/venv"
-      "*/.venv"
-      "/home/*/.local"
-      "/home/*/Downloads"
-      "/home/*/Data"
-      "/home/*/.ssh"
+    paths = [
+      "/home/martijn/Pictures"
+      "/home/martijn/Documents"
+      "/home/martijn/Videos"
     ];
   };
 
@@ -60,7 +46,6 @@
   };
 
   hosts.tailscale.enable = true;
-  hosts.prometheus.enable = true;
 
   # Enable binfmt emulation of aarch64-linux. (for the raspberry pi)
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

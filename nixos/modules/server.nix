@@ -23,7 +23,6 @@ in
     # No need for fonts on a server
     fonts.fontconfig.enable = lib.mkDefault false;
 
-    # Default auditd rules
     hosts.auditd.enable = lib.mkDefault true;
 
     environment.systemPackages = [

@@ -7,7 +7,6 @@
   imports = [
     ./modules/vaultwarden.nix
     ./modules/interfaces.nix
-    ./modules/wireguard.nix
     ./modules/blocklist.nix
     ./modules/firewall.nix
     ./modules/ntopng.nix
@@ -25,7 +24,6 @@
   hosts.server.enable = true;
   hosts.caddy.enable = true;
   hosts.ntopng.enable = true;
-  hosts.wireguard.enable = true;
   hosts.vaultwarden.enable = true;
   hosts.acme.enable = true;
 
@@ -44,7 +42,6 @@
   };
 
   hosts.tailscale.enable = true;
-  hosts.prometheus.enable = true;
 
   age = {
     identityPaths = [ "/home/martijn/.ssh/id_ed25519" ];

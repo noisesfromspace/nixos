@@ -21,9 +21,6 @@ in
           trusted_proxies static 100.64.0.0/10
           enable_full_duplex
         }
-        metrics {
-            per_host
-        }
       '';
       extraConfig = ''
         (headscale) {

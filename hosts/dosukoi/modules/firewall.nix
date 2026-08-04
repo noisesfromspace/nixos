@@ -32,12 +32,12 @@ in
                 iifname "lo" accept;
 
                 # --- SERVICES ---
-                iifname { "peepee", "lan", "wifi", "opt1" } udp dport 51820 accept comment "Wireguard setup connections";
                 iifname { "peepee", "lan", "wifi", "opt1" } udp dport 41641 accept comment "Tailscale setup connections";
 
                 iifname { "opt1", "tailscale0" } tcp dport 22 ct state new limit rate 10/minute accept comment "Allow SSH management";
                 iifname { "lan", "wifi", "opt1" } udp dport 67 accept comment "DHCP";
 
+                iifname { "lan", "tailscale0" } tcp dport { 9002, 2113 } accept comment "Prometheus scraping (node_exporter + tetragon)";
                 iifname { "tailscale0" } tcp dport { 80, 443, 4443 } accept comment "Websites hosted on router";
                 iifname { "tailscale0", "lan", "wifi", "opt1" } udp dport 53 accept comment "DNS";
                 iifname { "tailscale0", "lan", "wifi", "opt1" } tcp dport 53 accept comment "DNS";

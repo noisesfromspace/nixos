@@ -7,10 +7,10 @@
 }:
 {
   imports = [
-    ./modules/prometheus.nix
     ./modules/secureboot.nix
     ./modules/tailscale.nix
     ./modules/desktop.nix
+    ./modules/metrics.nix
     ./modules/authdns.nix
     ./modules/auditd.nix
     ./modules/server.nix
@@ -100,7 +100,7 @@
     jless # cli json viewer
     jq # query json
     avml # make memory dump
-    minicom # serial port reader
+    tio # serial port reader
   ];
 
   nix = {
@@ -159,6 +159,9 @@
       options = lib.mkDefault "--delete-older-than 7d";
     };
   };
+
+  # Default endpoint detection
+  hosts.metrics.enable = true;
 
   programs.ssh = {
     startAgent = true;
@@ -338,10 +341,9 @@
     };
   };
 
-  # Keep journal log max 20gigs
+  # Journal logs ship to Loki
   services.journald.extraConfig = ''
-    SystemMaxUse=20G
-    SystemKeepFree=100G
+    MaxRetentionSec=7day
   '';
 
   # https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersion

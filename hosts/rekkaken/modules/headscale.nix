@@ -20,12 +20,13 @@ let
     "kasm"
     "koito"
     "lidarr"
+    "loki"
     "media"
     "monitoring"
     "ollama"
-    "ollama"
     "paper"
     "pgadmin"
+    "prometheus"
     "prowlarr"
     "radarr"
     "sonarr"
@@ -209,8 +210,9 @@ in
                   action = "accept";
                   src = [ "hadouken" ];
                   dst = [
-                    "headscale-server@:9002" # node exporter
-                    "headscale-server@:2019" # caddy exporter
+                    "*:9002,2113" # node exporter + tetragon
+                    "*:9433" # knot dns
+                    "headscale-server@:9190" # headscale metrics
                     "headscale-server@:${toString config.services.endlessh-go.prometheus.port}"
                   ];
                 }
@@ -230,6 +232,7 @@ in
             }
           );
           logtail.enabled = false;
+          metrics_listen_addr = "0.0.0.0:9190";
           database = {
             type = "sqlite3";
             sqlite = {

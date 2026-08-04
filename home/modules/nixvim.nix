@@ -140,17 +140,6 @@ in
       };
 
       userCommands = {
-        Scratch = {
-          command = helpers.mkRaw ''
-            function()
-              vim.cmd("enew")
-              vim.bo.buftype = "nofile"
-              vim.bo.bufhidden = "hide"
-              vim.bo.swapfile = false
-            end
-          '';
-          desc = "Create a new scratch buffer";
-        };
         Pi = {
           command = helpers.mkRaw ''
             function()
@@ -466,32 +455,6 @@ in
           command = "tabonly";
           modes = [ "n" ];
         })
-
-        # Window resizing with bigger steps
-        (cmd {
-          key = "<C-w>+";
-          desc = "Increase window height";
-          command = "resize +5";
-          modes = [ "n" ];
-        })
-        (cmd {
-          key = "<C-w>-";
-          desc = "Decrease window height";
-          command = "resize -5";
-          modes = [ "n" ];
-        })
-        (cmd {
-          key = "<C-w>>";
-          desc = "Increase window width";
-          command = "vertical resize +10";
-          modes = [ "n" ];
-        })
-        (cmd {
-          key = "<C-w><";
-          desc = "Decrease window width";
-          command = "vertical resize -10";
-          modes = [ "n" ];
-        })
       ];
 
       diagnostic.settings = {
@@ -693,8 +656,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "touchup.nvim";
-            rev = "8b724f197f2c60c3b35302e35192863c54b62f56";
-            hash = "sha256-oCr5z33wJY7p9EAOewyYz8jAc3cF+ou2fpD6xqA0W+k=";
+            rev = "1f07cc5299d750feb963a12c86b2e0c19de82971";
+            hash = "sha256-xpdnseTDZQqIF2UZBY55A8A9r6BVPQcxWyTFEmFcDls=";
           };
         })
       ];
