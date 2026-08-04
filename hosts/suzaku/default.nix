@@ -14,6 +14,7 @@
 
   hosts.borg = {
     enable = true;
+    tatsumaki = true;
     repository = "ssh://jh49p12c@jh49p12c.repo.borgbase.com/./repo";
   };
 

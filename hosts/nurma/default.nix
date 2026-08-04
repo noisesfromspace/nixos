@@ -58,6 +58,7 @@
       "*/.venv"
       "/home/*/.local"
       "/home/*/Downloads"
+      "/home/*/Machines"
       "/home/*/Data"
       "/home/*/.ssh"
     ];

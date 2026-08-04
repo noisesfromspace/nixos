@@ -140,7 +140,7 @@ in
             terraformls.enable = true;
             pyright.enable = true;
             gopls.enable = true;
-            ccls.enable = true;
+            clangd.enable = true;
             zls.enable = true;
             ruby_lsp.enable = true;
             jdtls.enable = true; # Java (nice naming)

@@ -42,6 +42,7 @@
 
   hosts.borg = {
     enable = true;
+    tatsumaki = true;
     repository = "ssh://c4j3xt27@c4j3xt27.repo.borgbase.com/./repo";
   };
 

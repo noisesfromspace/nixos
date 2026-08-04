@@ -56,6 +56,7 @@
 
   hosts.borg = {
     enable = true;
+    tatsumaki = true;
     repository = "ssh://gak69wyz@gak69wyz.repo.borgbase.com/./repo";
     paths = [ "/mnt/zwembad/app" ];
   };

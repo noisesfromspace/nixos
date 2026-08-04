@@ -33,6 +33,7 @@
     enable = true;
     repository = "ssh://iuyrg38x@iuyrg38x.repo.borgbase.com/./repo";
     identityPath = "/home/martijn/.ssh/id_ed25519";
+    tatsumaki = true;
     paths = [ "/home/martijn" ];
     exclude = [
       ".cache"

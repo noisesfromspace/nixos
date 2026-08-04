@@ -214,6 +214,7 @@
 
   services.fwupd.enable = true; # firmware update
   programs.zsh.enable = true;
+  programs.fuse.enable = true; # filesystem in userspace
 
   networking = {
     useDHCP = false; # Done by networkd

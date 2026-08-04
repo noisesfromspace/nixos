@@ -633,7 +633,6 @@ in
               -- notes use 2-space list nesting; core ftplugin forces 4
               vim.opt_local.shiftwidth = 2
               vim.opt_local.tabstop = 2
-              vim.opt_local.conceallevel = 0
               vim.opt_local.softtabstop = 2
               vim.b.md_list_fold = function()
                 local line = vim.fn.getline(vim.v.lnum)
@@ -694,8 +693,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "touchup.nvim";
-            rev = "9410a8640262f9b43ce04b0779d2c66134ae311b";
-            hash = "sha256-DTXo3CqhECJwYRm/e7scw03VP8SpxA9G2fBcRt4RTTA=";
+            rev = "8b724f197f2c60c3b35302e35192863c54b62f56";
+            hash = "sha256-oCr5z33wJY7p9EAOewyYz8jAc3cF+ou2fpD6xqA0W+k=";
           };
         })
       ];
