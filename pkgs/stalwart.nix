@@ -1,20 +1,18 @@
+# https://github.com/NixOS/nixpkgs/tree/nixos-unstable/pkgs/by-name/st/stalwart_0_15
+# https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/mail/stalwart.nix
 {
-  lib,
   pkgs,
   rustPlatform,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "stalwart";
-  version = pkgs.stalwart.version;
-
-  # See for defaults: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/by-name/st/stalwart/package.nix
-
-  src = pkgs.stalwart.src;
+  version = pkgs.stalwart_0_15.version;
+  src = pkgs.stalwart_0_15.src;
 
   # Copy necessary attributes from original package
-  nativeBuildInputs = pkgs.stalwart.nativeBuildInputs;
-  buildInputs = pkgs.stalwart.buildInputs;
-  depsBuildBuild = pkgs.stalwart.depsBuildBuild or [ ];
+  nativeBuildInputs = pkgs.stalwart_0_15.nativeBuildInputs;
+  buildInputs = pkgs.stalwart_0_15.buildInputs;
+  depsBuildBuild = pkgs.stalwart_0_15.depsBuildBuild or [ ];
 
   buildNoDefaultFeatures = true;
   buildFeatures = [

@@ -36,7 +36,7 @@ in
     programs.mbsync.enable = true;
     services.mbsync = {
       enable = true;
-      frequency = "*:0/1";
+      frequency = "*:0/15";
       postExec = "${lib.getExe pkgs.notmuch} new";
     };
     programs.aerc = {

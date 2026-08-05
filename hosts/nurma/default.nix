@@ -49,6 +49,8 @@
   environment.systemPackages = with pkgs; [
     # https://github.com/quickemu-project/quickemu/wiki/05-Advanced-quickemu-configuration
     quickemu
+    stable.monero-gui
+    stable.sparrow
   ];
 
   users.users.martijn.extraGroups = [

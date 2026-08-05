@@ -49,7 +49,6 @@ let
       network
       mount-cwd
       (rw-bind (noescape "~/.pi") (noescape "~/.pi"))
-      (ro-bind "/run/agenix/pi-auth" "/run/agenix/pi-auth")
     ]
   );
 in

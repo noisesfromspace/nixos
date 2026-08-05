@@ -23,7 +23,7 @@ stdenv.mkDerivation {
     owner = "jjsullivan5196";
     repo = "wvkbd";
     rev = "master";
-    hash = "sha256-RfZbPAaf8UB4scUZ9XSL12QZ4UkYMzXqfmNt9ObOgQ0=";
+    hash = "sha256-Et1k3M8L/r5WnoNOuiCzVVgJrpXtWSbIUI+2/njiwj0=";
   };
 
   postPatch = ''

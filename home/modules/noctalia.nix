@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }:
 let
@@ -144,16 +143,6 @@ with lib;
                 iconColor = "error";
               }
               {
-                id = "Launcher";
-                icon = "wave-saw-tool";
-                useDistroLogo = false;
-                colorizeSystemIcon = "none";
-                colorizeSystemText = "none";
-                customIconPath = "";
-                enableColorization = false;
-                iconColor = "none";
-              }
-              {
                 id = "Workspace";
                 characterCount = 2;
                 colorizeIcons = false;
@@ -168,9 +157,9 @@ with lib;
                 labelMode = "index";
                 occupiedColor = "secondary";
                 pillSize = 0.6;
-                showApplications = false;
+                showApplications = true;
                 showApplicationsHover = false;
-                showBadge = true;
+                showBadge = false;
                 showLabelsOnlyWhenOccupied = true;
                 unfocusedIconsOpacity = 1;
               }
@@ -178,9 +167,9 @@ with lib;
                 id = "ActiveWindow";
                 colorizeIcons = false;
                 hideMode = "hidden";
-                maxWidth = 400;
+                maxWidth = 600;
                 scrollingMode = "hover";
-                showIcon = true;
+                showIcon = false;
                 showText = true;
                 textColor = "none";
                 useFixedWidth = false;

@@ -19,7 +19,6 @@ let
     "immich"
     "kasm"
     "koito"
-    "lidarr"
     "loki"
     "media"
     "monitoring"

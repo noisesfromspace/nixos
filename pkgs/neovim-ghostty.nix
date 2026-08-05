@@ -17,22 +17,22 @@ let
   neovim-src = fetchFromGitHub {
     owner = "noib3";
     repo = "neovim";
-    rev = "e3c8bcad52986d8d85b21a0518a314d15c38d992";
-    sha256 = "sha256-gbSWDqvMdNmsM1+snOpV5uk6u/Ykvwz72fEgT5BfXQ0=";
+    rev = "b0bc24840b4c1b9cf798cfad6b36274b3e16634d";
+    sha256 = "sha256-MgnFMpiF6Up46gp2gwI15JM9ssm0Uzkl+CIaQsgYsBo=";
   };
 
-  # ghostty fork pinned by neovim's cmake.deps/deps.txt
+  # ghostty pinned by neovim's cmake.deps/deps.txt (upstream, fork no longer needed)
   ghostty-src = fetchFromGitHub {
-    owner = "noib3";
+    owner = "ghostty-org";
     repo = "ghostty";
-    rev = "4c725242b7dbe8c77c6e227ef1f9540c5ef17921";
-    sha256 = "sha256-DvPf4hVaD8iEeSfqhPCfAtD9kWkBAODqvxp9rmEBgPo=";
+    rev = "4133c6e48c4b99d19f5885478a19db4868994d07";
+    sha256 = "sha256-vbaq8fp2Y32aTnqpH8DWXjAiq7qydwsBzDnTTCo5COI=";
   };
 
   libghostty-vt = callPackage (ghostty-src + "/nix/libghostty-vt.nix") {
     inherit zig_0_16;
     optimize = "ReleaseSafe";
-    revision = "4c725242b7dbe8c77c6e227ef1f9540c5ef17921";
+    revision = "4133c6e48c4b99d19f5885478a19db4868994d07";
   };
 in
 

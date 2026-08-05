@@ -49,6 +49,7 @@ in
 
         # developement
         python313
+        cloc # count-lines-of-code
 
         # work
         citrix-workspace

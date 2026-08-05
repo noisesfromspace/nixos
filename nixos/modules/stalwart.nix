@@ -1,3 +1,4 @@
+# https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/services/mail/stalwart.nix
 {
   pkgs,
   config,
@@ -325,7 +326,7 @@ in
         "sieve.trusted.scripts.spam_to_junk.contents" = "%{file:${spamToJunkSieve}}%";
 
         webadmin = {
-          resource = "file://${pkgs.stalwart-webadmin}/webadmin.zip";
+          resource = "file://${pkgs.stable.stalwart-webadmin}/webadmin.zip";
           path = "/var/cache/stalwart";
         };
 

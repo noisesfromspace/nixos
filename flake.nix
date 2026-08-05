@@ -9,7 +9,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # https://github.com/NixOS/nixos-hardware/pull/1912
-    hardware.url = "github:cooparo/nixos-hardware/dell-xps-14-da14260";
+    hardware.url = "github:cooparo/nixos-hardware/7243316dae6153eaef9359732d53d9f085668c43";
 
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
@@ -63,11 +63,13 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     niri = {
       url = "github:noisesfromspace/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.niri-unstable = {
-        url = "github:jarylc/niri";
+        # https://github.com/niri-wm/niri/pull/3507
+        url = "github:noisesfromspace/niri";
         flake = false;
       };
     };
@@ -169,17 +171,17 @@
                   tailscale_hosts = mkOption {
                     type = with types; attrsOf str;
                     default = {
-                      donk = "100.64.0.8";
-                      dosukoi = "100.64.0.9";
-                      hadouken = "100.64.0.20";
+                      rekkaken = "100.64.0.1";
                       nurma = "100.64.0.3";
+                      tenshin = "100.64.0.4";
                       pikvm = "100.64.0.5";
                       pixel = "100.64.0.6";
-                      rekkaken = "100.64.0.1";
-                      shoryuken = "100.64.0.18";
                       suzaku = "100.64.0.7";
+                      donk = "100.64.0.8";
+                      dosukoi = "100.64.0.9";
                       tatsumaki = "100.64.0.10";
-                      tenshin = "100.64.0.4";
+                      shoryuken = "100.64.0.18";
+                      hadouken = "100.64.0.20";
                     };
                   };
                 };

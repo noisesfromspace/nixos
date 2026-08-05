@@ -46,14 +46,6 @@ in
           lockdown = true;
         };
       };
-      extras = {
-        misc = {
-          usbguard = {
-            enable = lib.mkDefault true;
-            whitelist-at-boot = true;
-          };
-        };
-      };
     };
 
     # freedesktop xdg files

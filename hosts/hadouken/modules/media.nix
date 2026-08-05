@@ -31,7 +31,6 @@ in
         "radarr"
         "sonarr"
         "transmission"
-        "lidarr"
       ];
     };
 
@@ -122,7 +121,6 @@ in
         config.services.prowlarr.dataDir
         config.services.radarr.dataDir
         config.services.sonarr.dataDir
-        config.services.lidarr.dataDir
         config.services.jellyfin.dataDir
       ];
 
@@ -144,9 +142,6 @@ in
         "prowlarr.thuis" = {
           extraConfig = mkProxy config.services.prowlarr.settings.server.port;
         };
-        "lidarr.thuis" = {
-          extraConfig = mkProxy config.services.lidarr.settings.server.port;
-        };
         "transmission.thuis" = {
           extraConfig = ''
             import headscale
@@ -158,7 +153,7 @@ in
         };
       };
     }
-    // (genAttrs [ "radarr" "sonarr" "lidarr" ] (name: {
+    // (genAttrs [ "radarr" "sonarr" ] (name: {
       enable = true;
       group = "multimedia";
       settings.server.bindaddress = "127.0.0.1";
