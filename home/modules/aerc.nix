@@ -115,8 +115,8 @@ in
       <C-l> = :open-link <space>
 
       f = :forward<Enter>
-      rr = :reply -a<Enter>
-      rq = :reply -aq<Enter>
+      rr = :reply -f<Enter>
+      rq = :reply -fq<Enter>
       Rr = :reply<Enter>
       Rq = :reply -q<Enter>
 

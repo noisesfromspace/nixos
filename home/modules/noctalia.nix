@@ -100,10 +100,6 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
-          mullvad = {
-            enabled = true;
-            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-          };
         };
         version = 2;
       };
@@ -233,9 +229,6 @@ with lib;
                   refreshInterval = 300;
                   successIcon = "network";
                 };
-              }
-              {
-                id = "plugin:mullvad";
               }
               {
                 id = "plugin:display-settings";

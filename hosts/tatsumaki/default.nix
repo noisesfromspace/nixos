@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ ... }:
 {
   networking.hostName = "tatsumaki";
 
@@ -13,11 +13,6 @@
   hosts.caddy.enable = true;
   hosts.adguard.enable = true;
   hosts.ladder.enable = true;
-
-  users.users.martijn = {
-    hashedPasswordFile = lib.mkForce null;
-    hashedPassword = "$y$j9T$VQL/82faMlZSrWg9SefdB/$RQpwhho.v0avZJcjate9yXdzDxVRdBBXeui7ch5XYm9";
-  };
 
   hosts.openssh = {
     enable = true;
@@ -34,7 +29,16 @@
 
   hosts.borg-server = {
     enable = true;
-    clients = [ "nurma" ];
+    clients = [
+      "nurma"
+      "hadouken"
+      "suzaku"
+      "tenshin"
+      "paddy"
+      "donk"
+      "dosukoi"
+      "rekkaken"
+    ];
   };
 
   nix.settings.trusted-users = [ "martijn" ]; # allows remote push

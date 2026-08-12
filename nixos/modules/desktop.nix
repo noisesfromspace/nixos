@@ -22,7 +22,6 @@ in
       autoConnect = false;
     };
     hosts.netns.enable = true;
-    services.mullvad-vpn.enable = true;
 
     environment.sessionVariables = {
       TERM = "xterm-ghostty";
@@ -90,16 +89,6 @@ in
           "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
         ];
       };
-    };
-
-    services.tor = {
-      enable = true;
-      client.enable = true;
-      # controlPort = 9051;
-      # settings = {
-      #   CookieAuthentication = true;
-      #   CookieAuthFileGroupReadable = true;
-      # };
     };
 
     virtualisation = {

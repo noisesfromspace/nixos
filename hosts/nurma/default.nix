@@ -4,6 +4,7 @@
   hosts.desktop.enable = true;
   hosts.secureboot.enable = true;
   hosts.yubikey.enable = true;
+  hosts.netns.socks5.enable = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
