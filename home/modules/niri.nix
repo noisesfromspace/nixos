@@ -49,6 +49,7 @@ in
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "Niri";
       QT_QPA_PLATFORM = "wayland;xcb";
+      _JAVA_AWT_WM_NONREPARENTING = "1"; # ghidra + java apps
       QT_QPA_PLATFORMTHEME = "qt5ct";
       QSG_RENDER_LOOP = "threaded"; # Enables hardware-accelerated threaded QML render loops (smooth animations)
 
