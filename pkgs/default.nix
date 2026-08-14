@@ -39,4 +39,5 @@ in
   durdraw = pkgs.callPackage ./durdraw.nix { };
   deceive = pkgs.callPackage ./deceive.nix { };
   kurczak = pkgs.callPackage ./kurczak.nix { };
+  atuin-ai-server = pkgs.callPackage ./atuin-ai-server.nix { };
 }

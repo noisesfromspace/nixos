@@ -267,6 +267,9 @@ in
         enter_accept = true;
         style = "compact";
         sync.records = true;
+        ai.enabled = true;
+        ai.endpoint = "https://atuin-ai.thuis";
+        ai.endpoint_protocol = "oss";
       };
     };
 

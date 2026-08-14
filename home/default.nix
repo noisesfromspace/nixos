@@ -40,6 +40,8 @@
     ./modules/noctalia.nix
   ];
 
+  nixpkgs.config.allowUnfree = true;
+
   age = {
     identityPaths = [
       "${config.home.homeDirectory}/.ssh/id_ed25519"

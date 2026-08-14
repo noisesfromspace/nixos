@@ -45,6 +45,7 @@
   hosts.koito.enable = true;
   hosts.ollama.enable = true;
   hosts.rspamd.enable = true;
+  hosts.atuin.enable = true;
   hosts.paperless.enable = true;
   hosts.bincache.enable = true;
 

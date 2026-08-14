@@ -26,10 +26,11 @@ in
       port = 11434;
 
       # llama3.2:3b for rspamd's spam classification
-      # phi4-mini for light coding & general
+      # qwen3:1.7b for Atuin AI (tool-calling, CPU-friendly)
       loadModels = [
         "llama3.2:3b"
         "phi4-mini"
+        "qwen3:1.7b"
       ];
     };
 

@@ -10,6 +10,7 @@ let
   cfg = config.hosts.headscale;
   hadoukenRecords = [
     "atuin"
+    "atuin-ai"
     "bincache"
     "cal"
     "cal-http"
