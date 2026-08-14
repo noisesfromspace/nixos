@@ -17,7 +17,6 @@
     };
   };
 
-  hosts.netns.socks5.enable = true;
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519" ];
 
   hosts.borg = {

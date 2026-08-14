@@ -1,13 +1,14 @@
-{ lib
-, stdenv
-, buildGoModule
-, fetchFromGitHub
-, runCommand
-, yarn-berry
-, nodejs
-, pkg-config
-, vips
-, makeWrapper
+{
+  lib,
+  stdenv,
+  buildGoModule,
+  fetchFromGitHub,
+  runCommand,
+  yarn-berry,
+  nodejs,
+  pkg-config,
+  vips,
+  makeWrapper,
 }:
 
 let
@@ -15,10 +16,10 @@ let
   version = "0-unstable-2026-06-18";
 
   src = fetchFromGitHub {
-    owner = "gabehf";
-    repo = "Koito";
-    rev = "be92c4e497c9b915a6f0fce87560eeb3b6354973";
-    hash = "sha256-TgpqYaZlxLRYffdmd8/BPLcBF99K45YI079KBOIPCFU=";
+    owner = "noisesfromspace";
+    repo = "koito";
+    rev = "be2a2e311d37fb55be875b8f9ab0e837477ef66c";
+    hash = "sha256-dJPPk3U1iGr3qR2pRGsa2hjhlbC2AZtdnJ32ppgIjlc=";
   };
 
   clientSrc = runCommand "koito-client-src" { } ''
@@ -66,17 +67,16 @@ buildGoModule {
 
   vendorHash = "sha256-W/+ByBlEPd4yIUD/E28q93fz6wYgvhwyBvJL8Fm1lNY=";
 
-  nativeBuildInputs = [ pkg-config makeWrapper ];
+  nativeBuildInputs = [
+    pkg-config
+    makeWrapper
+  ];
   buildInputs = [ vips ];
 
   ldflags = [
     "-s"
     "-w"
     "-X main.Version=${version}"
-  ];
-
-  patches = [
-    ../patches/koito-format-numbers.patch
   ];
 
   postPatch = ''

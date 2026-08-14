@@ -656,8 +656,8 @@ in
           src = pkgs.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "touchup.nvim";
-            rev = "1f07cc5299d750feb963a12c86b2e0c19de82971";
-            hash = "sha256-xpdnseTDZQqIF2UZBY55A8A9r6BVPQcxWyTFEmFcDls=";
+            rev = "efc7df43515aeb29c84ef088f0197bde83e9ce12";
+            hash = "sha256-T9x6zLsPmpZn8yTwzN4+TXgWb2RuZP2OIX8UNV8W0sU=";
           };
         })
       ];
