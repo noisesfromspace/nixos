@@ -7,6 +7,7 @@
     ./modules/radicle.nix
     ./modules/umami.nix
     ./modules/caddy.nix
+    ./modules/proxy.nix
   ];
 
   hosts.oidc = {
@@ -15,6 +16,7 @@
   };
 
   hosts.caddy.enable = true;
+  hosts.proxy.enable = true;
   hosts.umami.enable = true;
   hosts.endlessh.enable = true;
   hosts.radicle.enable = true;

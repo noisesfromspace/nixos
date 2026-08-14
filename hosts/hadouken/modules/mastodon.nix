@@ -8,6 +8,7 @@
 with lib;
 let
   cfg = config.hosts.mastodon;
+  http_proxy = "http://proxy.thuis:8118";
 in
 {
   options.hosts.mastodon = {
@@ -68,6 +69,16 @@ in
             RestartSec = 10;
           };
         };
+    };
+
+    systemd.services."mastodon-web".environment = {
+      inherit http_proxy;
+      no_proxy = "garage.thuis,127.0.0.1,localhost";
+    };
+
+    systemd.services."mastodon-sidekiq-all".environment = {
+      inherit http_proxy;
+      no_proxy = "garage.thuis,127.0.0.1,localhost";
     };
 
     services.postgresqlBackup.databases = [ "mastodon" ];

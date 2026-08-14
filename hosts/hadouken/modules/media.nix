@@ -16,6 +16,16 @@ let
     respond 403
   '';
 
+  proxyUrl = "http://10.98.0.2:${toString config.hosts.netns.http.port}";
+  proxyEnv = {
+    http_proxy = proxyUrl;
+    https_proxy = proxyUrl;
+    HTTP_PROXY = proxyUrl;
+    HTTPS_PROXY = proxyUrl;
+    no_proxy = "127.0.0.1,localhost,10.98.0.1,10.98.0.2,.thuis,.machine.thuis";
+    NO_PROXY = "127.0.0.1,localhost,10.98.0.1,10.98.0.2,.thuis,.machine.thuis";
+  };
+
 in
 {
   options.hosts.media = {
@@ -175,5 +185,8 @@ in
         ];
       };
     };
+    systemd.services.prowlarr.environment = proxyEnv;
+    systemd.services.radarr.environment = proxyEnv;
+    systemd.services.sonarr.environment = proxyEnv;
   };
 }

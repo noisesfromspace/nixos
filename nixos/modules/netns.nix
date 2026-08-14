@@ -169,6 +169,14 @@ in
         description = "SOCKS5 listen port inside the tunnel namespace.";
       };
     };
+    http = {
+      enable = mkEnableOption "HTTP proxy inside the tunnel namespace — reachable from the host at 10.98.0.2:<port>";
+      port = mkOption {
+        type = types.port;
+        default = 8118;
+        description = "HTTP proxy listen port inside the tunnel namespace.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -395,7 +403,9 @@ in
     };
 
     # ── SOCKS5 proxy inside the namespace ─────────────────────────
-    hosts.netns.allowedIngressPorts = mkIf cfg.socks5.enable [ cfg.socks5.port ];
+    hosts.netns.allowedIngressPorts =
+      lib.optionals cfg.socks5.enable [ cfg.socks5.port ]
+      ++ lib.optionals cfg.http.enable [ cfg.http.port ];
 
     services.microsocks = mkIf cfg.socks5.enable {
       enable = true;
@@ -421,6 +431,36 @@ in
         # like `ip netns exec` does, so provide Mullvad DNS explicitly.
         BindReadOnlyPaths = [
           "${pkgs.writeText "tunnel-socks-resolv.conf" "nameserver ${tunnelDns}"}:/etc/resolv.conf"
+        ];
+      };
+    };
+
+    # ── HTTP proxy inside the namespace ──────────────────────────
+
+    services.tinyproxy = mkIf cfg.http.enable {
+      enable = true;
+      settings = {
+        Listen = vethNsAddr;
+        Port = cfg.http.port;
+        MaxClients = 5000;
+        Allow = [
+          "127.0.0.1"
+          "10.98.0.0/30"
+        ];
+      };
+    };
+
+    systemd.services.tinyproxy = mkIf cfg.http.enable {
+      bindsTo = [ "netns@${nsName}.service" ];
+      after = [
+        "netns@${nsName}.service"
+        "wireguard-tun0.service"
+      ];
+      serviceConfig = {
+        NetworkNamespacePath = "/var/run/netns/${nsName}";
+        LimitNOFILE = 16384;
+        BindReadOnlyPaths = [
+          "${pkgs.writeText "tunnel-http-resolv.conf" "nameserver ${tunnelDns}"}:/etc/resolv.conf"
         ];
       };
     };

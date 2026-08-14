@@ -37,6 +37,7 @@ let
     "analytics"
     "sieve-1"
     "mx1"
+    "proxy"
   ];
   rekkakenRecords = [
     "notifications"
@@ -177,6 +178,11 @@ in
                     "hadouken:${toString config.services.immich.port}"
                     "hadouken:5432" # postgresql for stalwart
                   ];
+                }
+                {
+                  action = "accept";
+                  src = [ "hadouken" ];
+                  dst = [ "shoryuken:8118" ]; # HTTP proxy for clean-IP federation egress
                 }
                 {
                   action = "accept";

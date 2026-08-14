@@ -7,6 +7,7 @@
 with lib;
 let
   cfg = config.hosts.matrix;
+  proxyUrl = "http://proxy.thuis:8118";
 in
 {
   options.hosts.matrix = {
@@ -48,6 +49,12 @@ in
           ];
         }
       ];
+    };
+
+    systemd.services.matrix-synapse.environment = {
+      http_proxy = proxyUrl;
+      https_proxy = proxyUrl;
+      no_proxy = "127.0.0.1,localhost";
     };
   };
 }
