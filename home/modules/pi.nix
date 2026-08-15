@@ -22,22 +22,20 @@ let
           . "${config.age.secrets.pi-api-keys.path}"
           set +a
         fi
+        export PI_ASK_USER_DISPLAY_MODE=inline
         exec ${pkgs.nodejs_22}/bin/node ${config.home.homeDirectory}/.pi/agent/node_modules/@earendil-works/pi-coding-agent/dist/cli.js "$@"
       '')
       pkgs.nodejs_22
     ];
     postBuild = ''
       wrapProgram $out/bin/pi \
-        --set NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.pi/npm/ \
         --prefix PATH : ${
           pkgs.lib.makeBinPath [
             pkgs.nodejs_22
             pkgs.python313
-            pkgs.pandoc
             pkgs.playwright
             pkgs.uutils-coreutils-noprefix
             pkgs.fd
-            pkgs.rtk
           ]
         }
     '';

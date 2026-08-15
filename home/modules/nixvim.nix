@@ -99,9 +99,7 @@ in
         smartcase = true; # Override ignorecase if search contains capitals
         swapfile = false; # Don't create cluttering .swp files
         undofile = true; # Save undo history
-        sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,globals";
         nrformats = "unsigned"; # Ctrl+a always treated as positive number
-        hidden = true; # no errors for leaving unwritten buffers
 
         # Indentation
         expandtab = true; # Use spaces instead of tabs
@@ -123,7 +121,7 @@ in
         foldexpr = "v:lua.vim.lsp.foldexpr()";
 
         # Cmdline completion (:e, :find, /search)
-        wildoptions = "pum,fuzzy,exacttext"; # Popup menu, fuzzy match, exact text in / search
+        wildoptions = "pum,exacttext"; # Popup menu
         wildmode = "longest:full,full"; # <Tab>: first inserts longest prefix+menu, then cycles full matches
         wildignorecase = true; # Ignore case in cmdline file completion
 
@@ -297,7 +295,7 @@ in
         (cmd {
           key = "gs";
           desc = "Open neogit status";
-          command = "Neogit kind=split";
+          command = "Neogit";
         })
         (lua {
           key = "gL";
@@ -351,25 +349,14 @@ in
       };
 
       highlight = {
-        YankHighlight = {
-          bg = config.lib.stylix.colors.withHashtag.yellow;
-          fg = config.lib.stylix.colors.withHashtag.base00;
-        };
+        YankHighlight.link = "IncSearch";
       };
 
       highlightOverride = {
-        LineNr = {
-          fg = config.lib.stylix.colors.withHashtag.yellow;
-        };
-        LineNrAbove = {
-          fg = config.lib.stylix.colors.withHashtag.base03;
-        };
-        LineNrBelow = {
-          fg = config.lib.stylix.colors.withHashtag.base03;
-        };
+        LineNr.link = "WarningMsg";
+        LineNrAbove.link = "NonText";
+        LineNrBelow.link = "NonText";
         Comment = {
-          # subtle comments
-          fg = config.lib.stylix.colors.withHashtag.base04;
           italic = true;
         };
       };
@@ -518,16 +505,6 @@ in
           callback = helpers.mkRaw ''
             function()
               vim.hl.hl_op({ higroup = "YankHighlight", timeout = 150 })
-            end
-          '';
-        }
-        {
-          event = [ "VimLeavePre" ];
-          callback = helpers.mkRaw ''
-            function()
-              if vim.v.this_session ~= "" then
-                vim.cmd("mksession! " .. vim.fn.fnameescape(vim.v.this_session))
-              end
             end
           '';
         }
