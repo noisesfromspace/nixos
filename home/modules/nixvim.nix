@@ -61,7 +61,6 @@ in
   };
 
   imports = [
-    ./dap.nix
     ./lsp.nix
   ];
 
@@ -84,6 +83,13 @@ in
       globals = {
         mapleader = " ";
         maplocalleader = "\\";
+
+        # netrw
+        netrw_liststyle = 3; # tree view
+        netrw_banner = 0; # hide the top banner
+        netrw_winsize = 25; # fix the left split width
+        netrw_browse_split = 0; # open files in the previous window
+        netrw_altfile = 1; # keep the alternate file correct
       };
       opts = {
         termguicolors = true; # 24-bit color
@@ -95,6 +101,7 @@ in
         undofile = true; # Save undo history
         sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,globals";
         nrformats = "unsigned"; # Ctrl+a always treated as positive number
+        hidden = true; # no errors for leaving unwritten buffers
 
         # Indentation
         expandtab = true; # Use spaces instead of tabs
@@ -194,124 +201,6 @@ in
           code = "MiniPick.builtin.files()";
         })
         (lua {
-          key = "<BS>";
-          desc = "Overview of buffers";
-          code = # lua
-            ''
-              local bufnr = function(item)
-                return type(item) == 'number' and item
-                  or (type(item) == 'table' and (item.bufnr or item.buf_id or item.buf))
-                  or (type(item) == 'string' and tonumber(item))
-              end
-
-              local get_items = function()
-                local items = {}
-                for _, b in ipairs(vim.api.nvim_list_bufs()) do
-                  if vim.bo[b].buflisted then
-                    local name = vim.fn.bufname(b)
-                    local text = name == "" and "[No Name]" or name
-                    table.insert(items, { bufnr = b, text = text, path = name })
-                  end
-                end
-                table.sort(items, function(a, b)
-                  local pa = vim.api.nvim_buf_is_valid(a.bufnr) and vim.b[a.bufnr].pinned
-                  local pb = vim.api.nvim_buf_is_valid(b.bufnr) and vim.b[b.bufnr].pinned
-                  if pa ~= pb then return pa end
-                  return a.bufnr < b.bufnr
-                end)
-                return items
-              end
-
-              local show_buffers = function(buf_id, items, query)
-                local active_win = MiniPick.get_picker_state().windows.target
-                local active_buf = active_win and vim.api.nvim_win_get_buf(active_win)
-                local display_items = {}
-                for _, item in ipairs(items) do
-                  local b = bufnr(item)
-                  local is_mod = b and vim.api.nvim_buf_is_valid(b) and vim.bo[b].modified
-                  local is_pinned = b and vim.api.nvim_buf_is_valid(b) and vim.b[b].pinned
-                  local is_active = b == active_buf
-                  local prefix = ""
-                  if is_mod then prefix = "+ "
-                  elseif is_pinned then prefix = "\226\152\133 "
-                  elseif is_active then prefix = "> "
-                  else prefix = "  " end
-                  if type(item) == 'table' then
-                    local copy = vim.deepcopy(item)
-                    copy.text = prefix .. (copy.text or copy.path or "")
-                    display_items[#display_items + 1] = copy
-                  else
-                    display_items[#display_items + 1] = prefix .. tostring(item)
-                  end
-                end
-                MiniPick.default_show(buf_id, display_items, query)
-              end
-
-              local wipeout_cur = function()
-                local matches = MiniPick.get_picker_matches()
-                local cur_pos = matches.current_ind
-                local target = matches.current
-                if not cur_pos or not target or not target.bufnr then return end
-
-                MiniBufremove.wipeout(target.bufnr)
-
-                -- Find and remove the deleted buffer by bufnr match
-                local items = MiniPick.get_picker_items()
-                local removed_idx = nil
-                for i, item in ipairs(items) do
-                  if item.bufnr == target.bufnr then
-                    removed_idx = i
-                    break
-                  end
-                end
-                if not removed_idx then return end
-
-                table.remove(items, removed_idx)
-
-                -- Recalculate match indices, shifting indices after the removed item
-                local new_all = {}
-                for _, idx in ipairs(matches.all_inds) do
-                  if idx < removed_idx then
-                    new_all[#new_all + 1] = idx
-                  elseif idx > removed_idx then
-                    new_all[#new_all + 1] = idx - 1
-                  end
-                end
-
-                -- Update items without re-matching (preserves search query)
-                MiniPick.set_picker_items(items, { do_match = false })
-                MiniPick.set_picker_match_inds(new_all, "all")
-                if #new_all > 0 then
-                  local new_cur = math.min(math.max(1, cur_pos), #new_all)
-                  MiniPick.set_picker_match_inds({ new_all[new_cur] }, "current")
-                end
-              end
-
-              local toggle_pin = function()
-                local item = MiniPick.get_picker_matches().current
-                if not item or not item.bufnr then return end
-                vim.b[item.bufnr].pinned = not vim.b[item.bufnr].pinned
-                MiniPick.set_picker_items(get_items())
-              end
-
-              local buffer_mappings = {
-                wipeout = { char = '<C-d>', func = wipeout_cur },
-                toggle_pin = { char = '<C-g>', func = toggle_pin },
-                move_start = '<nop>',
-              }
-              MiniPick.start({
-                source = {
-                  items = get_items,
-                  name = 'Buffers',
-                  show = show_buffers,
-                  choose = MiniPick.default_choose,
-                  preview = MiniPick.default_preview,
-                },
-                mappings = buffer_mappings,
-              })
-            '';
-        })
-        (lua {
           key = "<Leader>h";
           desc = "Find help pages";
           code = "MiniPick.builtin.help()";
@@ -329,11 +218,6 @@ in
           key = "<Leader>s";
           desc = "Find symbols";
           code = "MiniExtra.pickers.lsp({scope = 'document_symbol'})";
-        })
-        (lua {
-          key = "<Leader>r";
-          desc = "Show registers";
-          code = "MiniExtra.pickers.registers()";
         })
 
         # Terminal rebinds

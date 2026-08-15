@@ -20,6 +20,7 @@
     ./modules/pi.nix
     ./modules/sync.nix
     ./modules/s3.nix
+    ./modules/distrobox.nix
 
     # Packaged home manager modules
     inputs.nixvim.homeModules.nixvim

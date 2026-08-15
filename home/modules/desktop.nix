@@ -58,7 +58,6 @@ in
 
         # networking
         wireguard-tools # wg-quick
-        podman-compose # replace for dud
 
         # forensics
         magika-cli # recognize filetype
