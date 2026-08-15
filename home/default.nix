@@ -19,6 +19,7 @@
     ./modules/git.nix
     ./modules/pi.nix
     ./modules/sync.nix
+    ./modules/s3.nix
 
     # Packaged home manager modules
     inputs.nixvim.homeModules.nixvim
