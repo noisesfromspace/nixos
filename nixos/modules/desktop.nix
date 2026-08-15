@@ -17,10 +17,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    hosts.nymvpn = {
-      enable = false;
-      autoConnect = false;
-    };
     hosts.netns.enable = true;
 
     environment.sessionVariables = {

@@ -19,7 +19,6 @@
     ./modules/yubi.nix
     ./modules/oidc.nix
     ./modules/borg.nix
-    ./modules/nym.nix
     ./modules/ssh.nix
     ./modules/stalwart.nix
     ./modules/netns.nix

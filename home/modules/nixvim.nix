@@ -369,10 +369,10 @@ in
           settings = {
             disable_commit_confirmation = true;
             disable_hint = true;
+            prompt_amend_commit = false;
             graph_style = "kitty";
             integrations = {
               mini_pick = true;
-              diffview = false;
             };
             mappings = {
               status = {
@@ -529,7 +529,6 @@ in
         vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
         require('touchup').setup()
-
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')
