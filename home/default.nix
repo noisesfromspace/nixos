@@ -10,18 +10,16 @@
   home.stateVersion = "24.05";
 
   imports = [
-    ./modules/distrobox.nix
-    ./modules/desktop.nix
     ./modules/nixvim.nix
     ./modules/stylix.nix
     ./modules/attic.nix
     ./modules/aerc.nix
+    ./modules/sync.nix
     ./modules/khal.nix
     ./modules/zsh.nix
     ./modules/git.nix
-    ./modules/pi.nix
     ./modules/lsp.nix
-    ./modules/sync.nix
+    ./modules/pi.nix
     ./modules/s3.nix
 
     # Packaged home manager modules
@@ -38,10 +36,12 @@
     inputs.noctalia.homeModules.default
 
     # Desktop only
-    ./modules/niri.nix
+    ./modules/distrobox.nix
+    ./modules/noctalia.nix
+    ./modules/desktop.nix
     ./modules/browser.nix
     ./modules/ghostty.nix
-    ./modules/noctalia.nix
+    ./modules/niri.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

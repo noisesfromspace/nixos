@@ -266,23 +266,6 @@ in
             "v"
           ];
         })
-        (cmd {
-          key = "gb";
-          desc = "Git blame";
-          command = "Git log --patch --max-count=40 -- %";
-        })
-        (lua {
-          key = "gb";
-          desc = "Git blame";
-          code = "MiniGit.show_at_cursor()";
-          modes = [ "v" ];
-        })
-        (cmd {
-          key = "gl";
-          desc = "Commit log";
-          command = "Git log --patch --max-count=25";
-          modes = [ "n" ];
-        })
         (lua {
           key = "g\\";
           desc = "Show buffer changes";
@@ -294,10 +277,34 @@ in
           command = "Neogit";
         })
         (lua {
-          key = "gL";
-          desc = "All branches log";
+          key = "gl";
+          desc = "Git log";
           code = "require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })()";
           modes = [ "n" ];
+        })
+        (cmd {
+          key = "gb";
+          desc = "File history (current file)";
+          command = "NeogitLogCurrent";
+          modes = [ "n" ];
+        })
+        (mk {
+          key = "gb";
+          desc = "File history (selection)";
+          action = ":NeogitLogCurrent<cr>";
+          modes = [ "v" ];
+        })
+        (lua {
+          key = "g/";
+          desc = "Search commits for string";
+          modes = [ "n" ];
+          code = ''
+            vim.ui.input({ prompt = "Search commits for: " }, function(query)
+              if query and query ~= "" then
+                require("neogit").action("log", "log_current", { "-S" .. query, "--all" })()
+              end
+            end)
+          '';
         })
 
         # Clipboard
@@ -358,10 +365,22 @@ in
       };
 
       plugins = {
-        quicker.enable = true;
-
         neogit = {
           enable = true;
+          package = (
+            pkgs.vimUtils.buildVimPlugin {
+              pname = "neogit";
+              version = "3.0.0-unstable-2026-07-27";
+              doCheck = false;
+              src = pkgs.fetchFromGitHub {
+                owner = "noisesfromspace";
+                repo = "neogit";
+                rev = "a39f3c2e5a03e6830e77c84a76ccaef06b68107b";
+                hash = "sha256-bqgOoOwNCLdQevUkCPz6yFIIkZzHP0Ulv7i4Td7qS0k=";
+              };
+            }
+          );
+
           settings = {
             disable_commit_confirmation = true;
             disable_hint = true;
@@ -388,7 +407,6 @@ in
           modules = {
             extra.enable = true; # more picker sources
             icons.enable = true; # icons support for extensions
-            git.enable = true; # git log/blame file
             diff.enable = true; # gitsigns replacement
             notify.enable = true; # vim.notify capture
             surround.enable = true; # surround words with something
