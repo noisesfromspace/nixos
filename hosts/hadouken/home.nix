@@ -9,10 +9,7 @@
     stable.veracrypt
   ];
 
-  maatwerk.pi = {
-    enable = true;
-    server.enable = true;
-  };
+  maatwerk.pi.enable = true;
 
   maatwerk.sync = {
     enable = true;

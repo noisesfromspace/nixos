@@ -19,10 +19,6 @@ let
   noctaliaStr = cmd: "noctalia-shell ipc call " + cmd;
 in
 {
-  imports = [
-    ./desktop.nix
-  ];
-
   options.maatwerk.niri = {
     enable = mkEnableOption "Niri";
     isLaptop = mkOption {

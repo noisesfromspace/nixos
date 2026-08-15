@@ -60,10 +60,6 @@ in
     enable = mkEnableOption "Full nixvim install";
   };
 
-  imports = [
-    ./lsp.nix
-  ];
-
   config = mkIf cfg.enable {
     programs.nixvim = {
       enable = true;

@@ -10,8 +10,6 @@ let
   cfg = config.maatwerk.desktop;
 in
 {
-  imports = [ ];
-
   options.maatwerk.desktop = {
     enable = mkEnableOption "Enable default desktop packages + configuration";
   };

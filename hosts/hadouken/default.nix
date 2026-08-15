@@ -1,7 +1,5 @@
 { ... }:
 {
-  users.users.martijn.linger = true;
-
   networking = {
     hostName = "hadouken";
     hostId = "1b936a2a";

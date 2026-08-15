@@ -10,6 +10,8 @@
   home.stateVersion = "24.05";
 
   imports = [
+    ./modules/distrobox.nix
+    ./modules/desktop.nix
     ./modules/nixvim.nix
     ./modules/stylix.nix
     ./modules/attic.nix
@@ -18,9 +20,9 @@
     ./modules/zsh.nix
     ./modules/git.nix
     ./modules/pi.nix
+    ./modules/lsp.nix
     ./modules/sync.nix
     ./modules/s3.nix
-    ./modules/distrobox.nix
 
     # Packaged home manager modules
     inputs.nixvim.homeModules.nixvim
