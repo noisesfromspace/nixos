@@ -45,6 +45,15 @@ in
     # DBus power information provider
     services.upower.enable = true;
 
+    # DBus secret service
+    services.oo7.enable = true;
+
+    # Run the daemon with YubiKey PIV unlock (our fork adds --yubikey; the
+    # setcap wrapper also fixes mlock of secrets).
+    systemd.user.services.oo7-daemon.serviceConfig.ExecStart = lib.mkForce [
+      "/run/wrappers/bin/oo7-daemon --yubikey"
+    ];
+
     # System-wide hardware accelerometer sensor proxy for auto-rotation
     hardware.sensor.iio.enable = true;
 

@@ -11,7 +11,7 @@ let
 in
 {
   options.hosts.yubikey = {
-    enable = mkEnableOption "Yubikey+PGP";
+    enable = mkEnableOption "Yubikey";
     autolock = mkOption {
       type = types.bool;
       default = false;
@@ -49,6 +49,7 @@ in
       managed: yes
     '';
 
+    services.pcscd.enable = true; # card reader daemon
     programs.yubikey-touch-detector.enable = true;
 
     services.udev = mkIf cfg.autolock {

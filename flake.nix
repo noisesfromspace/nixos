@@ -196,6 +196,14 @@
       # final = after overlay mods, like rec keyword
       overlays =
         final: prev:
+        let
+          oo7ForkSrc = final.fetchFromGitHub {
+            owner = "noisesfromspace";
+            repo = "oo7";
+            rev = "4859cdb984f4eb86e445ec4d79324712c45bd46e";
+            hash = "sha256-9UW4epYG8KZ7MuA++dz5zKWluK4nq36xMv5C3A1O9H4=";
+          };
+        in
         {
           # citrix-workspace = prev.citrix-workspace.overrideAttrs (old: {
           #   version = "26.04.0.105";
@@ -207,6 +215,23 @@
           # });
           strawberry = prev.strawberry.overrideAttrs (oldAttrs: {
             patches = (oldAttrs.patches or [ ]) ++ [ ./pkgs/patches/listenbrainz-koito.patch ];
+          });
+
+          # oo7 fork with YubiKey PIV unlock. The lockfile is committed in the
+          # fork, so we resolve vendored deps with importCargoLock (no cargoHash).
+          oo7 = prev.oo7.overrideAttrs (old: {
+            version = "0.7.0-alpha";
+            src = oo7ForkSrc;
+            # buildRustPackage consumes cargoHash/cargoLock from its captured
+            # args, so override the resolved cargoDeps directly instead.
+            cargoDeps = final.rustPlatform.importCargoLock {
+              lockFile = "${oo7ForkSrc}/Cargo.lock";
+            };
+          });
+
+          # The fork's `yubikey` feature (default) links against pcsc-lite.
+          oo7-server = prev.oo7-server.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ final.pcsclite ];
           });
 
           # stable packages through pkgs.stable.gimp
