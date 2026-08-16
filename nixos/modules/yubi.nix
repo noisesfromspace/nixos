@@ -49,7 +49,6 @@ in
       managed: yes
     '';
 
-    services.pcscd.enable = true; # gpg daemon
     programs.yubikey-touch-detector.enable = true;
 
     services.udev = mkIf cfg.autolock {

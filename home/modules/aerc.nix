@@ -167,11 +167,6 @@ in
           userName = address;
           maildir.path = "Stalwart";
 
-          gpg = {
-            key = "C1E3 5670 353B 3516 BAA3 51D2 8BA2 F86B 654C 7078";
-            signByDefault = false;
-          };
-
           mbsync = {
             enable = true;
             create = "both";

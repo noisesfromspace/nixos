@@ -1,7 +1,6 @@
 {
   osConfig,
   pkgs,
-  lib,
   config,
   ...
 }:
@@ -10,11 +9,6 @@
 
   programs.git = {
     enable = true;
-    signing = {
-      signByDefault = lib.mkDefault true;
-      format = "openpgp";
-      key = "C1E3 5670 353B 3516 BAA3 51D2 8BA2 F86B 654C 7078";
-    };
     ignores = [
       ".ccls-cache"
       "result"

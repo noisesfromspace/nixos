@@ -375,8 +375,8 @@ in
               src = pkgs.fetchFromGitHub {
                 owner = "noisesfromspace";
                 repo = "neogit";
-                rev = "a39f3c2e5a03e6830e77c84a76ccaef06b68107b";
-                hash = "sha256-bqgOoOwNCLdQevUkCPz6yFIIkZzHP0Ulv7i4Td7qS0k=";
+                rev = "69045935e7473da514889f9e397754ea962d5421";
+                hash = "sha256-DHKzSqvT1O/B+3OSa3/2wzUJIu6bkahAo7v3Lw27HsA=";
               };
             }
           );

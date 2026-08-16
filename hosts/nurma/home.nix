@@ -10,6 +10,7 @@
     android-tools
   ];
 
+  programs.git.signing.signByDefault = false;
   programs.yt-dlp.enable = true;
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519_age" ];
 

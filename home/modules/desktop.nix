@@ -78,9 +78,6 @@ in
         stable.fractal # matrix-client
       ];
 
-    # DBus secret service
-    services.pass-secret-service.enable = true;
-
     # Power notifications
     services.poweralertd.enable = true;
 
@@ -91,26 +88,5 @@ in
         hwdec = "auto-safe";
       };
     };
-
-    programs.gpg = {
-      enable = true;
-      scdaemonSettings = {
-        # Use system PCSC driver
-        disable-ccid = true;
-        # Allow OpenSC to touch the card
-        pcsc-shared = true;
-        # Stop GPG from blocking Firefox
-        disable-application = "piv";
-        # card-timeout = "5";
-      };
-    };
-    services.gpg-agent = {
-      enable = true;
-      enableSshSupport = false;
-      pinentry.package = pkgs.pinentry-qt;
-      defaultCacheTtl = 43200;
-      maxCacheTtl = 43200;
-    };
-
   };
 }
