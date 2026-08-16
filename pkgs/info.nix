@@ -21,8 +21,8 @@ pkgs.stdenv.mkDerivation {
   src = pkgs.fetchFromRadicle {
     seed = "seed.boers.email";
     repo = "z2r9euHZW161kfQNxdF4apHddD3mm";
-    rev = "bfe39e781eb408046e284f3822b4ee91d116aa10";
-    hash = "sha256-nz1U7d5Mn/o77oCuoj0pMb14VuHiwhBthKgYhZehfqY=";
+    rev = "c4cb713f4d71ca4be04a7b39101b3a05c170786a";
+    hash = "sha256-3mCxNt4oh2SGOOAkk4ugTuqKypv6w9AAFp/Vx3Q4bjo=";
   };
   installPhase = ''
     mkdir -p $out
