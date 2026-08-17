@@ -1,43 +1,8 @@
 shell: |
   set -xeuo pipefail
 
-  # Add git to path if not already there (though we added it to service path)
-  export PATH=$PATH:/run/current-system/sw/bin
-
-  # Setup GPG keyring for verification
-  export GNUPGHOME=$(mktemp -d)
-  chmod 700 "$GNUPGHOME"
-  
-  # Import your public key from credential file
-  gpg --batch --import /run/credentials/radicle-ci-broker.service/pgp-public
-
-  # Trust the key ultimately
-  echo "BFE5228624DEDBD6DED05F7525F541EC6B74281C:6:" | gpg --import-ownertrust
-
-  # Check if HEAD commit is signed by an allowed GPG key
-  if ! git verify-commit HEAD >/dev/null 2>&1; then
-    echo "Commit not signed or signature invalid"
-    rm -rf "$GNUPGHOME"
-    exit 1
-  fi
-
-  SIGNING_FP=$(git log -1 --pretty=format:%GF HEAD 2>/dev/null)
-  if [ -z "$SIGNING_FP" ]; then
-    echo "Could not determine signing fingerprint"
-    exit 1
-  fi
-
-  ALLOWED_FP="C1E35670353B3516BAA351D28BA2F86B654C7078"
-
-  if [ "$SIGNING_FP" != "$ALLOWED_FP" ]; then
-    echo "Commit signed by unauthorized key (fingerprint: $SIGNING_FP)"
-    exit 1
-  fi
-
-  echo "Commit signed by authorized GPG key"
-
   # Configure GitHub remote
-  GITHUB_REPO="https://oauth2:${GITHUB_TOKEN}@github.com/oetel/nixos.git"
+  GITHUB_REPO="https://oauth2:${GITHUB_TOKEN}@github.com/noisesfromspace/nixos.git"
 
   if ! git remote | grep -q "^github$"; then
     git remote add github "$GITHUB_REPO"

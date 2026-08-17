@@ -200,8 +200,8 @@
           oo7ForkSrc = final.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "oo7";
-            rev = "4859cdb984f4eb86e445ec4d79324712c45bd46e";
-            hash = "sha256-9UW4epYG8KZ7MuA++dz5zKWluK4nq36xMv5C3A1O9H4=";
+            rev = "5e35790c53b1d3a7debe2f6ccd5fd268035440ab";
+            hash = "sha256-B8PNaT7CzTcQ/Hg6wx+K5pggRepJA/qvt9J4YTpXqHo=";
           };
         in
         {
@@ -232,6 +232,19 @@
           # The fork's `yubikey` feature (default) links against pcsc-lite.
           oo7-server = prev.oo7-server.overrideAttrs (old: {
             buildInputs = (old.buildInputs or [ ]) ++ [ final.pcsclite ];
+            # Add --yubikey to ExecStart in the packaged unit file, keeping the
+            # package's Type=dbus/BusName/etc. (a systemd.user.services override
+            # would replace the whole unit and drop those).
+            postFixup = (old.postFixup or "") + ''
+              substituteInPlace "$out/share/systemd/user/oo7-daemon.service" \
+                --replace-fail "/run/wrappers/bin/oo7-daemon" "/run/wrappers/bin/oo7-daemon --yubikey"
+            '';
+          });
+
+          # The 0.7.0-alpha HEAD's pam crate links against libpam (build.rs does
+          # `cargo::rustc-link-lib=pam`); the nixpkgs package predates that.
+          oo7-pam = prev.oo7-pam.overrideAttrs (old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ final.pam ];
           });
 
           # stable packages through pkgs.stable.gimp
