@@ -13,6 +13,4 @@
     isLaptop = true;
     laptopScalingFactor = 1.0;
   };
-
-  maatwerk.pi.server.enable = true;
 }

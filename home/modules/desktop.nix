@@ -49,7 +49,8 @@ in
         # developement
         python313
         nodejs_22
-        cloc # count-lines-of-code
+        rust
+        cargo
 
         # work
         citrix-workspace
