@@ -200,8 +200,8 @@
           oo7ForkSrc = final.fetchFromGitHub {
             owner = "noisesfromspace";
             repo = "oo7";
-            rev = "5e35790c53b1d3a7debe2f6ccd5fd268035440ab";
-            hash = "sha256-B8PNaT7CzTcQ/Hg6wx+K5pggRepJA/qvt9J4YTpXqHo=";
+            rev = "6255262926c70886f3b0f2be76672e43d02fef13";
+            hash = "sha256-GzHOMPKeLPdnsvl7+9hkdFf75p8C/96Mwokb4g85OvE=";
           };
         in
         {

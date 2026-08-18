@@ -168,7 +168,11 @@ in
               );
             };
             docker_compose_language_service.enable = true;
-            rust_analyzer.enable = true; 
+            rust_analyzer = {
+              enable = true;
+              installCargo = false;
+              installRustc = false;
+            };
           };
         }; # language servers
       };

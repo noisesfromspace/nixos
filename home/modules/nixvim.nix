@@ -96,6 +96,7 @@ in
         swapfile = false; # Don't create cluttering .swp files
         undofile = true; # Save undo history
         nrformats = "unsigned"; # Ctrl+a always treated as positive number
+        splitright = true;
 
         # Indentation
         expandtab = true; # Use spaces instead of tabs

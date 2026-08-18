@@ -49,7 +49,7 @@ in
         # developement
         python313
         nodejs_22
-        rust
+        rustc
         cargo
 
         # work
