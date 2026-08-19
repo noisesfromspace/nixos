@@ -8,6 +8,11 @@
     signal-cli
     stable.sdrpp # sdr
     android-tools
+
+    # drone
+    expresslrs-configurator 
+    betaflight-configurator 
+    edgetx 
   ];
 
   programs.git.signing.signByDefault = false;

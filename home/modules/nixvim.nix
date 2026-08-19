@@ -215,6 +215,23 @@ in
           code = "MiniExtra.pickers.lsp({scope = 'document_symbol'})";
         })
 
+        # Notes
+        (lua {
+          key = "<C-j>";
+          desc = "Insert note frontmatter (snippet)";
+          modes = [ "i" ];
+          code = ''
+            local date = os.date("%Y-%m-%d")
+            local snip = "---\n"
+              .. "title: ''${1}\n"
+              .. "tags: ''${2}\n"
+              .. "date: ''${3:" .. date .. "}\n"
+              .. "---\n"
+              .. "''${0}"
+            vim.snippet.expand(snip)
+          '';
+        })
+
         # Terminal rebinds
         {
           mode = "t";
