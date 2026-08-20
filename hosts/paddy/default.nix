@@ -11,6 +11,7 @@
     laptop.enable = true;
     secureboot.enable = true;
     tailscale.enable = true;
+    netns.socks5.enable = true;
     yubikey = {
       enable = true;
       autolock = true;
