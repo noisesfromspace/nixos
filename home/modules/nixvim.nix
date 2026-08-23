@@ -253,6 +253,27 @@ in
             desc = "Sent real Esc";
           };
         }
+        (cmd {
+          key = "<leader>p";
+          desc = "PI sessions";
+          command = "FruitSessions";
+          modes = [
+            "n"
+            "v"
+          ];
+        })
+        (cmd {
+          key = "<leader>a";
+          desc = "PI sessions";
+          command = "FruitPrompt";
+          modes = [ "n" ];
+        })
+        (cmd {
+          key = "<leader>a";
+          desc = "PI sessions";
+          command = "FruitPrompt";
+          modes = [ "v" ];
+        })
 
         # File Explorer
         (lua {
@@ -553,6 +574,11 @@ in
             hash = "sha256-T9x6zLsPmpZn8yTwzN4+TXgWb2RuZP2OIX8UNV8W0sU=";
           };
         })
+        (pkgs.vimUtils.buildVimPlugin {
+          pname = "fruit";
+          version = "0.1-local";
+          src = lib.cleanSource /opt/code/fruit.nvim;
+        })
       ];
 
       extraConfigLua = ''
@@ -561,6 +587,7 @@ in
         vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
         require('touchup').setup()
+        require('fruit').setup()
 
         _G.Maatwerk.yank_file_line_range = function(use_visual)
           local file = vim.fn.expand('%:p')
