@@ -2,16 +2,11 @@
   description = "Everything, everywhere, all at once";
 
   inputs = {
-    dmatools = {
-      url = "github:tie-infra/dmatools/efbaae026cc5b1f0d4763546ca6ac49edfbb8ce5";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     # https://github.com/NixOS/nixos-hardware/pull/1912
     hardware.url = "github:cooparo/nixos-hardware/7243316dae6153eaef9359732d53d9f085668c43";
-
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     nixos-raspberrypi = {
       url = "github:nvmd/nixos-raspberrypi";
@@ -49,6 +44,11 @@
 
     stylix = {
       url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dmatools = {
+      url = "github:tie-infra/dmatools/efbaae026cc5b1f0d4763546ca6ac49edfbb8ce5";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -229,12 +229,10 @@
             };
           });
 
-          # The fork's `yubikey` feature (default) links against pcsc-lite.
           oo7-server = prev.oo7-server.overrideAttrs (old: {
+            # The fork's `yubikey` feature (default) links against pcsc-lite.
             buildInputs = (old.buildInputs or [ ]) ++ [ final.pcsclite ];
-            # Add --yubikey to ExecStart in the packaged unit file, keeping the
-            # package's Type=dbus/BusName/etc. (a systemd.user.services override
-            # would replace the whole unit and drop those).
+            # TODO: Try again using override
             postFixup = (old.postFixup or "") + ''
               substituteInPlace "$out/share/systemd/user/oo7-daemon.service" \
                 --replace-fail "/run/wrappers/bin/oo7-daemon" "/run/wrappers/bin/oo7-daemon --yubikey"

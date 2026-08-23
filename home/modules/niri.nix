@@ -158,6 +158,10 @@ in
             matches = [ { app-id = "librewolf"; } ];
             opacity = 1.0;
           }
+          {
+            matches = [ { app-id = "QEMU (omarchy)"; } ];
+            opacity = 1.0;
+          }
         ];
 
         layout = {

@@ -253,25 +253,31 @@ in
             desc = "Sent real Esc";
           };
         }
-        (cmd {
+        (lua {
           key = "<leader>p";
           desc = "PI sessions";
-          command = "FruitSessions";
+          code = "require('fruit').Sessions()";
           modes = [
             "n"
             "v"
           ];
         })
-        (cmd {
+        (lua {
           key = "<leader>a";
-          desc = "PI sessions";
-          command = "FruitPrompt";
+          desc = "PI prompt";
+          code = "require('fruit').Prompt({})";
           modes = [ "n" ];
         })
-        (cmd {
+        (lua {
           key = "<leader>a";
-          desc = "PI sessions";
-          command = "FruitPrompt";
+          desc = "PI prompt";
+          code = "require('fruit').PromptSelection()";
+          modes = [ "v" ];
+        })
+        (lua {
+          key = "<leader>i";
+          desc = "PI popup insert modal";
+          code = "require('fruit').Input()";
           modes = [ "v" ];
         })
 
@@ -499,7 +505,7 @@ in
               if vim.bo.buftype == "terminal" then
                 vim.opt_local.number = true
                 vim.opt_local.relativenumber = true
-                vim.opt_local.scrollback = 1000000
+                vim.opt_local.scrollback = 100000
                 vim.opt_local.scrolloff = 0
                 vim.opt_local.sidescrolloff = 0
               end
@@ -516,20 +522,11 @@ in
           callback = helpers.mkRaw ''
             function()
               vim.opt_local.linebreak = true
-              vim.opt_local.textwidth = 120
+              vim.opt_local.textwidth = 250
               -- notes use 2-space list nesting; core ftplugin forces 4
               vim.opt_local.shiftwidth = 2
               vim.opt_local.tabstop = 2
               vim.opt_local.softtabstop = 2
-              vim.b.md_list_fold = function()
-                local line = vim.fn.getline(vim.v.lnum)
-                local indent = #line:match("^(%s*)")
-                if line:match("^%s*[-*+]%s") then
-                  return ">" .. (indent + 1)
-                end
-                return "="
-              end
-              vim.wo.foldexpr = "v:lua.vim.b.md_list_fold()"
             end
           '';
         }
@@ -576,8 +573,14 @@ in
         })
         (pkgs.vimUtils.buildVimPlugin {
           pname = "fruit";
-          version = "0.1-local";
-          src = lib.cleanSource /opt/code/fruit.nvim;
+          version = "0.1";
+          # src = pkgs.fetchFromRadicle {
+          #   seed = "seed.boers.email";
+          #   repo = "zfLRpRmAn1WGArvCFTjnrwMn1ZKr";
+          #   rev = "70a52eb349572292a99d522fc9a8c235e357d78f";
+          #   hash = "sha256-IV/5OyZxMKah+ANpvr87o0N6ydx39X5FN2qm8P3adVE=";
+          # };
+          src = /opt/code/fruit.nvim;
         })
       ];
 
