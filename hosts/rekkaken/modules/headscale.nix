@@ -78,6 +78,7 @@ in
       caddy.virtualHosts = {
         "headscale.boers.email" = {
           extraConfig = ''
+            import ratelimit_headscale
             header X-Robots-Tag "noindex"
             reverse_proxy http://localhost:${toString config.services.headscale.port}
           '';

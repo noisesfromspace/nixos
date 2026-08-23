@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   ...
 }:
@@ -21,6 +22,10 @@ in
 
     services.caddy = {
       enable = true;
+      package = pkgs.caddy.withPlugins {
+        plugins = [ "github.com/mholt/caddy-ratelimit@v0.1.0" ];
+        hash = "sha256-eET4cfn1OGyl8rtq8/dO95eM+hvjLPi9IyyWz6vT5QQ=";
+      };
       globalConfig = ''
         servers {
             trusted_proxies static 100.64.0.0/10
@@ -43,6 +48,18 @@ in
         };
       };
       extraConfig = ''
+        (ratelimit_headscale) {
+          rate_limit {
+            zone headscale_auth {
+              match {
+                path /oidc/* /machine/register
+              }
+              key {remote_host}
+              events 20
+              window 1m
+            }
+          }
+        }
         (headscale) {
           @internal remote_ip 100.64.0.0/10
           tls {

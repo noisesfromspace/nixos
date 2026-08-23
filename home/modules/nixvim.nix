@@ -278,7 +278,7 @@ in
           key = "<leader>i";
           desc = "PI popup insert modal";
           code = "require('fruit').Input()";
-          modes = [ "v" ];
+          modes = [ "n" ];
         })
 
         # File Explorer
