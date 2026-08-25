@@ -368,12 +368,6 @@ in
 
         # Tab management
         (cmd {
-          key = "<C-t>n";
-          desc = "New tab";
-          command = "tabnew";
-          modes = [ "n" ];
-        })
-        (cmd {
           key = "<C-t>c";
           desc = "Close tab";
           command = "tabclose";
@@ -454,7 +448,6 @@ in
             icons.enable = true; # icons support for extensions
             diff.enable = true; # gitsigns replacement
             notify.enable = true; # vim.notify capture
-            surround.enable = true; # surround words with something
 
             bufremove = {
               enable = true;
@@ -479,15 +472,6 @@ in
                     return MiniPick.default_preview(buf_id, item, opts)
                   end
                 '';
-              };
-            };
-
-            move = {
-              mappings = {
-                up = "<C-S-Up>";
-                down = "<C-S-Down>";
-                line_up = "<C-S-Up>";
-                line_down = "<C-S-Down>";
               };
             };
           };
@@ -587,7 +571,6 @@ in
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
         vim.cmd.packadd('nvim.undotree'); 
-        vim.cmd.packadd('nvim.tohtml'); 
         require('vim._core.ui2').enable()
         require('touchup').setup()
         require('fruit').setup()

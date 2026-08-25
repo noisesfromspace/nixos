@@ -17,8 +17,8 @@ let
   neovim-src = fetchFromGitHub {
     owner = "noib3";
     repo = "neovim";
-    rev = "b0bc24840b4c1b9cf798cfad6b36274b3e16634d";
-    sha256 = "sha256-MgnFMpiF6Up46gp2gwI15JM9ssm0Uzkl+CIaQsgYsBo=";
+    rev = "b2026f2248b187da70512a6067e41ecb37089c48";
+    sha256 = "sha256-DePS0X3ZgLW4U/VZVKen79dXc2N705Q8vQjfVjdnpIo=";
   };
 
   # ghostty pinned by neovim's cmake.deps/deps.txt (upstream, fork no longer needed)

@@ -50,7 +50,7 @@ with lib;
       ffmpeg # video processing
       gifski # high-quality gif encoding
       python3Packages.pygobject3 # system file picker support
-      oskToggle 
+      oskToggle
     ];
 
     # Screenshots
@@ -288,7 +288,7 @@ with lib;
                 icon = "keyboard";
                 iconPosition = "left";
                 ipcIdentifier = "";
-                leftClickExec = "osk";
+                leftClickExec = lib.getExe oskToggle;
                 leftClickUpdateText = false;
                 maxTextLength = {
                   horizontal = 10;

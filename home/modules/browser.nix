@@ -179,7 +179,7 @@ in
           extensions.force = true;
           search = {
             force = true;
-            default = "google";
+            default = "DuckDuckGo Lite";
             engines =
               let
                 mkEngine =
@@ -218,10 +218,6 @@ in
                   {
                     id = "gh";
                     url = "https://github.com/search?q={searchTerms}";
-                  }
-                  {
-                    id = "k";
-                    url = "https://kagi.com/search?q={searchTerms}";
                   }
                   {
                     id = "vim";
