@@ -95,7 +95,6 @@ let
   workVethHostAddr = "10.99.0.1";
   workVethNsAddr = "10.99.0.2";
   workSubnet = "10.99.0.0/30";
-  workFwMark = "43";
   workBootstrapDns = "1.1.1.1";
   workSocksPort = 1080;
 
@@ -181,10 +180,6 @@ let
 
     case "''${script_type:-}" in
       up)
-        # Open only the interface OpenVPN actually created. The namespace
-        # otherwise permits no non-OpenVPN traffic through its veth.
-        ${pkgs.nftables}/bin/nft add element inet work-fw vpn-ifaces \{ "$dev" \} 2>/dev/null || true
-
         nameservers=()
         search_domains=()
         for var in ''${!foreign_option_*}; do
@@ -214,9 +209,6 @@ let
         ;;
       down)
         write_bootstrap_dns
-        if [[ -n ''${dev:-} ]]; then
-          ${pkgs.nftables}/bin/nft delete element inet work-fw vpn-ifaces \{ "$dev" \} 2>/dev/null || true
-        fi
         ;;
     esac
   '';
@@ -235,7 +227,6 @@ let
 
       exec /run/wrappers/bin/sudo ip netns exec ${workNsName} openvpn \
         --config ${config.age.secrets.openvpn-work1.path} \
-        --mark ${workFwMark} \
         --script-security 2 \
         --up ${work-openvpn-hook} \
         --down ${work-openvpn-hook} \
@@ -538,28 +529,9 @@ in
         mkdir -p /etc/netns/${workNsName}
         printf 'nameserver %s\n' '${workBootstrapDns}' > /etc/netns/${workNsName}/resolv.conf
 
-        # Kill-switch: OpenVPN's marked encrypted packets and its root-owned
-        # bootstrap DNS may use the veth. Applications may only use the VPN
-        # interface inserted into vpn-ifaces by the OpenVPN up hook.
-        NS="ip netns exec ${workNsName}"
-        $NS nft delete table inet work-fw 2>/dev/null || true
-        $NS nft add table inet work-fw
-        $NS nft 'add set inet work-fw vpn-ifaces { type ifname; }'
-        $NS nft 'add chain inet work-fw input { type filter hook input priority filter; policy drop; }'
-        $NS nft 'add chain inet work-fw forward { type filter hook forward priority filter; policy drop; }'
-        $NS nft 'add chain inet work-fw output { type filter hook output priority filter; policy drop; }'
-        $NS nft add rule inet work-fw input iif lo accept
-        $NS nft add rule inet work-fw input ct state established,related accept
-        $NS nft add rule inet work-fw input \
-          iif ${workVethNs} ip saddr ${workVethHostAddr} tcp dport ${toString workSocksPort} accept
-        $NS nft add rule inet work-fw output oif lo accept
-        $NS nft add rule inet work-fw output \
-          oif ${workVethNs} ip daddr ${workVethHostAddr} ct state established,related accept
-        $NS nft add rule inet work-fw output oifname @vpn-ifaces accept
-        $NS nft add rule inet work-fw output oif ${workVethNs} meta mark ${workFwMark} accept
-        $NS nft add rule inet work-fw output oif ${workVethNs} meta skuid 0 udp dport 53 accept
-        $NS nft add rule inet work-fw output oif ${workVethNs} meta skuid 0 tcp dport 53 accept
-        $NS nft add rule inet work-fw output reject
+        # The work VPN is for resource access, not privacy. Ensure traffic can
+        # fall back to the regular veth route when OpenVPN is disconnected.
+        ip netns exec ${workNsName} nft delete table inet work-fw 2>/dev/null || true
 
         # Work NAT is independent, but forwarding must also be allowed through
         # tunnel-nat's existing policy-drop forward chain. The check handles
@@ -573,7 +545,6 @@ in
           nft add rule ip tunnel-nat forward oifname ${workVethHost} ct state established,related accept
         fi
 
-        # Install the route only after the kill-switch is active.
         ip -n ${workNsName} route add default via ${workVethHostAddr}
       '';
       preStop = ''
