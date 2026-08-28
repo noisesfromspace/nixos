@@ -47,6 +47,10 @@ in
     # System-wide hardware accelerometer sensor proxy for auto-rotation
     hardware.sensor.iio.enable = true;
 
+    age.secrets = {
+      openvpn-work1.file = mkDefault "${inputs.secrets}/openvpn-work1.age";
+    };
+
     programs.wireshark = {
       enable = true;
       usbmon.enable = true;
