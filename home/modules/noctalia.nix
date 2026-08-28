@@ -297,7 +297,7 @@ with lib;
                 middleClickExec = "";
                 middleClickUpdateText = false;
                 parseJson = false;
-                rightClickExec = "osk";
+                rightClickExec = lib.getExe oskToggle;
                 rightClickUpdateText = false;
                 showExecTooltip = true;
                 showIcon = true;

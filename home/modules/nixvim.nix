@@ -176,19 +176,11 @@ in
           key = "<Leader>f";
           desc = "Find";
           code = "MiniPick.builtin.grep_live()";
-          modes = [
-            "n"
-            "v"
-          ];
         })
         (lua {
           key = "<Leader>l";
           desc = "Last picker";
           code = "MiniPick.builtin.resume()";
-          modes = [
-            "n"
-            "v"
-          ];
         })
         (lua {
           key = "<Leader>o";
@@ -199,15 +191,6 @@ in
           key = "<Leader>h";
           desc = "Find help pages";
           code = "MiniPick.builtin.help()";
-        })
-        (lua {
-          key = "<Leader>x";
-          desc = "Find errors";
-          code = "MiniExtra.pickers.diagnostic()";
-          modes = [
-            "n"
-            "v"
-          ];
         })
         (lua {
           key = "<Leader>s";
@@ -253,14 +236,12 @@ in
             desc = "Sent real Esc";
           };
         }
+
+        # Fruit.nvim
         (lua {
           key = "<leader>p";
           desc = "PI sessions";
           code = "require('fruit').Sessions()";
-          modes = [
-            "n"
-            "v"
-          ];
         })
         (lua {
           key = "<leader>a";
@@ -278,39 +259,16 @@ in
           key = "<leader>i";
           desc = "PI popup insert modal";
           code = "require('fruit').Input()";
-          modes = [ "n" ];
         })
 
         # File Explorer
-        (lua {
-          key = "<Leader>e";
-          desc = "Toggle MiniFiles";
-          code = "MiniFiles.open()";
-          modes = [
-            "n"
-            "v"
-          ];
-        })
-        (lua {
+        (cmd {
           key = "-";
-          desc = "Toggle MiniFiles";
-          code = "MiniFiles.open(vim.api.nvim_buf_get_name(0))";
-          modes = [
-            "n"
-            "v"
-          ];
+          desc = "Oil";
+          command = "Oil";
         })
 
         # Git actions
-        (cmd {
-          key = "<leader>u";
-          desc = "Undotree";
-          command = "Undotree";
-          modes = [
-            "n"
-            "v"
-          ];
-        })
         (lua {
           key = "g\\";
           desc = "Show buffer changes";
@@ -365,20 +323,6 @@ in
           code = "_G.Maatwerk.yank_file_line_range(true)";
           modes = [ "v" ];
         })
-
-        # Tab management
-        (cmd {
-          key = "<C-t>c";
-          desc = "Close tab";
-          command = "tabclose";
-          modes = [ "n" ];
-        })
-        (cmd {
-          key = "<C-t>o";
-          desc = "Only this tab";
-          command = "tabonly";
-          modes = [ "n" ];
-        })
       ];
 
       diagnostic.settings = {
@@ -404,6 +348,14 @@ in
       };
 
       plugins = {
+        oil = {
+          enable = true;
+          settings = {
+            skip_confirm_for_simple_edits = true;
+            watch_for_changes = true;
+          };
+        };
+
         neogit = {
           enable = true;
           package = (
@@ -448,16 +400,6 @@ in
             icons.enable = true; # icons support for extensions
             diff.enable = true; # gitsigns replacement
             notify.enable = true; # vim.notify capture
-
-            bufremove = {
-              enable = true;
-              silent = true;
-            };
-
-            files = {
-              enable = true; # file explorer
-              options.lsp_timeout = 0;
-            };
 
             pick = {
               enable = true;
@@ -506,31 +448,10 @@ in
           callback = helpers.mkRaw ''
             function()
               vim.opt_local.linebreak = true
-              vim.opt_local.textwidth = 250
               -- notes use 2-space list nesting; core ftplugin forces 4
               vim.opt_local.shiftwidth = 2
               vim.opt_local.tabstop = 2
               vim.opt_local.softtabstop = 2
-            end
-          '';
-        }
-        {
-          event = "User";
-          pattern = [ "MiniFilesBufferCreate" ];
-          callback = helpers.mkRaw ''
-            function(args)
-              local buf_id = args.data.buf_id
-
-              -- Set focused directory as current working directory
-              local set_cwd = function()
-                local path = (MiniFiles.get_fs_entry() or {}).path
-                if path == nil then return vim.notify('Cursor is not on valid entry') end
-                local dir = vim.fs.dirname(path)
-                vim.fn.chdir(dir)
-                vim.notify('Changed cwd to ' .. dir)
-              end
-
-              vim.keymap.set('n', '~', set_cwd, { buffer = buf_id, desc = 'Set cwd' })
             end
           '';
         }
@@ -570,7 +491,6 @@ in
 
       extraConfigLua = ''
         _G.Maatwerk = _G.Maatwerk or {}
-        vim.cmd.packadd('nvim.undotree'); 
         require('vim._core.ui2').enable()
         require('touchup').setup()
         require('fruit').setup()
@@ -587,7 +507,7 @@ in
               result = file .. ':' .. math.min(start_line, end_line) .. '-' .. math.max(start_line, end_line)
             end
           end
-          vim.fn.setreg('+', result); vim.fn.setreg('"', result); vim.notify('Yanked: ' .. result)
+          vim.fn.setreg('+', result); vim.fn.setreg('"', result);
           if use_visual then vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', true) end
         end
       '';
