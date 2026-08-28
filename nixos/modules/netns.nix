@@ -89,16 +89,25 @@ let
   vethNs = "veth-ns";
   fwMark = "42";
 
-  # setns wrapper enters the tunnel namespace then drops privileges.
-  # security.wrappers gives it CAP_SYS_ADMIN (the specific capability
-  # required by setns(CLONE_NEWNET) — there is no narrower one).
-  # It also bind-mounts the namespace's resolv.conf so programs that
-  # read /etc/resolv.conf directly (e.g. QEMU slirp) use the tunnel DNS
-  # instead of the host's systemd-resolved stub (127.0.0.53).
-  tunnel-exe =
-    pkgs.runCommandCC "tunnel-nsenter"
+  workNsName = "work";
+  workVethHost = "veth-work";
+  workVethNs = "veth-work-ns";
+  workVethHostAddr = "10.99.0.1";
+  workVethNsAddr = "10.99.0.2";
+  workSubnet = "10.99.0.0/30";
+  workFwMark = "43";
+  workBootstrapDns = "1.1.1.1";
+
+  # setns wrappers enter a fixed network namespace, bind-mount its
+  # resolv.conf, then drop privileges before running the requested command.
+  mkNetnsExe =
+    {
+      commandName,
+      namespace,
+    }:
+    pkgs.runCommandCC "${commandName}-nsenter"
       {
-        src = pkgs.writeText "tunnel.c" /* c */ ''
+        src = pkgs.writeText "${commandName}.c" /* c */ ''
           #define _GNU_SOURCE
           #include <fcntl.h>
           #include <linux/capability.h>
@@ -111,7 +120,7 @@ let
           #include <unistd.h>
           int main(int argc, char **argv) {
               if (argc < 2) return 1;
-              int fd = open("/var/run/netns/${nsName}", O_RDONLY | O_CLOEXEC);
+              int fd = open("/var/run/netns/${namespace}", O_RDONLY | O_CLOEXEC);
               if (fd < 0) return 1;
               if (setns(fd, CLONE_NEWNET)) { close(fd); return 2; }
               close(fd);
@@ -121,17 +130,15 @@ let
               if (unshare(CLONE_NEWNS)) return 5;
               if (mount("none", "/", NULL, MS_REC | MS_PRIVATE, NULL)) return 6;
               struct stat st;
-              if (stat("/etc/netns/${nsName}/resolv.conf", &st) == 0) {
-                  mount("/etc/netns/${nsName}/resolv.conf", "/etc/resolv.conf", NULL, MS_BIND, NULL);
+              if (stat("/etc/netns/${namespace}/resolv.conf", &st) == 0) {
+                  mount("/etc/netns/${namespace}/resolv.conf", "/etc/resolv.conf", NULL, MS_BIND, NULL);
               }
-              /* Hide nscd so getaddrinfo() resolves via resolv.conf (tunnel
-               * DNS) instead of the host's nscd daemon, which would leak
-               * the host's DNS upstream through the tunnel. */
+              /* Hide host resolver sockets so getaddrinfo() falls through
+               * to NSS dns and reads the namespace's resolv.conf. */
               mount("tmpfs", "/run/nscd", "tmpfs", 0, NULL);
+              mount("/dev/null", "/run/systemd/resolve/io.systemd.Resolve", NULL, MS_BIND, NULL);
               /* Drop all capabilities (especially the ambient set, which
-               * survives exec) so the launched command runs without
-               * CAP_SYS_ADMIN. The mounts above already happened while
-               * still privileged. */
+               * survives exec) before running the requested command. */
               if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_CLEAR_ALL, 0, 0, 0) != 0) return 7;
               struct __user_cap_header_struct cap_hdr = { _LINUX_CAPABILITY_VERSION_3, 0 };
               struct __user_cap_data_struct cap_data[2] = { {0,0,0}, {0,0,0} };
@@ -146,8 +153,94 @@ let
       }
       ''
         mkdir -p $out/bin
-        $CC -O2 -o $out/bin/tunnel $src
+        $CC -O2 -o $out/bin/${commandName} $src
       '';
+
+  tunnel-exe = mkNetnsExe {
+    commandName = "tunnel";
+    namespace = nsName;
+  };
+
+  work-exe = mkNetnsExe {
+    commandName = "work";
+    namespace = workNsName;
+  };
+
+  # NixOS' OpenVPN module handles pushed DNS with up/down scripts and
+  # update-resolv-conf. That helper is host-global, so this equivalent writes
+  # the namespace-specific resolv.conf directly instead.
+  work-openvpn-hook = pkgs.writeShellScript "work-openvpn-hook" ''
+    set -u
+
+    resolv_conf=/etc/netns/${workNsName}/resolv.conf
+
+    write_bootstrap_dns() {
+      printf 'nameserver %s\n' '${workBootstrapDns}' > "$resolv_conf"
+    }
+
+    case "''${script_type:-}" in
+      up)
+        # Open only the interface OpenVPN actually created. The namespace
+        # otherwise permits no non-OpenVPN traffic through its veth.
+        ${pkgs.nftables}/bin/nft add element inet work-fw vpn-ifaces \{ "$dev" \} 2>/dev/null || true
+
+        nameservers=()
+        search_domains=()
+        for var in ''${!foreign_option_*}; do
+          read -r kind option value _ <<< "''${!var}"
+          if [[ $kind != dhcp-option || -z ''${value:-} ]]; then
+            continue
+          fi
+          case "$option" in
+            DNS) nameservers+=("$value") ;;
+            DOMAIN | DOMAIN-SEARCH) search_domains+=("$value") ;;
+          esac
+        done
+
+        if (( ''${#nameservers[@]} == 0 )); then
+          echo "OpenVPN did not provide a DNS server; retaining bootstrap DNS" >&2
+          exit 0
+        fi
+
+        {
+          if (( ''${#search_domains[@]} > 0 )); then
+            printf 'search'
+            printf ' %s' "''${search_domains[@]}"
+            printf '\n'
+          fi
+          printf 'nameserver %s\n' "''${nameservers[@]}"
+        } > "$resolv_conf"
+        ;;
+      down)
+        write_bootstrap_dns
+        if [[ -n ''${dev:-} ]]; then
+          ${pkgs.nftables}/bin/nft delete element inet work-fw vpn-ifaces \{ "$dev" \} 2>/dev/null || true
+        fi
+        ;;
+    esac
+  '';
+
+  work-connect = pkgs.writeShellApplication {
+    name = "work-connect";
+    runtimeInputs = with pkgs; [
+      iproute2
+      openvpn
+    ];
+    text = ''
+      if [[ ! -e /var/run/netns/${workNsName} ]]; then
+        echo "The ${workNsName} network namespace is not running" >&2
+        exit 1
+      fi
+
+      exec /run/wrappers/bin/sudo ip netns exec ${workNsName} openvpn \
+        --config ${config.age.secrets.openvpn-work1.path} \
+        --mark ${workFwMark} \
+        --script-security 2 \
+        --up ${work-openvpn-hook} \
+        --down ${work-openvpn-hook} \
+        --up-restart
+    '';
+  };
 in
 {
   options.hosts.netns = {
@@ -177,10 +270,17 @@ in
         description = "HTTP proxy listen port inside the tunnel namespace.";
       };
     };
+    work.enable = mkEnableOption "interactive OpenVPN work network namespace";
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ tunnel-exe ];
+    environment.systemPackages = [
+      tunnel-exe
+    ]
+    ++ optionals cfg.work.enable [
+      work-exe
+      work-connect
+    ];
 
     security.wrappers.tunnel = {
       source = "${tunnel-exe}/bin/tunnel";
@@ -188,6 +288,16 @@ in
       owner = "root";
       group = "root";
     };
+
+    security.wrappers.work = mkIf cfg.work.enable {
+      source = "${work-exe}/bin/work";
+      capabilities = "cap_sys_admin+ep";
+      owner = "root";
+      group = "root";
+    };
+
+    security.pki.certificateFiles = mkIf cfg.work.enable [ "${inputs.secrets}/keys/work.crt" ];
+    boot.kernelModules = optionals cfg.work.enable [ "tun" ];
 
     age.secrets."mullvad-wg" = {
       file = "${inputs.secrets}/mullvad-wg.age";
@@ -339,6 +449,12 @@ in
         # cannot reach the unauthenticated services on the bridge.
         nft add rule ip tunnel-nat forward iifname ${bridgeName} accept
         nft add rule ip tunnel-nat forward oifname ${bridgeName} ct state established,related accept
+        ${optionalString cfg.work.enable ''
+          # The work namespace owns its NAT table, but forwarded packets also
+          # traverse this existing policy-drop base chain.
+          nft add rule ip tunnel-nat forward iifname ${workVethHost} accept
+          nft add rule ip tunnel-nat forward oifname ${workVethHost} ct state established,related accept
+        ''}
 
         # Host-side bridge access control — restrict which host
         # processes can reach services inside the tunnel namespace.
@@ -381,6 +497,84 @@ in
     systemd.services."wireguard-tun0-peer-mullvad" = {
       serviceConfig.ExecStart = lib.mkForce "${pkgs.coreutils}/bin/true";
       serviceConfig.ExecStopPost = lib.mkForce "${pkgs.coreutils}/bin/true";
+    };
+
+    # ── Interactive OpenVPN work namespace ──────────────────────────────
+    systemd.services.work-netns = mkIf cfg.work.enable {
+      description = "OpenVPN work network namespace connectivity";
+      wantedBy = [ "multi-user.target" ];
+      bindsTo = [ "netns@${workNsName}.service" ];
+      requires = [ "wireguard-tun0.service" ];
+      after = [
+        "netns@${workNsName}.service"
+        "wireguard-tun0.service"
+      ];
+      restartIfChanged = false;
+      path = with pkgs; [
+        coreutils
+        gnugrep
+        iproute2
+        nftables
+        procps
+      ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        # Remove only a leftover host end; deleting it also deletes its peer.
+        ip link del ${workVethHost} 2>/dev/null || true
+        ip link add ${workVethHost} type veth peer name ${workVethNs}
+        ip link set ${workVethNs} netns ${workNsName}
+        ip addr add ${workVethHostAddr}/30 dev ${workVethHost}
+        ip link set ${workVethHost} up
+
+        ip -n ${workNsName} addr add ${workVethNsAddr}/30 dev ${workVethNs}
+        ip -n ${workNsName} link set ${workVethNs} up
+        ip -n ${workNsName} link set lo up
+        ip netns exec ${workNsName} sysctl -q -w net.ipv4.ping_group_range='0 2147483647'
+
+        mkdir -p /etc/netns/${workNsName}
+        printf 'nameserver %s\n' '${workBootstrapDns}' > /etc/netns/${workNsName}/resolv.conf
+
+        # Kill-switch: OpenVPN's marked encrypted packets and its root-owned
+        # bootstrap DNS may use the veth. Applications may only use the VPN
+        # interface inserted into vpn-ifaces by the OpenVPN up hook.
+        NS="ip netns exec ${workNsName}"
+        $NS nft delete table inet work-fw 2>/dev/null || true
+        $NS nft add table inet work-fw
+        $NS nft 'add set inet work-fw vpn-ifaces { type ifname; }'
+        $NS nft 'add chain inet work-fw input { type filter hook input priority filter; policy drop; }'
+        $NS nft 'add chain inet work-fw forward { type filter hook forward priority filter; policy drop; }'
+        $NS nft 'add chain inet work-fw output { type filter hook output priority filter; policy drop; }'
+        $NS nft add rule inet work-fw input iif lo accept
+        $NS nft add rule inet work-fw input ct state established,related accept
+        $NS nft add rule inet work-fw output oif lo accept
+        $NS nft add rule inet work-fw output oifname @vpn-ifaces accept
+        $NS nft add rule inet work-fw output oif ${workVethNs} meta mark ${workFwMark} accept
+        $NS nft add rule inet work-fw output oif ${workVethNs} meta skuid 0 udp dport 53 accept
+        $NS nft add rule inet work-fw output oif ${workVethNs} meta skuid 0 tcp dport 53 accept
+        $NS nft add rule inet work-fw output reject
+
+        # Work NAT is independent, but forwarding must also be allowed through
+        # tunnel-nat's existing policy-drop forward chain. The check handles
+        # activation while wireguard-tun0 is intentionally not restarted.
+        nft delete table ip work-nat 2>/dev/null || true
+        nft add table ip work-nat
+        nft 'add chain ip work-nat postrouting { type nat hook postrouting priority srcnat; }'
+        nft add rule ip work-nat postrouting ip saddr ${workSubnet} masquerade
+        if ! nft list chain ip tunnel-nat forward | grep -Fq 'iifname "${workVethHost}"'; then
+          nft add rule ip tunnel-nat forward iifname ${workVethHost} accept
+          nft add rule ip tunnel-nat forward oifname ${workVethHost} ct state established,related accept
+        fi
+
+        # Install the route only after the kill-switch is active.
+        ip -n ${workNsName} route add default via ${workVethHostAddr}
+      '';
+      preStop = ''
+        nft delete table ip work-nat 2>/dev/null || true
+        ip link del ${workVethHost} 2>/dev/null || true
+      '';
     };
 
     # ── Bridge between host and namespace — systemd-networkd ────────────
