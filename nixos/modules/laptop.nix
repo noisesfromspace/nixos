@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  pkgs,
+  inputs,
   ...
 }:
 with lib;
@@ -28,6 +28,10 @@ in
         CPU_MIN_PERF_ON_BAT = 0;
         CPU_MAX_PERF_ON_BAT = 50;
       };
+    };
+
+    age.secrets = {
+      password-laptop.file = mkDefault "${inputs.secrets}/password-laptop.age";
     };
 
     services.logind.settings.Login = {

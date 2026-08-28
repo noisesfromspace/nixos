@@ -38,10 +38,6 @@ in
       "tor" # read authcookie
     ];
 
-    age.secrets = {
-      password-laptop.file = mkDefault "${inputs.secrets}/password-laptop.age";
-    };
-
     # DBus power information provider
     services.upower.enable = true;
 

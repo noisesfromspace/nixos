@@ -7,11 +7,14 @@
   networking.hostName = "paddy";
 
   hosts = {
-    desktop.enable = true;
     laptop.enable = true;
     secureboot.enable = true;
     tailscale.enable = true;
     netns.socks5.enable = true;
+    desktop = {
+      enable = true;
+      work = true;
+    };
     yubikey = {
       enable = true;
       autolock = true;

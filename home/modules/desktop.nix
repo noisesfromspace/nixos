@@ -54,6 +54,7 @@ in
 
         # work
         citrix-workspace
+        openvpn
 
         # networking
         wireguard-tools # wg-quick
