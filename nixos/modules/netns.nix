@@ -97,6 +97,7 @@ let
   workSubnet = "10.99.0.0/30";
   workFwMark = "43";
   workBootstrapDns = "1.1.1.1";
+  workSocksPort = 1080;
 
   # setns wrappers enter a fixed network namespace, bind-mount its
   # resolv.conf, then drop privileges before running the requested command.
@@ -549,7 +550,11 @@ in
         $NS nft 'add chain inet work-fw output { type filter hook output priority filter; policy drop; }'
         $NS nft add rule inet work-fw input iif lo accept
         $NS nft add rule inet work-fw input ct state established,related accept
+        $NS nft add rule inet work-fw input \
+          iif ${workVethNs} ip saddr ${workVethHostAddr} tcp dport ${toString workSocksPort} accept
         $NS nft add rule inet work-fw output oif lo accept
+        $NS nft add rule inet work-fw output \
+          oif ${workVethNs} ip daddr ${workVethHostAddr} ct state established,related accept
         $NS nft add rule inet work-fw output oifname @vpn-ifaces accept
         $NS nft add rule inet work-fw output oif ${workVethNs} meta mark ${workFwMark} accept
         $NS nft add rule inet work-fw output oif ${workVethNs} meta skuid 0 udp dport 53 accept
@@ -575,6 +580,39 @@ in
         nft delete table ip work-nat 2>/dev/null || true
         ip link del ${workVethHost} 2>/dev/null || true
       '';
+    };
+
+    systemd.services.work-microsocks = mkIf cfg.work.enable {
+      description = "SOCKS5 proxy inside the OpenVPN work namespace";
+      wantedBy = [ "multi-user.target" ];
+      bindsTo = [ "work-netns.service" ];
+      after = [ "work-netns.service" ];
+      serviceConfig = {
+        DynamicUser = true;
+        ExecStart = "${pkgs.microsocks}/bin/microsocks -i ${workVethNsAddr} -p ${toString workSocksPort} -b 0.0.0.0";
+        Restart = "on-failure";
+        RestartSec = 10;
+        NetworkNamespacePath = "/var/run/netns/${workNsName}";
+        BindReadOnlyPaths = [
+          "/etc/netns/${workNsName}/resolv.conf:/etc/resolv.conf"
+          "/dev/null:/run/systemd/resolve/io.systemd.Resolve"
+        ];
+        MemoryDenyWriteExecute = true;
+        NoNewPrivileges = true;
+        PrivateDevices = true;
+        PrivateTmp = true;
+        ProtectHome = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectSystem = "strict";
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+        ];
+        RestrictNamespaces = true;
+        RestrictSUIDSGID = true;
+        SystemCallArchitectures = "native";
+      };
     };
 
     # ── Bridge between host and namespace — systemd-networkd ────────────
