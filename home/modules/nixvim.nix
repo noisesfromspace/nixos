@@ -243,23 +243,6 @@ in
           desc = "PI sessions";
           code = "require('fruit').Sessions()";
         })
-        (lua {
-          key = "<leader>a";
-          desc = "PI prompt";
-          code = "require('fruit').Prompt({})";
-          modes = [ "n" ];
-        })
-        (lua {
-          key = "<leader>a";
-          desc = "PI prompt";
-          code = "require('fruit').PromptSelection()";
-          modes = [ "v" ];
-        })
-        (lua {
-          key = "<leader>i";
-          desc = "PI popup insert modal";
-          code = "require('fruit').Input()";
-        })
 
         # File Explorer
         (cmd {

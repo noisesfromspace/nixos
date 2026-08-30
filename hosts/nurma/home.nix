@@ -11,7 +11,6 @@
 
     # drone
     expresslrs-configurator 
-    betaflight-configurator 
     edgetx 
   ];
 
