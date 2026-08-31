@@ -193,6 +193,15 @@ in
           code = "MiniPick.builtin.help()";
         })
         (lua {
+          key = "<Leader>x";
+          desc = "Find errors";
+          code = "MiniExtra.pickers.diagnostic()";
+          modes = [
+            "n"
+            "v"
+          ];
+        })
+        (lua {
           key = "<Leader>s";
           desc = "Find symbols";
           code = "MiniExtra.pickers.lsp({scope = 'document_symbol'})";
@@ -382,7 +391,6 @@ in
             extra.enable = true; # more picker sources
             icons.enable = true; # icons support for extensions
             diff.enable = true; # gitsigns replacement
-            notify.enable = true; # vim.notify capture
 
             pick = {
               enable = true;

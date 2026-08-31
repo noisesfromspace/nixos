@@ -10,10 +10,10 @@
     laptop.enable = true;
     secureboot.enable = true;
     tailscale.enable = true;
-    netns.socks5.enable = true;
-    desktop = {
-      enable = true;
-      work = true;
+    desktop.enable = true;
+    netns = {
+      socks5.enable = true;
+      work.enable = true;
     };
     yubikey = {
       enable = true;
