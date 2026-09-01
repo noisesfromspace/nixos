@@ -254,10 +254,23 @@ in
         })
 
         # File Explorer
-        (cmd {
+        (lua {
+          key = "<Leader>e";
+          desc = "Toggle MiniFiles";
+          code = "MiniFiles.open()";
+          modes = [
+            "n"
+            "v"
+          ];
+        })
+        (lua {
           key = "-";
-          desc = "Oil";
-          command = "Oil";
+          desc = "Toggle MiniFiles";
+          code = "MiniFiles.open(vim.api.nvim_buf_get_name(0))";
+          modes = [
+            "n"
+            "v"
+          ];
         })
 
         # Git actions
@@ -340,14 +353,6 @@ in
       };
 
       plugins = {
-        oil = {
-          enable = true;
-          settings = {
-            skip_confirm_for_simple_edits = true;
-            watch_for_changes = true;
-          };
-        };
-
         neogit = {
           enable = true;
           package = (
@@ -391,6 +396,11 @@ in
             extra.enable = true; # more picker sources
             icons.enable = true; # icons support for extensions
             diff.enable = true; # gitsigns replacement
+
+            files = {
+              enable = true; # file explorer
+              options.lsp_timeout = 0;
+            };
 
             pick = {
               enable = true;
@@ -443,6 +453,26 @@ in
               vim.opt_local.shiftwidth = 2
               vim.opt_local.tabstop = 2
               vim.opt_local.softtabstop = 2
+            end
+          '';
+        }
+        {
+          event = "User";
+          pattern = [ "MiniFilesBufferCreate" ];
+          callback = helpers.mkRaw ''
+            function(args)
+              local buf_id = args.data.buf_id
+
+              -- Set focused directory as current working directory
+              local set_cwd = function()
+                local path = (MiniFiles.get_fs_entry() or {}).path
+                if path == nil then return vim.notify('Cursor is not on valid entry') end
+                local dir = vim.fs.dirname(path)
+                vim.fn.chdir(dir)
+                vim.notify('Changed cwd to ' .. dir)
+              end
+
+              vim.keymap.set('n', '~', set_cwd, { buffer = buf_id, desc = 'Set cwd' })
             end
           '';
         }
