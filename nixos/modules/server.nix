@@ -36,7 +36,6 @@ in
       preset = "compatibility";
       settings = {
         etc = {
-          kicksecure-module-blacklist = false; # nfs
           kicksecure-gitconfig = false; # allow old repos
         };
         entropy.jitterentropy = false;

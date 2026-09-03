@@ -17,10 +17,10 @@ in
     services.caddy.virtualHosts."dns.thuis".extraConfig = ''
       import headscale
       handle @internal {
-       reverse_proxy http://localhost:${toString config.services.adguardhome.port}
-       handle_path /dns-query/* {
-          reverse_proxy http://127.0.0.1:${toString config.services.adguardhome.settings.tls.port_dns_over_tls}
+       handle /dns-query {
+          reverse_proxy http://127.0.0.1:${toString config.services.adguardhome.port}
        }
+       reverse_proxy http://localhost:${toString config.services.adguardhome.port}
       }
       respond 403
     '';
@@ -79,13 +79,15 @@ in
           cache_optimistic = true;
 
         };
+        http = {
+          doh.insecure_enabled = true; # caddy terminates TLS
+        };
         tls = {
           enabled = false;
           server_name = "dns.thuis";
           port_https = 0; # 0 is disabled
           port_dns_over_tls = 853;
           force_https = false;
-          allow_unencrypted_doh = true; # caddy does this
         };
         filters = [
           {
@@ -94,7 +96,7 @@ in
             name = "github.com/FadeMind/hosts.extras";
           }
           {
-            enable = true;
+            enabled = true;
             url = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adblock/pro.plus.txt";
             name = "github.com/hagezi/dns-blocklists";
           }
