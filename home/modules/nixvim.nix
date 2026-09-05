@@ -65,15 +65,9 @@ in
       enable = true;
 
       package =
-        (import ../../pkgs/neovim-ghostty.nix {
+        (import ../../pkgs/neovim-nightly.nix {
           inherit pkgs;
-          inherit (pkgs)
-            lib
-            stdenv
-            fetchFromGitHub
-            callPackage
-            zig_0_16
-            ;
+          inherit (pkgs) fetchFromGitHub;
         }).neovim-unwrapped;
 
       globals = {
@@ -206,6 +200,38 @@ in
           desc = "Find symbols";
           code = "MiniExtra.pickers.lsp({scope = 'document_symbol'})";
         })
+        (lua {
+          key = "<Leader>r";
+          desc = "Run command";
+          code = # lua
+            ''
+              MiniPick.start({
+                source = {
+                  name = 'Commands',
+                  items = {
+                    {
+                      text = 'Deploy',
+                      command = 'sudo nixos-rebuild switch --flake /etc/nixos/flake',
+                    },
+                    {
+                      text = 'Deploy (impure)',
+                      command = 'sudo nixos-rebuild switch --flake /etc/nixos/flake --impure',
+                    },
+                    {
+                      text = 'Docker Compose up',
+                      command = 'docker compose up',
+                    },
+                  },
+                  choose = function(item)
+                    local target = MiniPick.get_picker_state().windows.target
+                    vim.api.nvim_win_call(target, function()
+                      vim.cmd('terminal ' .. item.command)
+                    end)
+                  end,
+                },
+              })
+            '';
+        })
 
         # Notes
         (lua {
@@ -249,8 +275,13 @@ in
         # Fruit.nvim
         (lua {
           key = "<leader>p";
-          desc = "PI sessions";
+          desc = "Pi sessions";
           code = "require('fruit').Sessions()";
+        })
+        (lua {
+          key = "<leader>P";
+          desc = "All pi sessions";
+          code = "require('fruit').Sessions({ all = true })";
         })
 
         # File Explorer

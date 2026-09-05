@@ -33,10 +33,6 @@ with lib;
           hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
         };
       };
-
-      ".config/noctalia/plugins/ip-monitor".source =
-        pkgs.callPackage ../../pkgs/ip-monitor-patched.nix
-          { };
     };
 
     home.packages = with pkgs; [
@@ -84,10 +80,6 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
-          ip-monitor = {
-            enabled = true;
-            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-          };
           privacy-indicator = {
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
@@ -108,12 +100,12 @@ with lib;
         settingsVersion = 59;
 
         bar = {
-          barType = "floating";
-          position = "top";
+          barType = "simple";
+          position = "right";
           monitors = [ ];
-          density = "default";
+          density = "comfortable";
           showOutline = false;
-          showCapsule = true;
+          showCapsule = false;
           capsuleOpacity = lib.mkForce 0.68;
           capsuleColorKey = "none";
           widgetSpacing = 8;
@@ -121,22 +113,22 @@ with lib;
           fontScale = 1;
           enableExclusionZoneInset = true;
           backgroundOpacity = lib.mkForce 0.89;
-          useSeparateOpacity = true;
+          useSeparateOpacity = false;
           marginVertical = 6;
           marginHorizontal = 7;
           frameThickness = 8;
           frameRadius = 6;
           outerCorners = true;
-          hideOnOverview = false;
-          displayMode = "always_visible";
+          hideOnOverview = true;
+          displayMode = "non_exclusive";
           autoHideDelay = 500;
           autoShowDelay = 150;
-          showOnWorkspaceSwitch = true;
+          showOnWorkspaceSwitch = false;
           widgets = {
             left = [
               {
                 id = "SessionMenu";
-                iconColor = "error";
+                iconColor = "Tertiary";
               }
               {
                 id = "Workspace";
@@ -173,6 +165,30 @@ with lib;
             ];
             center = [
               {
+                id = "Clock";
+                clockColor = "none";
+                customFont = "";
+                formatHorizontal = "HH:mm ddd, MMM dd";
+                formatVertical = "HH mm";
+                tooltipFormat = "HH:mm ddd, MMM dd";
+                useCustomFont = false;
+              }
+              {
+                id = "plugin:privacy-indicator";
+                defaultSettings = {
+                  activeColor = "primary";
+                  camFilterRegex = "wireplumber";
+                  enableToast = true;
+                  hideInactive = false;
+                  iconSpacing = 4;
+                  inactiveColor = "none";
+                  micFilterRegex = "";
+                  removeMargins = false;
+                };
+              }
+            ];
+            right = [
+              {
                 id = "KeepAwake";
                 iconColor = "none";
                 textColor = "none";
@@ -195,40 +211,6 @@ with lib;
                   videoPath = "";
                 };
                 id = "plugin:screen-toolkit";
-              }
-              {
-                id = "Clock";
-                clockColor = "none";
-                customFont = "";
-                formatHorizontal = "HH:mm ddd, MMM dd";
-                formatVertical = "HH mm - dd MM";
-                tooltipFormat = "HH:mm ddd, MMM dd";
-                useCustomFont = false;
-              }
-              {
-                id = "plugin:privacy-indicator";
-                defaultSettings = {
-                  activeColor = "primary";
-                  camFilterRegex = "wireplumber";
-                  enableToast = true;
-                  hideInactive = false;
-                  iconSpacing = 4;
-                  inactiveColor = "none";
-                  micFilterRegex = "";
-                  removeMargins = false;
-                };
-              }
-            ];
-            right = [
-              {
-                id = "plugin:ip-monitor";
-                defaultSettings = {
-                  errorIcon = "alert-circle";
-                  iconColor = "primary";
-                  loadingIcon = "loader";
-                  refreshInterval = 300;
-                  successIcon = "network";
-                };
               }
               {
                 id = "plugin:display-settings";
@@ -261,14 +243,6 @@ with lib;
                 iconColor = "none";
                 middleClickCommand = "pwvucontrol || pavucontrol";
                 textColor = "none";
-              }
-              {
-                id = "NotificationHistory";
-                hideWhenZero = false;
-                hideWhenZeroUnread = false;
-                iconColor = "none";
-                showUnreadBadge = true;
-                unreadBadgeColor = "primary";
               }
               {
                 id = "Battery";
@@ -423,10 +397,6 @@ with lib;
               enabled = true;
               id = "calendar-month-card";
             }
-            {
-              enabled = true;
-              id = "weather-card";
-            }
           ];
         };
 
@@ -511,15 +481,10 @@ with lib;
           diskPath = "/";
           shortcuts = {
             left = [
-              { id = "Network"; }
+              { id = "Notifications"; }
               { id = "Bluetooth"; }
-              { id = "WallpaperSelector"; }
-              { id = "NoctaliaPerformance"; }
-              { id = "AirplaneMode"; }
             ];
             right = [
-              { id = "Notifications"; }
-              { id = "PowerProfile"; }
               { id = "KeepAwake"; }
               { id = "NightLight"; }
             ];
@@ -574,11 +539,6 @@ with lib;
           warningColor = "";
           criticalColor = "";
           externalMonitor = "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor";
-        };
-
-        noctaliaPerformance = {
-          disableWallpaper = true;
-          disableDesktopWidgets = true;
         };
 
         dock = {
@@ -648,7 +608,7 @@ with lib;
           enableMarkdown = false;
           density = "default";
           monitors = [ ];
-          location = "top_right";
+          location = "bottom_right";
           overlayLayer = true;
           backgroundOpacity = lib.mkForce 1;
           respectExpireTimeout = true;
@@ -771,11 +731,28 @@ with lib;
         };
 
         desktopWidgets = {
-          enabled = false;
+          enabled = true;
           overviewEnabled = true;
-          gridSnap = false;
+          gridSnap = true;
           gridSnapScale = false;
-          monitorWidgets = [ ];
+          monitorWidgets = [
+            {
+              name = "DP-1";
+              widgets = [
+                {
+                  clockColor = "none";
+                  clockStyle = "analog";
+                  id = "Clock";
+                  roundedCorners = true;
+                  scale = 1;
+                  showBackground = true;
+                  useCustomFont = false;
+                  x = 40;
+                  y = 40;
+                }
+              ];
+            }
+          ];
         };
       };
     };

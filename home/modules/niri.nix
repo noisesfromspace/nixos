@@ -140,7 +140,7 @@ in
               bottom-left = 6.0;
             };
             clip-to-geometry = true;
-            opacity = 0.85;
+            opacity = 0.87;
             background-effect = {
               blur = true;
               xray = true;
@@ -163,7 +163,7 @@ in
         ];
 
         layout = {
-          gaps = 7;
+          gaps = 8;
           always-center-single-column = true;
 
           # Default new columns to 50% width so two windows fit side-by-side
@@ -223,6 +223,7 @@ in
           "Alt+E".action.spawn = [ "thunar" ];
           "Alt+Space".action.spawn = noctalia "launcher toggle";
           "Alt+S".action.spawn = noctalia "controlCenter toggle";
+          "Alt+Z".action.spawn = noctalia "bar toggle";
 
           # Screenshots
           "Print".action.screenshot = [ ];
