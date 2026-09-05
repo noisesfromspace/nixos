@@ -12,6 +12,7 @@
     # drone
     expresslrs-configurator 
     edgetx 
+    shotcut # editing
   ];
 
   programs.git.signing.signByDefault = false;

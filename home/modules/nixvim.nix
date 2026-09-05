@@ -65,15 +65,9 @@ in
       enable = true;
 
       package =
-        (import ../../pkgs/neovim-ghostty.nix {
+        (import ../../pkgs/neovim-nightly.nix {
           inherit pkgs;
-          inherit (pkgs)
-            lib
-            stdenv
-            fetchFromGitHub
-            callPackage
-            zig_0_16
-            ;
+          inherit (pkgs) fetchFromGitHub;
         }).neovim-unwrapped;
 
       globals = {
@@ -142,15 +136,6 @@ in
       };
 
       userCommands = {
-        Pi = {
-          command = helpers.mkRaw ''
-            function()
-              local cwd = vim.fn.getcwd()
-              vim.cmd("terminal pi")
-            end
-          '';
-          desc = "Open a terminal running pi";
-        };
         Binary = {
           command = helpers.mkRaw ''
             function()
@@ -206,6 +191,42 @@ in
           desc = "Find symbols";
           code = "MiniExtra.pickers.lsp({scope = 'document_symbol'})";
         })
+        (lua {
+          key = "<Leader>r";
+          desc = "Run command";
+          code = # lua
+            ''
+              MiniPick.start({
+                source = {
+                  name = 'Commands',
+                  items = {
+                    {
+                      text = 'Deploy',
+                      command = 'sudo nixos-rebuild switch --flake /etc/nixos/flake',
+                    },
+                    {
+                      text = 'Docker Up',
+                      command = 'docker compose up',
+                    },
+                    {
+                      text = 'Pi',
+                      command = 'pi',
+                    },
+                    {
+                      text = 'Top',
+                      command = 'top',
+                    },
+                  },
+                  choose = function(item)
+                    local target = MiniPick.get_picker_state().windows.target
+                    vim.api.nvim_win_call(target, function()
+                      vim.cmd('terminal ' .. item.command)
+                    end)
+                  end,
+                },
+              })
+            '';
+        })
 
         # Notes
         (lua {
@@ -249,8 +270,13 @@ in
         # Fruit.nvim
         (lua {
           key = "<leader>p";
-          desc = "PI sessions";
+          desc = "Pi sessions";
           code = "require('fruit').Sessions()";
+        })
+        (lua {
+          key = "<leader>P";
+          desc = "All pi sessions";
+          code = "require('fruit').Sessions({ all = true })";
         })
 
         # File Explorer
@@ -282,7 +308,7 @@ in
         (cmd {
           key = "gs";
           desc = "Open neogit status";
-          command = "Neogit";
+          command = "Neogit kind=split";
         })
         (lua {
           key = "gl";
@@ -500,13 +526,12 @@ in
         (pkgs.vimUtils.buildVimPlugin {
           pname = "fruit";
           version = "0.1";
-          # src = pkgs.fetchFromRadicle {
-          #   seed = "seed.boers.email";
-          #   repo = "zfLRpRmAn1WGArvCFTjnrwMn1ZKr";
-          #   rev = "70a52eb349572292a99d522fc9a8c235e357d78f";
-          #   hash = "sha256-IV/5OyZxMKah+ANpvr87o0N6ydx39X5FN2qm8P3adVE=";
-          # };
-          src = /opt/code/fruit.nvim;
+          src = pkgs.fetchFromRadicle {
+            seed = "seed.boers.email";
+            repo = "zfLRpRmAn1WGArvCFTjnrwMn1ZKr";
+            rev = "1cfbdac6876ab5724b4b41e717267e133eb3fcf6";
+            hash = "sha256-zFyEpo3uI6JUiHGhQUEYQ4BYgtdd2SxqhQOhmQ6zk5k=";
+          };
         })
       ];
 

@@ -4,17 +4,6 @@
   lib,
   ...
 }:
-let
-  oskToggle = pkgs.writeShellScriptBin "osk" ''
-    PROG="wvkbd"
-    SIGNAL="SIGRTMIN"
-    if ! pgrep "''${PROG}" > /dev/null; then
-        "''${PROG}" --hidden --alpha 204 &
-        sleep 0.1 # Secure startup buffer
-    fi
-    pkill --signal "''${SIGNAL}" "''${PROG}"
-  '';
-in
 with lib;
 {
   config = mkIf config.maatwerk.niri.enable {
@@ -33,10 +22,6 @@ with lib;
           hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
         };
       };
-
-      ".config/noctalia/plugins/ip-monitor".source =
-        pkgs.callPackage ../../pkgs/ip-monitor-patched.nix
-          { };
     };
 
     home.packages = with pkgs; [
@@ -50,7 +35,6 @@ with lib;
       ffmpeg # video processing
       gifski # high-quality gif encoding
       python3Packages.pygobject3 # system file picker support
-      oskToggle
     ];
 
     # Screenshots
@@ -84,10 +68,6 @@ with lib;
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
           };
-          ip-monitor = {
-            enabled = true;
-            sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
-          };
           privacy-indicator = {
             enabled = true;
             sourceUrl = "https://github.com/noctalia-dev/noctalia-plugins";
@@ -108,12 +88,12 @@ with lib;
         settingsVersion = 59;
 
         bar = {
-          barType = "floating";
-          position = "top";
+          barType = "simple";
+          position = "right";
           monitors = [ ];
           density = "default";
           showOutline = false;
-          showCapsule = true;
+          showCapsule = false;
           capsuleOpacity = lib.mkForce 0.68;
           capsuleColorKey = "none";
           widgetSpacing = 8;
@@ -121,7 +101,7 @@ with lib;
           fontScale = 1;
           enableExclusionZoneInset = true;
           backgroundOpacity = lib.mkForce 0.89;
-          useSeparateOpacity = true;
+          useSeparateOpacity = false;
           marginVertical = 6;
           marginHorizontal = 7;
           frameThickness = 8;
@@ -129,14 +109,12 @@ with lib;
           outerCorners = true;
           hideOnOverview = false;
           displayMode = "always_visible";
-          autoHideDelay = 500;
-          autoShowDelay = 150;
           showOnWorkspaceSwitch = true;
           widgets = {
             left = [
               {
                 id = "SessionMenu";
-                iconColor = "error";
+                iconColor = "Tertiary";
               }
               {
                 id = "Workspace";
@@ -173,6 +151,30 @@ with lib;
             ];
             center = [
               {
+                id = "Clock";
+                clockColor = "none";
+                customFont = "";
+                formatHorizontal = "HH:mm ddd, MMM dd";
+                formatVertical = "HH mm";
+                tooltipFormat = "HH:mm ddd, MMM dd";
+                useCustomFont = false;
+              }
+              {
+                id = "plugin:privacy-indicator";
+                defaultSettings = {
+                  activeColor = "primary";
+                  camFilterRegex = "wireplumber";
+                  enableToast = true;
+                  hideInactive = false;
+                  iconSpacing = 4;
+                  inactiveColor = "none";
+                  micFilterRegex = "";
+                  removeMargins = false;
+                };
+              }
+            ];
+            right = [
+              {
                 id = "KeepAwake";
                 iconColor = "none";
                 textColor = "none";
@@ -195,40 +197,6 @@ with lib;
                   videoPath = "";
                 };
                 id = "plugin:screen-toolkit";
-              }
-              {
-                id = "Clock";
-                clockColor = "none";
-                customFont = "";
-                formatHorizontal = "HH:mm ddd, MMM dd";
-                formatVertical = "HH mm - dd MM";
-                tooltipFormat = "HH:mm ddd, MMM dd";
-                useCustomFont = false;
-              }
-              {
-                id = "plugin:privacy-indicator";
-                defaultSettings = {
-                  activeColor = "primary";
-                  camFilterRegex = "wireplumber";
-                  enableToast = true;
-                  hideInactive = false;
-                  iconSpacing = 4;
-                  inactiveColor = "none";
-                  micFilterRegex = "";
-                  removeMargins = false;
-                };
-              }
-            ];
-            right = [
-              {
-                id = "plugin:ip-monitor";
-                defaultSettings = {
-                  errorIcon = "alert-circle";
-                  iconColor = "primary";
-                  loadingIcon = "loader";
-                  refreshInterval = 300;
-                  successIcon = "network";
-                };
               }
               {
                 id = "plugin:display-settings";
@@ -263,14 +231,6 @@ with lib;
                 textColor = "none";
               }
               {
-                id = "NotificationHistory";
-                hideWhenZero = false;
-                hideWhenZeroUnread = false;
-                iconColor = "none";
-                showUnreadBadge = true;
-                unreadBadgeColor = "primary";
-              }
-              {
                 id = "Battery";
                 deviceNativePath = "__default__";
                 displayMode = "graphic-clean";
@@ -278,41 +238,6 @@ with lib;
                 hideIfNotDetected = true;
                 showNoctaliaPerformance = false;
                 showPowerProfiles = false;
-              }
-              {
-                id = "CustomButton";
-                colorizeSystemIcon = "none";
-                colorizeSystemText = "none";
-                generalTooltipText = "";
-                hideMode = "alwaysExpanded";
-                icon = "keyboard";
-                iconPosition = "left";
-                ipcIdentifier = "";
-                leftClickExec = lib.getExe oskToggle;
-                leftClickUpdateText = false;
-                maxTextLength = {
-                  horizontal = 10;
-                  vertical = 10;
-                };
-                middleClickExec = "";
-                middleClickUpdateText = false;
-                parseJson = false;
-                rightClickExec = lib.getExe oskToggle;
-                rightClickUpdateText = false;
-                showExecTooltip = true;
-                showIcon = true;
-                showTextTooltip = true;
-                textCollapse = "";
-                textCommand = "";
-                textIntervalMs = 3000;
-                textStream = false;
-                wheelDownExec = "";
-                wheelDownUpdateText = false;
-                wheelExec = "";
-                wheelMode = "unified";
-                wheelUpExec = "";
-                wheelUpUpdateText = false;
-                wheelUpdateText = false;
               }
             ];
           };
@@ -423,10 +348,6 @@ with lib;
               enabled = true;
               id = "calendar-month-card";
             }
-            {
-              enabled = true;
-              id = "weather-card";
-            }
           ];
         };
 
@@ -511,15 +432,10 @@ with lib;
           diskPath = "/";
           shortcuts = {
             left = [
-              { id = "Network"; }
+              { id = "Notifications"; }
               { id = "Bluetooth"; }
-              { id = "WallpaperSelector"; }
-              { id = "NoctaliaPerformance"; }
-              { id = "AirplaneMode"; }
             ];
             right = [
-              { id = "Notifications"; }
-              { id = "PowerProfile"; }
               { id = "KeepAwake"; }
               { id = "NightLight"; }
             ];
@@ -574,11 +490,6 @@ with lib;
           warningColor = "";
           criticalColor = "";
           externalMonitor = "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor";
-        };
-
-        noctaliaPerformance = {
-          disableWallpaper = true;
-          disableDesktopWidgets = true;
         };
 
         dock = {
@@ -648,7 +559,7 @@ with lib;
           enableMarkdown = false;
           density = "default";
           monitors = [ ];
-          location = "top_right";
+          location = "top_center";
           overlayLayer = true;
           backgroundOpacity = lib.mkForce 1;
           respectExpireTimeout = true;
@@ -768,14 +679,6 @@ with lib;
           # Dell shitstation fix
           resumeSuspendCommand = "sleep 1; niri msg output eDP-1 on";
           customCommands = "[]";
-        };
-
-        desktopWidgets = {
-          enabled = false;
-          overviewEnabled = true;
-          gridSnap = false;
-          gridSnapScale = false;
-          monitorWidgets = [ ];
         };
       };
     };

@@ -140,7 +140,7 @@ in
               bottom-left = 6.0;
             };
             clip-to-geometry = true;
-            opacity = 0.85;
+            opacity = 0.87;
             background-effect = {
               blur = true;
               xray = true;
@@ -163,7 +163,7 @@ in
         ];
 
         layout = {
-          gaps = 7;
+          gaps = 8;
           always-center-single-column = true;
 
           # Default new columns to 50% width so two windows fit side-by-side
@@ -223,6 +223,7 @@ in
           "Alt+E".action.spawn = [ "thunar" ];
           "Alt+Space".action.spawn = noctalia "launcher toggle";
           "Alt+S".action.spawn = noctalia "controlCenter toggle";
+          "Alt+Z".action.spawn = noctalia "bar toggle";
 
           # Screenshots
           "Print".action.screenshot = [ ];
@@ -266,6 +267,8 @@ in
           "Alt+Shift+I".action.move-window-to-workspace-up = [ ];
           "Alt+Shift+K".action.move-window-to-workspace-down = [ ];
 
+          "Alt+6".action.focus-workspace-previous = [ ];
+
           # Resize (repeat) - fixed pixels for linear, predictable steps
           "Ctrl+Alt+J" = {
             action.set-column-width = "-128";
@@ -284,13 +287,12 @@ in
             repeat = true;
           };
 
-          # Workspace switching (1-6)
+          # Workspace switching
           "Alt+1".action.focus-workspace = 1;
           "Alt+2".action.focus-workspace = 2;
           "Alt+3".action.focus-workspace = 3;
           "Alt+4".action.focus-workspace = 4;
           "Alt+5".action.focus-workspace = 5;
-          "Alt+6".action.focus-workspace = 6;
 
           "Ctrl+Alt+Up".action.focus-workspace-up = [ ];
           "Ctrl+Alt+Down".action.focus-workspace-down = [ ];

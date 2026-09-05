@@ -107,18 +107,11 @@ in
           deploy = lib.getExe deploy-custom; # $ deploy {?host} [--use-remote-builder]
           update = "nix flake update";
 
-          wut = "journalctl -b -1 -e"; # previous boot crash
           xev = "wev"; # wayland xev
           adel = "read -r s&&atuin search '$s' --delete";
           keyboard-compile = "qmk compile -kb peej/lumberjack -km martijn";
           keyboard-flash = "qmk flash -kb peej/lumberjack -km martijn";
           extreme-pro = ''sudo veracrypt -t "/dev/disk/by-partlabel/Extreme\\x20Pro" /mnt/veracrypt1/'';
-
-          proxy = "nym-vpnc connect";
-          proxyoff = "nym-vpnc disconnect";
-          socks = "nym-vpnc socks5 enable --socks5-address 127.0.0.1:1080 --exit-random";
-          nvmix = "nym-vpnc tunnel set --two-hop off";
-          nvfast = "nym-vpnc tunnel set --two-hop on";
 
           # git alias
           ga = "git add";
