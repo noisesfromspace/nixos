@@ -15,10 +15,6 @@
       socks5.enable = true;
       work.enable = true;
     };
-    yubikey = {
-      enable = true;
-      autolock = true;
-    };
   };
 
   age.identityPaths = [ "/home/martijn/.ssh/id_ed25519" ];

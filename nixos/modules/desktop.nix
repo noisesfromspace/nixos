@@ -18,6 +18,7 @@ in
 
   config = mkIf cfg.enable {
     hosts.netns.enable = true;
+    hosts.yubikey.enable = true;
 
     environment.sessionVariables = {
       TERM = "xterm-ghostty";

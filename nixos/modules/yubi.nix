@@ -35,11 +35,11 @@ in
       services = {
         sudo = {
           u2fAuth = true;
-          unixAuth = true; # temp
+          unixAuth = lib.mkDefault false;
         };
         polkit-1 = {
           u2fAuth = true;
-          unixAuth = true; # temp
+          unixAuth = lib.mkDefault false;
         };
       };
     };
@@ -54,15 +54,15 @@ in
 
     services.udev = mkIf cfg.autolock {
       # can be replaced with programs.yubikey-manager.enable
-      packages = [ pkgs.yubikey-personalization ];
+      packages = [
+        pkgs.yubikey-personalization
+      ];
       extraRules = ''
-        ACTION=="remove",\
-         ENV{ID_BUS}=="usb",\
-         ENV{ID_VENDOR_ID}=="1050",\
-         ENV{ID_VENDOR}=="Yubico",\
-         RUN+="${
-           lib.getExe inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
-         } ipc call lockScreen lock"
+        ACTION=="remove", \
+         ENV{ID_BUS}=="usb", \
+         ENV{ID_VENDOR_ID}=="1050", \
+         ENV{ID_VENDOR}=="Yubico", \
+         RUN+="${lib.getExe' pkgs.systemd "loginctl"} lock-sessions"
       '';
     };
   };

@@ -3,7 +3,6 @@
   networking.hostName = "nurma";
   hosts.desktop.enable = true;
   hosts.secureboot.enable = true;
-  hosts.yubikey.enable = true;
 
   hosts.netns = {
     socks5.enable = true;

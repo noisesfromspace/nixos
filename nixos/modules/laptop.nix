@@ -41,6 +41,15 @@ in
 
     boot.kernelParams = [ "i2c_hid.polling_mode=1" ];
 
+    hosts.yubikey = {
+      autolock = true;
+    };
+
+    security.pam = {
+      services.sudo.unixAuth = true;
+      services.polkit-1.unixAuth = true;
+    };
+
     systemd.sleep.settings.Sleep = {
       HibernateDelaySec = "30m";
       SuspendState = "mem";

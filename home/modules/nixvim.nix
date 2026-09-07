@@ -311,9 +311,15 @@ in
           command = "Neogit kind=split";
         })
         (lua {
-          key = "gl";
+          key = "gL";
           desc = "Git log";
           code = "require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })()";
+          modes = [ "n" ];
+        })
+        (lua {
+          key = "gl";
+          desc = "Git log";
+          code = "require('neogit').action('log', { '--graph', '--decorate', '--show-signature' })()";
           modes = [ "n" ];
         })
         (cmd {

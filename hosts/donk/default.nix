@@ -48,7 +48,4 @@
 
   # Enable binfmt emulation of aarch64-linux. (for the raspberry pi)
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-
-  # Support gpg for git signing
-  hosts.yubikey.enable = true;
 }
