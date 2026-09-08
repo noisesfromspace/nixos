@@ -60,7 +60,7 @@ buildNpmPackage {
     "--build-from-source"
   ];
 
-  env = lib.optionalAttrs pkgs.stdenv.isLinux {
+  env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     PYTHON = lib.getExe python3;
   };
 
