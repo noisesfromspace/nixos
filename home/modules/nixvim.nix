@@ -312,14 +312,14 @@ in
         })
         (lua {
           key = "gL";
-          desc = "Git log";
+          desc = "Git log all";
           code = "require('neogit').action('log', 'log_all_branches', { '--graph', '--decorate', '--show-signature' })()";
           modes = [ "n" ];
         })
         (lua {
           key = "gl";
           desc = "Git log";
-          code = "require('neogit').action('log', { '--graph', '--decorate', '--show-signature' })()";
+          code = "require('neogit').action('log', 'log_current', { '--graph', '--decorate', '--show-signature' })()";
           modes = [ "n" ];
         })
         (cmd {
@@ -535,8 +535,8 @@ in
           src = pkgs.fetchFromRadicle {
             seed = "seed.boers.email";
             repo = "zfLRpRmAn1WGArvCFTjnrwMn1ZKr";
-            rev = "1cfbdac6876ab5724b4b41e717267e133eb3fcf6";
-            hash = "sha256-zFyEpo3uI6JUiHGhQUEYQ4BYgtdd2SxqhQOhmQ6zk5k=";
+            rev = "6d0c8f70f9b85328169c04cdd666ea96a0e2e4a7";
+            hash = "sha256-jpeNTuI0dW6aur7VVE2lmLRjmQ+ABuIgDgszWDZ9SuQ=";
           };
         })
       ];

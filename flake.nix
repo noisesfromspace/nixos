@@ -74,8 +74,8 @@
       };
     };
 
-    noctalia = {
-      url = "github:noctalia-dev/noctalia/legacy-v4";
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

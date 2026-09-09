@@ -33,14 +33,15 @@
     inputs.agenix.homeManagerModules.default
 
     # Noctalia Shell Integration (replaces waybar)
-    inputs.noctalia.homeModules.default
+    inputs.dms.homeModules.default
+    inputs.dms.homeModules.niri
 
     # Desktop only
     ./modules/distrobox.nix
-    ./modules/noctalia.nix
     ./modules/desktop.nix
     ./modules/browser.nix
     ./modules/ghostty.nix
+    ./modules/dank.nix
     ./modules/niri.nix
   ];
 

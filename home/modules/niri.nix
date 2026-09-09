@@ -106,11 +106,11 @@ in
         };
 
         switch-events = {
-          lid-close.action.spawn = [
-            "sh"
-            "-c"
-            "${noctaliaStr "lockScreen lock"} && niri msg output eDP-1 off"
-          ];
+          # lid-close.action.spawn = [
+          #   "sh"
+          #   "-c"
+          #   "${noctaliaStr "lockScreen lock"} && niri msg output eDP-1 off"
+          # ];
           lid-open.action.spawn = [
             "sh"
             "-c"
@@ -130,15 +130,9 @@ in
 
         # Window rules: per-app tweaks
         window-rules = [
-          # Catch-all: rounded corners, subtle transparency, background blur
+          # Catch-all: DMS-managed corners, subtle transparency, background blur
           {
             matches = [ ];
-            geometry-corner-radius = {
-              top-left = 6.0;
-              top-right = 6.0;
-              bottom-right = 6.0;
-              bottom-left = 6.0;
-            };
             clip-to-geometry = true;
             opacity = 0.87;
             background-effect = {
@@ -175,7 +169,7 @@ in
             enable = true;
             width = 2;
             active = {
-              color = "#c4b28a";
+              color = config.lib.stylix.colors.withHashtag.base08;
             };
             inactive = {
               color = "#2a2927";
@@ -184,7 +178,7 @@ in
 
           insert-hint = {
             enable = true;
-            display.color = "#c4b28a";
+            display.color = config.lib.stylix.colors.withHashtag.base08;
           };
 
           shadow = {
@@ -221,9 +215,9 @@ in
             "+new-window"
           ];
           "Alt+E".action.spawn = [ "thunar" ];
-          "Alt+Space".action.spawn = noctalia "launcher toggle";
-          "Alt+S".action.spawn = noctalia "controlCenter toggle";
-          "Alt+Z".action.spawn = noctalia "bar toggle";
+          # "Alt+Space".action.spawn = noctalia "launcher toggle";
+          # "Alt+S".action.spawn = noctalia "controlCenter toggle";
+          # "Alt+Z".action.spawn = noctalia "bar toggle";
 
           # Screenshots
           "Print".action.screenshot = [ ];
@@ -243,10 +237,10 @@ in
           "Alt+0".action.maximize-column = [ ];
 
           # Clipboard history
-          "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
+          # "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
 
           # Lock screen
-          "Alt+M".action.spawn = noctalia "lockScreen lock";
+          # "Alt+M".action.spawn = noctalia "lockScreen lock";
 
           # Jump to leftmost/rightmost column
           "Alt+Home".action.focus-column-first = [ ];
@@ -313,42 +307,27 @@ in
             action.focus-column-right = [ ];
             cooldown-ms = 150;
           };
-          "XF86AudioMute" = {
-            action.spawn = noctalia "volume muteOutput";
-            allow-when-locked = true;
-          };
-          "XF86AudioPlay" = {
-            action.spawn = noctalia "media playPause";
-            allow-when-locked = true;
-          };
-          "XF86AudioNext" = {
-            action.spawn = noctalia "media next";
-            allow-when-locked = true;
-          };
-          "XF86AudioPrev" = {
-            action.spawn = noctalia "media previous";
-            allow-when-locked = true;
-          };
-          "XF86AudioRaiseVolume" = {
-            action.spawn = noctalia "volume increase";
-            repeat = true;
-          };
-          "XF86AudioLowerVolume" = {
-            action.spawn = noctalia "volume decrease";
-            repeat = true;
-          };
-        }
-        // (lib.optionalAttrs cfg.isLaptop {
-          # Brightness keys (locked)
-          "XF86MonBrightnessDown" = {
-            action.spawn = noctalia "brightness decrease";
-            allow-when-locked = true;
-          };
-          "XF86MonBrightnessUp" = {
-            action.spawn = noctalia "brightness increase";
-            allow-when-locked = true;
-          };
-        });
+          # "XF86AudioMute" = {
+          #   action.spawn = noctalia "volume muteOutput";
+          #   allow-when-locked = true;
+          # };
+          # "XF86AudioPlay" = {
+          #   action.spawn = noctalia "media playPause";
+          #   allow-when-locked = true;
+          # };
+          # "XF86AudioNext" = {
+          #   action.spawn = noctalia "media next";
+          #   allow-when-locked = true;
+          # };
+          # "XF86AudioPrev" = {
+          #   action.spawn = noctalia "media previous";
+          #   allow-when-locked = true;
+          # };
+          # "XF86AudioRaiseVolume" = {
+          #   action.spawn = noctalia "volume increase";
+          #   repeat = true;
+          # };
+        };
 
         # Gestures (Niri has hardcoded touchpad gestures; only edge-scroll + hot-corners are configurable).
         gestures = {
