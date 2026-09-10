@@ -19,8 +19,8 @@ in
     stylix = {
       enable = true;
       image = pkgs.fetchurl {
-        url = "https://random.storage.boers.email/wallpaper_optimized.jpg";
-        hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
+        url = "https://random.storage.boers.email/wallhaven_l3w6yr.jpg";
+        hash = "sha256-SDecGW6T5t0mxGcC3KqtfaQvCzfVEUVcMQ7E6RdgGwU=";
       };
       polarity = "dark";
       icons = {
