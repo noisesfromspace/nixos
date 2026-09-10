@@ -100,6 +100,7 @@ in
 
         switch-events = {
           lid-close.action.spawn = dms [
+            "lock"
             "lockAndOutputsOff"
           ];
           lid-open.action.spawn = [
@@ -148,7 +149,7 @@ in
         ];
 
         layout = {
-          gaps = 8;
+          gaps = 9;
           always-center-single-column = true;
 
           # Default new columns to 50% width so two windows fit side-by-side
@@ -225,10 +226,6 @@ in
             "notifications"
             "toggle"
           ];
-          "Alt+S".action.spawn = dms [
-            "settings"
-            "focusOrToggle"
-          ];
           "Alt+X".action.spawn = dms [
             "powermenu"
             "toggle"
@@ -239,7 +236,7 @@ in
             "id"
             "default"
           ];
-          "Alt+Shift+P".action.spawn = dms [
+          "Ctrl+Alt+P".action.spawn = dms [
             "powerprofile"
             "toggle"
           ];

@@ -80,7 +80,21 @@ in
 
     programs.dank-material-shell = {
       enable = true;
-      session.weatherCoordinates = "52.08103243276141,4.30674056600006";
+      enableAudioWavelength = true;
+      session = {
+        weatherCoordinates = "52.08103243276141,4.30674056600006";
+
+        # Gradually warm the display between local sunset and sunrise.
+        nightModeEnabled = true;
+        nightModeAutoEnabled = true;
+        nightModeAutoMode = "location";
+        nightModeTemperature = 4500;
+        nightModeHighTemperature = 6500;
+        nightModeTransitionMinutes = 60;
+        nightModeUseIPLocation = false;
+        latitude = 52.08103243276141;
+        longitude = 4.30674056600006;
+      };
       niri = {
         enableSpawn = true;
         # Keep DMS compositor integration, but manage keybinds declaratively in niri.nix.
@@ -111,11 +125,11 @@ in
         "calendarBackend" = "dankcal";
         "acProfileName" = "1"; # Balanced
         "batteryProfileName" = "0"; # Power Saver
+        "audioVisualizerEnabled" = true;
         "barElevationEnabled" = false;
         "privacyShowMicIcon" = true;
         "privacyShowCameraIcon" = true;
         "privacyShowScreenShareIcon" = true;
-        "notificationPopupPrivacyMode" = true;
         "notificationTimeoutLow" = 3000;
         "notificationCompactMode" = true;
         "notificationShowTimeoutBar" = true;
@@ -166,7 +180,6 @@ in
               "music"
               "cpuUsage"
               "memUsage"
-              "notificationButton"
               "battery"
               "controlCenterButton"
             ];
