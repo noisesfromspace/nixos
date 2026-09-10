@@ -39,8 +39,9 @@ in
       "tor" # read authcookie
     ];
 
-    # DBus power information provider
+    # DBus power information and profile providers
     services.upower.enable = true;
+    services.power-profiles-daemon.enable = true;
 
     # DBus secret service
     services.oo7.enable = true;

@@ -5,10 +5,28 @@
   ...
 }:
 with lib;
+let
+  calendarRoot = "${config.home.homeDirectory}/.local/share/calendars";
+  dcal = lib.getExe config.programs.dank-calendar.package;
+  dcalAccountSetup = pkgs.writeShellScript "dcal-account-setup" ''
+    set -euo pipefail
+
+    calendar_root=${lib.escapeShellArg calendarRoot}
+    ${pkgs.coreutils}/bin/mkdir -p "$calendar_root"
+
+    if ${dcal} --json account list \
+      | ${pkgs.jq}/bin/jq -e --arg root "$calendar_root" \
+        'any(.[]; .kind == "local" and .settings.root == $root)' >/dev/null; then
+      exit 0
+    fi
+
+    ${dcal} account add local "$calendar_root" --name Radicale
+  '';
+in
 {
   config = mkIf config.maatwerk.niri.enable {
     home.file = {
-      # Avatar image used by Noctalia
+      # Avatar image used by DankMaterialShell
       ".config/avatar.png" = {
         source = pkgs.fetchurl {
           url = "https://random.storage.boers.email/icon.png";
@@ -16,7 +34,7 @@ with lib;
         };
       };
 
-      "Pictures/Wallpapers/default_wallpaper.jpg" = {
+      "Pictures/Wallpapers/wallhaven_l3w6yr.jpg" = {
         source = pkgs.fetchurl {
           url = "https://random.storage.boers.email/wallpaper_optimized.jpg";
           hash = "sha256-7tCkOYseY4Oayw+WHxn+fK45BdOjRaELYPp33m9+UYI=";
@@ -34,9 +52,47 @@ with lib;
       pkgs.zbar
     ];
 
-    programs.dank-material-shell = {
+    programs.dank-calendar = {
       enable = true;
       systemd.enable = true;
+      settings.syncIntervalMinutes = 15;
+    };
+
+    systemd.user.services = {
+      dcal-account-setup = {
+        Unit = {
+          Description = "Register the vdirsyncer calendars with DankCalendar";
+          Before = [ "dcal.service" ];
+          PartOf = [ config.programs.dank-calendar.systemd.target ];
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = dcalAccountSetup;
+          RemainAfterExit = true;
+        };
+      };
+
+      dcal.Unit = {
+        Requires = [ "dcal-account-setup.service" ];
+        After = [ "dcal-account-setup.service" ];
+      };
+    };
+
+    programs.dank-material-shell = {
+      enable = true;
+      session.weatherCoordinates = "52.08103243276141,4.30674056600006";
+      niri = {
+        enableSpawn = true;
+        # Keep DMS compositor integration, but manage keybinds declaratively in niri.nix.
+        includes.filesToInclude = [
+          "alttab"
+          "cursor"
+          "layout"
+          "outputs"
+          "windowrules"
+          "wpblur"
+        ];
+      };
       enableDynamicTheming = false;
       plugins = {
         dms-quick-capture = {
@@ -52,11 +108,19 @@ with lib;
       settings = {
         "currentThemeName" = "custom";
         "cornerRadius" = 10;
-        "calendarBackend" = "khal";
+        "calendarBackend" = "dankcal";
+        "acProfileName" = "1"; # Balanced
+        "batteryProfileName" = "0"; # Power Saver
         "barElevationEnabled" = false;
         "privacyShowMicIcon" = true;
         "privacyShowCameraIcon" = true;
         "privacyShowScreenShareIcon" = true;
+        "notificationPopupPrivacyMode" = true;
+        "notificationTimeoutLow" = 3000;
+        "notificationCompactMode" = true;
+        "notificationShowTimeoutBar" = true;
+        "notificationPopupPosition" = -1;
+
         "showWorkspaceApps" = true;
         "workspaceAppIconSizeOffset" = 3;
         "workspaceFollowFocus" = true;
@@ -99,7 +163,6 @@ with lib;
               }
             ];
             "rightWidgets" = [
-              "systemTray"
               "music"
               "cpuUsage"
               "memUsage"

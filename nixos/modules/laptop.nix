@@ -14,8 +14,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.power-profiles-daemon.enable = true;
-
     age.secrets = {
       password-laptop.file = mkDefault "${inputs.secrets}/password-laptop.age";
     };

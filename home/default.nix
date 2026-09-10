@@ -32,9 +32,10 @@
     # Secrets manager
     inputs.agenix.homeManagerModules.default
 
-    # Noctalia Shell Integration (replaces waybar)
+    # Dank desktop integration
     inputs.dms.homeModules.default
     inputs.dms.homeModules.niri
+    inputs.dankcalendar.homeModules.default
 
     # Desktop only
     ./modules/distrobox.nix
@@ -88,7 +89,7 @@
           "text/plain" = "org.xfce.mousepad.desktop";
           "application/pdf" = "org.pwmt.zathura.desktop";
           "inode/directory" = "thunar.desktop";
-          "text/calendar" = "khal.desktop";
+          "text/calendar" = "com.danklinux.dankcalendar.desktop";
         }
         // mkMimeAssoc imageMimeTypes "imv.desktop"
         // mkMimeAssoc htmlTypes "librewolf.desktop";

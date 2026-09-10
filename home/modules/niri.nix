@@ -8,15 +8,14 @@ with lib;
 let
   cfg = config.maatwerk.niri;
 
-  noctalia =
-    cmd:
+  dms =
+    args:
     [
-      "noctalia-shell"
+      "dms"
       "ipc"
       "call"
     ]
-    ++ (lib.splitString " " cmd);
-  noctaliaStr = cmd: "noctalia-shell ipc call " + cmd;
+    ++ args;
 in
 {
   options.maatwerk.niri = {
@@ -52,17 +51,12 @@ in
     };
 
     home.packages = with pkgs; [
-      swaybg
       wvkbd
     ];
 
-    # Remove conflicting squeekboard services as wvkbd owns the space
     programs.niri = {
-      # Installation is handled by hosts.desktop.enable via nixosModules.niri
-      # We only configure settings here.
       settings = {
         spawn-at-startup = [
-          { argv = [ "noctalia" ]; }
           {
             argv = [
               "systemctl"
@@ -105,11 +99,9 @@ in
         };
 
         switch-events = {
-          # lid-close.action.spawn = [
-          #   "sh"
-          #   "-c"
-          #   "${noctaliaStr "lockScreen lock"} && niri msg output eDP-1 off"
-          # ];
+          lid-close.action.spawn = dms [
+            "lockAndOutputsOff"
+          ];
           lid-open.action.spawn = [
             "sh"
             "-c"
@@ -182,8 +174,9 @@ in
 
           shadow = {
             enable = true;
-            color = "rgba(0 0 0 0.06)";
-            inactive-color = "rgba(0 0 0 0.03)";
+            color = config.lib.stylix.colors.withHashtag.base08;
+            spread = 0;
+            inactive-color = "#00000066";
           };
         };
 
@@ -214,13 +207,54 @@ in
             "+new-window"
           ];
           "Alt+E".action.spawn = [ "thunar" ];
-          # "Alt+Space".action.spawn = noctalia "launcher toggle";
-          # "Alt+S".action.spawn = noctalia "controlCenter toggle";
-          # "Alt+Z".action.spawn = noctalia "bar toggle";
+          "Alt+C".action.spawn = [
+            "dcal"
+            "toggle"
+          ];
+
+          # DankMaterialShell
+          "Alt+Space".action.spawn = dms [
+            "spotlight-bar"
+            "toggle"
+          ];
+          "Ctrl+Alt+Space".action.spawn = dms [
+            "spotlight"
+            "toggle"
+          ];
+          "Alt+N".action.spawn = dms [
+            "notifications"
+            "toggle"
+          ];
+          "Alt+S".action.spawn = dms [
+            "settings"
+            "focusOrToggle"
+          ];
+          "Alt+X".action.spawn = dms [
+            "powermenu"
+            "toggle"
+          ];
+          "Alt+Z".action.spawn = dms [
+            "bar"
+            "toggle"
+            "id"
+            "default"
+          ];
+          "Alt+Shift+P".action.spawn = dms [
+            "powerprofile"
+            "toggle"
+          ];
+          "Ctrl+Alt+N".action.spawn = dms [
+            "night"
+            "toggle"
+          ];
 
           # Screenshots
-          "Print".action.screenshot = [ ];
-          "Alt+Print".action.screenshot-window = [ ];
+          "Print".action.spawn = dms [
+            "quickCapture"
+            "screenshot"
+            "region"
+            "edit"
+          ];
 
           # Window management
           "Alt+Backslash".action.close-window = [ ];
@@ -229,21 +263,22 @@ in
           "Alt+Semicolon".action.toggle-overview = [ ];
           "Alt+A".action.toggle-overview = [ ];
           "Alt+V".action.toggle-window-floating = [ ];
-
           "Alt+O".action.fullscreen-window = [ ];
           "Alt+P".action.center-column = [ ];
           "Alt+9".action.set-column-width = "50%";
           "Alt+0".action.maximize-column = [ ];
 
           # Clipboard history
-          # "Ctrl+Alt+H".action.spawn = noctalia "launcher clipboard";
+          "Ctrl+Alt+H".action.spawn = dms [
+            "clipboard"
+            "toggle"
+          ];
 
           # Lock screen
-          # "Alt+M".action.spawn = noctalia "lockScreen lock";
-
-          # Jump to leftmost/rightmost column
-          "Alt+Home".action.focus-column-first = [ ];
-          "Alt+End".action.focus-column-last = [ ];
+          "Alt+M".action.spawn = dms [
+            "lock"
+            "lock"
+          ];
 
           # Stacking / column management
           "Alt+Comma".action.consume-window-into-column = [ ];
@@ -306,26 +341,89 @@ in
             action.focus-column-right = [ ];
             cooldown-ms = 150;
           };
-          # "XF86AudioMute" = {
-          #   action.spawn = noctalia "volume muteOutput";
-          #   allow-when-locked = true;
-          # };
-          # "XF86AudioPlay" = {
-          #   action.spawn = noctalia "media playPause";
-          #   allow-when-locked = true;
-          # };
-          # "XF86AudioNext" = {
-          #   action.spawn = noctalia "media next";
-          #   allow-when-locked = true;
-          # };
-          # "XF86AudioPrev" = {
-          #   action.spawn = noctalia "media previous";
-          #   allow-when-locked = true;
-          # };
-          # "XF86AudioRaiseVolume" = {
-          #   action.spawn = noctalia "volume increase";
-          #   repeat = true;
-          # };
+          # Audio and media
+          "XF86AudioRaiseVolume" = {
+            action.spawn = dms [
+              "audio"
+              "increment"
+              "3"
+            ];
+            allow-when-locked = true;
+            repeat = true;
+          };
+          "XF86AudioLowerVolume" = {
+            action.spawn = dms [
+              "audio"
+              "decrement"
+              "3"
+            ];
+            allow-when-locked = true;
+            repeat = true;
+          };
+          "XF86AudioMute" = {
+            action.spawn = dms [
+              "audio"
+              "mute"
+            ];
+            allow-when-locked = true;
+          };
+          "XF86AudioMicMute" = {
+            action.spawn = dms [
+              "mic"
+              "mute"
+            ];
+            allow-when-locked = true;
+          };
+          "XF86AudioPlay" = {
+            action.spawn = dms [
+              "mpris"
+              "playPause"
+            ];
+            allow-when-locked = true;
+          };
+          "XF86AudioPause" = {
+            action.spawn = dms [
+              "mpris"
+              "playPause"
+            ];
+            allow-when-locked = true;
+          };
+          "XF86AudioNext" = {
+            action.spawn = dms [
+              "mpris"
+              "next"
+            ];
+            allow-when-locked = true;
+          };
+          "XF86AudioPrev" = {
+            action.spawn = dms [
+              "mpris"
+              "previous"
+            ];
+            allow-when-locked = true;
+          };
+
+          # Brightness
+          "XF86MonBrightnessUp" = {
+            action.spawn = dms [
+              "brightness"
+              "increment"
+              "5"
+              ""
+            ];
+            allow-when-locked = true;
+            repeat = true;
+          };
+          "XF86MonBrightnessDown" = {
+            action.spawn = dms [
+              "brightness"
+              "decrement"
+              "5"
+              ""
+            ];
+            allow-when-locked = true;
+            repeat = true;
+          };
         };
 
         # Gestures (Niri has hardcoded touchpad gestures; only edge-scroll + hot-corners are configurable).

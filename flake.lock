@@ -125,6 +125,22 @@
     "dank-qml-common": {
       "flake": false,
       "locked": {
+        "lastModified": 1788219423,
+        "narHash": "sha256-U4WBPh+pfM2IRF+IOWWHaw3cWaR1kYtl+Rdp7i9S2OQ=",
+        "owner": "AvengeMedia",
+        "repo": "dank-qml-common",
+        "rev": "a9ae19facd460a4150da269dafcfb044b0dd9eea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dank-qml-common",
+        "type": "github"
+      }
+    },
+    "dank-qml-common_2": {
+      "flake": false,
+      "locked": {
         "lastModified": 1788376015,
         "narHash": "sha256-/tT8rTznLADndTwLBzdgzzgfJH1ZhYQibYo5v/F8U+U=",
         "owner": "AvengeMedia",
@@ -135,6 +151,27 @@
       "original": {
         "owner": "AvengeMedia",
         "repo": "dank-qml-common",
+        "type": "github"
+      }
+    },
+    "dankcalendar": {
+      "inputs": {
+        "dank-qml-common": "dank-qml-common",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788887974,
+        "narHash": "sha256-Oxxe6A3CY+UKA8qc086TF87B9y8Zx02ZP00gcxfZGVg=",
+        "owner": "AvengeMedia",
+        "repo": "dankcalendar",
+        "rev": "2a5bb69e20ddc10feda3b728cc0bee130079e449",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dankcalendar",
         "type": "github"
       }
     },
@@ -229,7 +266,7 @@
     },
     "dms": {
       "inputs": {
-        "dank-qml-common": "dank-qml-common",
+        "dank-qml-common": "dank-qml-common_2",
         "flake-compat": "flake-compat_2",
         "nixpkgs": [
           "nixpkgs"
@@ -981,6 +1018,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "dankcalendar": "dankcalendar",
         "determinate": "determinate",
         "disko": "disko",
         "dmatools": "dmatools",
