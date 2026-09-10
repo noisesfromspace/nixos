@@ -54,7 +54,6 @@ in
     home.packages = with pkgs; [
       swaybg
       wvkbd
-      iwgtk
     ];
 
     # Remove conflicting squeekboard services as wvkbd owns the space

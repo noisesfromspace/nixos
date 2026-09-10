@@ -24,11 +24,31 @@ with lib;
       };
     };
 
+    # dms-quick-capture deps
+    home.packages = [
+      pkgs.gpu-screen-recorder
+      pkgs.ffmpeg
+      pkgs.imagemagick
+      pkgs.img2pdf
+      pkgs.tesseract
+      pkgs.zbar
+    ];
+
     programs.dank-material-shell = {
       enable = true;
-      niri = {
-        enableSpawn = true; 
+      systemd.enable = true;
+      enableDynamicTheming = false;
+      plugins = {
+        dms-quick-capture = {
+          src = pkgs.fetchFromGitHub {
+            owner = "hthienloc";
+            repo = "dms-quick-capture";
+            rev = "f908845cb949be182257f77d88f21c53c3c38bce";
+            hash = "sha256-iN7V9XfLXK/AsQzapuH07zWgBm3HZ1x0fDe3KWJqrEY=";
+          };
+        };
       };
+
       settings = {
         "currentThemeName" = "custom";
         "cornerRadius" = 10;
@@ -65,24 +85,22 @@ with lib;
                 "id" = "powerMenuButton";
                 "enabled" = true;
               }
-              "focusedWindow"
               "workspaceSwitcher"
             ];
             "centerWidgets" = [
               {
-                "id" = "idleInhibitor";
                 "enabled" = true;
+                "id" = "idleInhibitor";
               }
-              "music"
               "clock"
               {
-                "id" = "privacyIndicator";
+                "id" = "quickCapture";
                 "enabled" = true;
               }
             ];
             "rightWidgets" = [
               "systemTray"
-              "clipboard"
+              "music"
               "cpuUsage"
               "memUsage"
               "notificationButton"
